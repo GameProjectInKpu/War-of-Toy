@@ -23,15 +23,15 @@ public class BoxCamScript : MonoBehaviour {
         m_AxisY = EndBox.position.y - StartBox.position.y;
 
         m_BoxPos = transform.position;
-        MainCam = MoveCamera.m_Instance.m_Pos;
-        MainCamDist = MoveCamera.m_Instance.m_Distance;
+        //MainCam = MoveCamera.m_Instance.m_Pos;
     }
 
     private void Update()
     {
-        IsMainCamMove = MoveCamera.m_Instance.IsMove;
+       // IsMainCamMove = MoveCamera.m_Instance.IsMove;
         if(IsMainCamMove == true)
         {
+            StopCoroutine("MovingCamWithMainCam");
             StartCoroutine("MovingCamWithMainCam");
         }
 
@@ -43,10 +43,10 @@ public class BoxCamScript : MonoBehaviour {
         {
             if (IsMainCamMove == false)
                 break;
-            MainCam = MoveCamera.m_Instance.m_Pos;
+          //  MainCam = MoveCamera.m_Instance.m_Pos;
             
-            m_BoxPos.x = (MainCam.x - 25f) / m_AxisX * 20f + StartBox.position.x; // 현재카메라x위치 - 처음지형위치 /  
-            m_BoxPos.y = (MainCam.z - 0f) / m_AxisY * 20f + StartBox.position.z; // 현재카메라 z위치 - 처음지형위치 /  
+            m_BoxPos.x = (MainCam.x - 10f) / m_AxisX * 900f + StartBox.position.x; //* 150f + StartBox.position.x; //* 20f + StartBox.position.x; // 현재카메라x위치 - 처음지형위치 /  
+            m_BoxPos.y = (MainCam.z - 4f) / m_AxisY * 1000f + StartBox.position.z; //* 190f + StartBox.position.z; //* 20f + StartBox.position.z; // 현재카메라 z위치 - 처음지형위치 /  
 
             m_BoxPos.x = Mathf.Clamp(m_BoxPos.x, StartBox.position.x, EndBox.position.x);
             m_BoxPos.y = Mathf.Clamp(m_BoxPos.y, StartBox.position.y, EndBox.position.y);
@@ -69,11 +69,11 @@ public class BoxCamScript : MonoBehaviour {
             m_BoxPos.x = Mathf.Clamp(m_BoxPos.x, StartBox.position.x, EndBox.position.x);
             m_BoxPos.y = Mathf.Clamp(m_BoxPos.y, StartBox.position.y, EndBox.position.y);
 
-            MainCam.x = (m_BoxPos.x - StartBox.position.x) / m_AxisX  * 1024f;
-            MainCam.z = (m_BoxPos.y - StartBox.position.y) / m_AxisY  * 1024f;
+            MainCam.x = (m_BoxPos.x - StartBox.position.x) / m_AxisX * 100f;
+            MainCam.z = (m_BoxPos.y - StartBox.position.y) / m_AxisY * 100f;
 
             transform.position = m_BoxPos;
-            MoveCamera.m_Instance.m_Pos = MainCam;
+         //   MoveCamera.m_Instance.m_Pos = MainCam;
 
             yield return null;
         }

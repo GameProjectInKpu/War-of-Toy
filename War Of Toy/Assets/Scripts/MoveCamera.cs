@@ -4,10 +4,10 @@ using System.Collections;
 public class MoveCamera : MonoBehaviour
 {
     public Vector3 m_Pos;
-    private float m_CameraSpeed = 7f;
+    public Vector3 m_Rot;
+    private float m_CameraSpeed = 0.5f;
     public Transform m_PlayerPos;
-    public float m_Distance;
-    public bool IsMove;
+    //public bool IsMove;
 
 
     static public MoveCamera m_Instance;
@@ -19,32 +19,44 @@ public class MoveCamera : MonoBehaviour
     void Awake()
     {
         m_Instance = this;
+        
+    }
+
+    private void OnEnable()
+    {
         m_Pos = transform.position;
-        m_Distance = 20f;
+        m_Rot = transform.rotation.eulerAngles;
         StartCoroutine("MoveRoutine");
+    }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+       
+    }
+
+    private void Update()
+    {
+        
     }
 
     IEnumerator MoveRoutine()
     {
         while (true)
         {
-            //m_Pos.x += m_CameraSpeed * Input.GetAxis("Mouse X") * Time.deltaTime * 10f;
-            //m_Pos.z += m_CameraSpeed * Input.GetAxis("Mouse Y") * Time.deltaTime * 10f;
-
-            m_Pos.x += m_CameraSpeed * Input.GetAxis("Horizontal") * Time.deltaTime * 10f;
-            m_Pos.z += m_CameraSpeed * Input.GetAxis("Vertical") * Time.deltaTime * 10f;
+            m_Pos.x -= m_CameraSpeed * TouchScript.m_TouchDeltha.x * Time.deltaTime;// * 10f;
+            m_Pos.z -= m_CameraSpeed * TouchScript.m_TouchDeltha.y * Time.deltaTime;// * 10f;
             m_Pos.y -= Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * 300f;
+            
+            m_Pos.x = Mathf.Clamp(m_Pos.x, 16.2f, 77f);
+            m_Pos.z = Mathf.Clamp(m_Pos.z, 0f, 72.5f);
+            m_Pos.y =  Mathf.Clamp(m_Pos.y, 15f, 50f); 
 
-            m_Pos.x = Mathf.Clamp(m_Pos.x, 25f, 1000f);
-            m_Pos.z = Mathf.Clamp(m_Pos.z, 0f, 990f);
-            m_Pos.y = Mathf.Clamp(m_Pos.y, 10f, 200f);
-
-            if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)     IsMove = false;
-            else    IsMove = true;
-
-
+            m_Rot.x = 70f;
+            transform.rotation = Quaternion.Euler(m_Rot);
             transform.position = m_Pos;
 
+            //TouchScript.m_Instance.m_TouchDeltha.x
 
             yield return null;
 
@@ -54,6 +66,7 @@ public class MoveCamera : MonoBehaviour
     void OnDestroy()
     {
         m_Instance = null;
+        StopAllCoroutines();
     }
 
 
