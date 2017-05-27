@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{95185CFF-680E-1D1B-1EED-C5AAFA4D016E}</ProjectGuid>
+    <ProjectGuid>{C6C7EA34-1B58-0F76-0C87-2986CF471A96}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Assembly-CSharp</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -90,9 +90,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="War of Toy.Plugins.csproj">
-      <Project>{D600595D-2F79-A3B9-4908-35252ADDA4EC}</Project>
-      <Name>War of Toy.Plugins</Name>
+    <ProjectReference Include="War Of Toy.Plugins.csproj">
+      <Project>{3C763616-1EA0-229C-A99E-70C7431FC9CB}</Project>
+      <Name>War Of Toy.Plugins</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
