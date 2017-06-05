@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 public class TouchScript : MonoBehaviour {
 
+    public static bool IsOver;
     public static Vector2 m_TouchDeltha;
     public Vector2[] m_CurTouches = new Vector2[2];
     public Vector2[] m_PrevTouches = new Vector2[2];
@@ -56,11 +57,23 @@ public class TouchScript : MonoBehaviour {
     {
         PointerEventData PointEvent = EventData as PointerEventData;
         m_TouchDeltha = PointEvent.delta;
+        IsOver = false;
     }
 
     public void EndTouch()
     {
         m_TouchDeltha = Vector2.zero;
+        IsOver = false;
+    }
+
+    public void PointerEnter(bool isover)
+    {
+        IsOver = isover;
+    }
+
+    public void PointerExit(bool isover)
+    {
+        IsOver = isover;
     }
 
     void OnDestroy()

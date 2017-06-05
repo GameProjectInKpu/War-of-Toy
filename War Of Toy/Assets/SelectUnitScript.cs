@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class SelectUnitScript : MonoBehaviour {
 
     public LayerMask m_LMUnit;
+    public GameObject m_BuildOK;
     public bool m_IsSelect;
     static public List<PlayerMove> PM;
 
@@ -26,9 +27,6 @@ public class SelectUnitScript : MonoBehaviour {
     {
         while (true)
         {
-            //bool isPointerOVerGame = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
-            //Debug.Log(isPointerOVerGame);
-
             if (Input.GetMouseButtonDown(0))    // 유닛 선택
             //if (Input.touchCount == 1 && m_IsSelect == false)
             {
@@ -61,18 +59,14 @@ public class SelectUnitScript : MonoBehaviour {
                     CannotOrder:;
                 }
 
-                //else if(!Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMUnit) && isPointerOVerGame == false)
-                //{
-                //    AllSelectOff();
-                //}
+                if (TouchScript.IsOver
+                    && !Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMUnit)
+                    && m_BuildOK.activeSelf == false) 
+                {
+                    AllSelectOff();
+                }
 
             }
-
-            
-
-
-
-
 
 
             yield return null;
@@ -96,6 +90,7 @@ public class SelectUnitScript : MonoBehaviour {
     private void AllSelectOff()
     {
         Debug.Log("체크해제 호출됨");
+        UnitFuncScript.m_Instance.ClearFunc();
         foreach (PlayerMove unit in PM)
         {
             m_IsSelect = false;

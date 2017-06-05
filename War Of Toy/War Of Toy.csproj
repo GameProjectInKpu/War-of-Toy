@@ -262,6 +262,7 @@
     <Compile Include="Assets\Scripts\UnitFuncScript.cs" />
     <Compile Include="Assets\Scripts\UnitStatusScript.cs" />
     <Compile Include="Assets\SelectUnitScript.cs" />
+    <Compile Include="Assets\ZengaScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Materials\FOWShader.shader" />

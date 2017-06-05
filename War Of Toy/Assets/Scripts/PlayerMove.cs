@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class PlayerMove : MonoBehaviour {
 
     public enum UnitType { lego, soldier, bear, mouse };
-    public enum UnitState { idle, walk, mineral, trace, attack, die };
+    public enum UnitState { idle, walk, mineral, build, trace, attack, die };
     public UnitState unitState = UnitState.idle;
 
     private Vector3 m_Pos;
@@ -20,7 +20,6 @@ public class PlayerMove : MonoBehaviour {
     public Image Orderbar;
 
     public LayerMask m_LMUnit;
-    public LayerMask m_LMUI;
     public LayerMask m_LMGround;
     public NavMeshPath m_Path;
     public GameObject m_Canvas;
@@ -151,30 +150,8 @@ public class PlayerMove : MonoBehaviour {
                                     }
                                        
                                     Debug.Log("타겟 확정");
-                                    NavMesh.CalculatePath(transform.position, hit.point, NavMesh.AllAreas, m_Path);
-                                    Vector3[] Corners = m_Path.corners;
-
-                                    m_Animator.SetBool("IsPick", true);
-                                    int Index = 1;
-                                    while (Index < Corners.Length)
-                                    {
-                                        Debug.DrawRay(Camera.main.transform.position, hit.point - Camera.main.transform.position, Color.red);
-                                        m_Pos = (Corners[Index] - transform.position).normalized;
-                                        transform.position += m_Pos * m_MoveSpeed * Time.deltaTime;
-                                        transform.rotation = Quaternion.LookRotation(m_Pos);
-                                        if (transform.tag == "UnitBear")
-                                        {
-                                            if (Vector3.Distance(transform.position, Corners[Index]) < 2f) Index++;
-                                        }
-                                        else
-                                        {
-                                            if (Vector3.Distance(transform.position, Corners[Index]) < 5f) Index++;
-                                        }
-
-                                        yield return null;
-                                    }
-                                    m_Animator.SetBool("IsPick", false);
-                                    //yield return StartCoroutine("Picking", hit.point);
+                                    unitState = UnitState.attack;
+                                    yield return StartCoroutine("Picking", hit.point);
 
                                     switch (transform.tag)
                                     {
@@ -304,7 +281,6 @@ public class PlayerMove : MonoBehaviour {
         {
             if (HitOb.layer == 28 && m_Attackstop == false)
             {
-                Debug.Log("공격받음!");
                 HitPM.m_Hp -= 10f;
                 if (HitPM.m_Hp < 0f)
                     HitPM.m_IsAlive = false;
@@ -319,6 +295,19 @@ public class PlayerMove : MonoBehaviour {
    IEnumerator Picking(Vector3 HitPoint)
     {
         UnitFuncScript.m_Instance.ClearFunc();
+        float dis = 0.0f;
+        if (unitState == UnitState.attack)
+        {
+            switch (transform.tag)
+            {
+                case "UnitSoldier": dis = 5f; break;
+                case "UnitBear": dis = 2f; break;
+                default: dis = 1f; break;
+
+            }
+        }
+
+        else dis = 1f;
         Debug.Log("피킹중");
         m_Animator.SetBool("IsPick", true);
         NavMesh.CalculatePath(transform.position, HitPoint, NavMesh.AllAreas, m_Path);
@@ -330,12 +319,34 @@ public class PlayerMove : MonoBehaviour {
             m_Pos = (Corners[Index] - transform.position).normalized;
             transform.position += m_Pos * m_MoveSpeed * Time.deltaTime;
             transform.rotation = Quaternion.LookRotation(m_Pos);
-            if (Vector3.Distance(transform.position, Corners[Index]) < 1f)
+            if (Vector3.Distance(transform.position, Corners[Index]) < dis)
                 Index++;
             yield return null;
         }
         m_Animator.SetBool("IsPick", false);
+        GetComponent<NavMeshAgent>().enabled = true;
+        unitState = UnitState.idle;
         StopCoroutine("Picking");
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "MeshLink")
+        {
+            GetComponent<NavMeshAgent>().enabled = false;
+        }
+    }
+
+    private void OnCollisionEnter(Collision bullet)
+    {
+        if(bullet.transform.tag == "Bullet")
+        {
+            m_Hp -= 10f;
+            if (m_Hp < 0f)
+                m_IsAlive = false;
+            imgHpbar.enabled = true;
+            imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
+        }
     }
 
 
