@@ -11,7 +11,7 @@ public class UnitFuncScript : MonoBehaviour {
     }
 
     public BuildScript[] m_BuildSlotList;   // 건물 생성 버튼
-    public InitUnitScript[] m_InitUnitSlotList;        // 유닛 생성 버튼
+    public InitUnitScript[] m_InitUnitSlotList; // 유닛 생성 버튼
     public AttackByBomb[] m_AttackSlotList;   // 공격 버튼
     //public int[] m_TypeList;
     
@@ -20,11 +20,11 @@ public class UnitFuncScript : MonoBehaviour {
     {
         m_Instance = this;
         m_BuildSlotList = GetComponentsInChildren<BuildScript>();    // BuildScript 가지고 있는 자식들
-        m_InitUnitSlotList = GetComponentsInChildren<InitUnitScript>();    // BuildScript 가지고 있는 자식들
+        m_InitUnitSlotList = GetComponentsInChildren<InitUnitScript>();    // InitUnitScript 가지고 있는 자식들
         m_AttackSlotList = GetComponentsInChildren<AttackByBomb>();
         ClearFunc();
 
-        //m_TypeList = new int[m_BuildSlotList.Length];
+      
     }
 
 
@@ -48,7 +48,10 @@ public class UnitFuncScript : MonoBehaviour {
         {
             ClearFunc();
             for (int i = 0; i < m_InitUnitSlotList.Length; ++i)
-                m_InitUnitSlotList[i].gameObject.SetActive(true);
+            {
+                m_InitUnitSlotList[i].gameObject.SetActive(true);                
+            }
+                
         }
 
 

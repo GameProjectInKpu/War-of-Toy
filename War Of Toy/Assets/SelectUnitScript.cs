@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class SelectUnitScript : MonoBehaviour {
 
     public LayerMask m_LMUnit;
+    public LayerMask m_LMBuilding;
     public GameObject m_BuildOK;
     public bool m_IsSelect;
     static public List<PlayerMove> PM;
@@ -61,6 +62,7 @@ public class SelectUnitScript : MonoBehaviour {
 
                 if (TouchScript.IsOver
                     && !Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMUnit)
+                    && !Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMBuilding)
                     && m_BuildOK.activeSelf == false) 
                 {
                     AllSelectOff();
@@ -99,4 +101,26 @@ public class SelectUnitScript : MonoBehaviour {
         }
 
     }
+
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    Debug.Log("높이 4.5로");
+    //    if (other.tag == "building")
+    //    {
+
+    //        BuildScript.BuildPos.y = 4.5f;
+    //    }
+
+    //}
+
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    Debug.Log("높이 4.5로");
+    //    if (other.tag == "building")
+    //    {
+
+    //        BuildScript.BuildPos.y = 0f;
+    //    }
+
+    //}
 }

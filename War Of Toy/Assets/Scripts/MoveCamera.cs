@@ -9,6 +9,8 @@ public class MoveCamera : MonoBehaviour
     public Transform m_PlayerPos;
     //public bool IsMove;
 
+     
+
 
     static public MoveCamera m_Instance;
     static public MoveCamera Instance
@@ -19,7 +21,7 @@ public class MoveCamera : MonoBehaviour
     void Awake()
     {
         m_Instance = this;
-        
+        m_Rot.x = 65f;
     }
 
     private void OnEnable()
@@ -50,9 +52,10 @@ public class MoveCamera : MonoBehaviour
             
             m_Pos.x = Mathf.Clamp(m_Pos.x, 16.2f, 77f);
             m_Pos.z = Mathf.Clamp(m_Pos.z, 0f, 72.5f);
-            m_Pos.y =  Mathf.Clamp(m_Pos.y, 15f, 50f); 
+            m_Pos.y =  Mathf.Clamp(m_Pos.y, 15f, 50f);
+            m_Rot.x = Mathf.Clamp(m_Rot.x, 50f, 90f);
 
-            m_Rot.x = 70f;
+            //m_Rot.x = 70f;
             transform.rotation = Quaternion.Euler(m_Rot);
             transform.position = m_Pos;
 
@@ -69,6 +72,9 @@ public class MoveCamera : MonoBehaviour
         StopAllCoroutines();
     }
 
+    
 
+
+    
 
 }

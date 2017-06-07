@@ -35,7 +35,6 @@ public class PlayerMove : MonoBehaviour {
 
     public GameObject Building;
     public GameObject Bullet;
-    public GameObject Bomb;
     public Transform FireHole;
 
     public float m_Count;
@@ -82,7 +81,7 @@ public class PlayerMove : MonoBehaviour {
             }
 
             //if (Input.touchCount == 1 && m_IsSelect == true)
-            if (Input.GetMouseButton(1) && m_IsSelect == true)
+            if (Input.GetMouseButton(1) && m_IsSelect == true && BuildScript.Building == null)
             {
                 if (m_Count < m_InitCount)
                 {
@@ -352,6 +351,7 @@ public class PlayerMove : MonoBehaviour {
 
     IEnumerator BuildRoutine()
     {
+        
         UnitFuncScript.m_Instance.ClearFunc();
         Debug.Log("건물지으러 go");
         m_IsBuild = true;
@@ -393,6 +393,22 @@ public class PlayerMove : MonoBehaviour {
         m_Animator.SetBool("IsBuild", false);
         m_IsSelect = false;
         m_IsBuild = false;
+
+        switch (Building.tag)
+        {
+            case "B_Zenga":
+                BuildScript.AttackArea.gameObject.SetActive(true);
+                break;
+            case "B_ToyFactory":
+                FactoryScript FactoryFunc = Building.GetComponent<FactoryScript>();
+                FactoryFunc.enabled = true;
+                break;
+
+            default:
+                break;
+
+        }
+
         StopCoroutine("BuildRoutine");
     }
 

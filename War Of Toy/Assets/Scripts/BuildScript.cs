@@ -11,7 +11,7 @@ public class BuildScript : MonoBehaviour
     public GameObject m_BuildOK;
     public GameObject m_BuildNO;
 
-    GameObject Building;
+    public static GameObject Building;
     public static GameObject BuildingTemp;
     GameObject Plane;
 
@@ -22,6 +22,8 @@ public class BuildScript : MonoBehaviour
     Vector3 OKPosZ;
     Vector3 NOPosZ;
 
+    public static Transform AttackArea;
+
 
     public bool m_CanBuild = false;
     public bool m_IsClickBuilding = false;
@@ -30,7 +32,6 @@ public class BuildScript : MonoBehaviour
 
     public LayerMask m_LayerMaskBuild;
     public LayerMask m_LayerMaskGround;
-    public LayerMask m_UI;
 
     private Transform m_Camera;
     private MoveCamera m_CameraMove;
@@ -56,12 +57,13 @@ public class BuildScript : MonoBehaviour
             BuildPos.y = 4.5f;
         else
             BuildPos.y = 0.1f;
+        BuildPos.z += 15f;
         PlanePos.y = BuildPos.y + 0.1f;
 
         Building = (GameObject)PhotonNetwork.Instantiate(m_Building.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
         Plane = (GameObject)PhotonNetwork.Instantiate(m_Plane.name, PlanePos, Quaternion.Euler(Vector3.zero), 0);
 
-
+        BuildingTemp = Building;
         m_BuildOK.SetActive(true);
         m_BuildNO.SetActive(true);
 
@@ -96,6 +98,8 @@ public class BuildScript : MonoBehaviour
             case "B_Zenga":
                 Scale.x *= 0.5f;
                 Scale.z *= 0.5f;
+                AttackArea = Building.transform.Find("AttackArea");
+                AttackArea.gameObject.SetActive(false);
                 break;
             case "B_ToyFactory":
                 Scale.z *= 0.6f;
@@ -123,13 +127,14 @@ public class BuildScript : MonoBehaviour
     {
         while (true)
         {
+            
             if (Input.GetMouseButton(0))    // 버튼이 눌러지는 동안
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LayerMaskBuild))// && !Physics.Raycast(ray, out hit, Mathf.Infinity, m_UI))
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LayerMaskBuild))
                 {
-                    Debug.Log("BuildingPick");
+                    //Debug.Log("BuildingPick");
                     m_IsClickBuilding = true;
                     m_CameraMove.enabled = false;
                 }
@@ -150,7 +155,7 @@ public class BuildScript : MonoBehaviour
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LayerMaskGround))
                 {
-                    Debug.Log("GroundPick");
+                    //Debug.Log("GroundPick");
                     BuildPos = Building.transform.position;
                     OKPos = Vector3.zero; 
                     NOPos = Vector3.zero;
@@ -178,6 +183,7 @@ public class BuildScript : MonoBehaviour
                     BuildPos.z = (int)BuildPos.z;
                     BuildPos.x -= (int)BuildPos.x % 5;
                     BuildPos.z -= (int)BuildPos.z % 5;
+                    //BuildPos.y = (int)0;
 
                     Plane.transform.position = PlanePos;
                     Building.transform.position = BuildPos;
@@ -254,11 +260,7 @@ public class BuildScript : MonoBehaviour
             Destroy(Building);
             
         Destroy(Plane);
-        if(m_Building.tag == "B_ToyFactory")
-        {
-            FactoryScript FactoryFunc = BuildingTemp.GetComponent<FactoryScript>();
-            FactoryFunc.enabled = true;
-        }
+       
 
         m_IsBuild = IsBuild;
         m_BuildOK.SetActive(false);
@@ -278,5 +280,23 @@ public class BuildScript : MonoBehaviour
         StopAllCoroutines();
     }
 
+    private void OnTriggerStay(Collider other)
+    {
+        Debug.Log("높이 4.5로");
+        if (other.tag == "HeightControl")
+        {
+           
+            BuildPos.y = 4.5f;
+        }
+            
+
+    }
+
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (other.tag == "HeightControl")
+    //        BuildPos.y = 0f;
+
+    //}
 }
 

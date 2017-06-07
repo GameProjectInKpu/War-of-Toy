@@ -9,12 +9,15 @@ public class FactoryScript : MonoBehaviour {
     public bool m_IsSelect;
     public bool m_IsAlive;
 
+    public static Animator m_Animator;
+
     private void OnEnable()
     {
         
     }
     void Awake () {
         m_IsAlive = true;
+        m_Animator = GetComponentInChildren<Animator>();
     }
 
 

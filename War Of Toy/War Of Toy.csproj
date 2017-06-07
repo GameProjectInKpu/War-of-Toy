@@ -96,6 +96,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CamRotByScroll.cs" />
     <Compile Include="Assets\GameManager.cs" />
     <Compile Include="Assets\Launcher.cs" />
     <Compile Include="Assets\Photon Unity Networking\Demos\Demo2DJumpAndRunWithPhysics\Scripts\Demo2DJumpAndRun.cs" />
@@ -262,6 +263,7 @@
     <Compile Include="Assets\Scripts\UnitFuncScript.cs" />
     <Compile Include="Assets\Scripts\UnitStatusScript.cs" />
     <Compile Include="Assets\SelectUnitScript.cs" />
+    <Compile Include="Assets\ZengaBulletRigidbody.cs" />
     <Compile Include="Assets\ZengaScript.cs" />
   </ItemGroup>
   <ItemGroup>

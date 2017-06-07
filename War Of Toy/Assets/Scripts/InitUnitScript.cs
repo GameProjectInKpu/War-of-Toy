@@ -24,7 +24,7 @@ public class InitUnitScript : MonoBehaviour {
 
     public void InitUnitByButton()
     {
-
+        FactoryScript.m_Animator.SetBool("IsWork", true);
         UnitPos = m_Factory.position;
         if ((UnitPos.x > 60f && UnitPos.z < 25f) || (UnitPos.x < 35f && UnitPos.z > 73f))
             UnitPos.y = 4.5f;
@@ -48,5 +48,11 @@ public class InitUnitScript : MonoBehaviour {
 
         //GameObject Obj = (GameObject)Instantiate(InitUnit, UnitPos, Quaternion.Euler(Vector3.zero));
         //Obj.GetComponent<PlayerMove>().enabled = true;
+        Invoke("IsWorkFalse", 5f);
+    }
+
+    void IsWorkFalse()
+    {
+        FactoryScript.m_Animator.SetBool("IsWork", false);
     }
 }
