@@ -21,7 +21,7 @@ public class MoveCamera : MonoBehaviour
     void Awake()
     {
         m_Instance = this;
-        m_Rot.x = 65f;
+        m_Rot.x = 70f;
     }
 
     private void OnEnable()
@@ -53,7 +53,7 @@ public class MoveCamera : MonoBehaviour
             m_Pos.x = Mathf.Clamp(m_Pos.x, 16.2f, 77f);
             m_Pos.z = Mathf.Clamp(m_Pos.z, 0f, 72.5f);
             m_Pos.y =  Mathf.Clamp(m_Pos.y, 15f, 50f);
-            m_Rot.x = Mathf.Clamp(m_Rot.x, 50f, 90f);
+            m_Rot.x = Mathf.Clamp(m_Rot.x, 10f, 90f);
 
             //m_Rot.x = 70f;
             transform.rotation = Quaternion.Euler(m_Rot);

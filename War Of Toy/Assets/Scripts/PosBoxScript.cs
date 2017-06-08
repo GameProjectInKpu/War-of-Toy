@@ -76,7 +76,7 @@ public class PosBoxScript : MonoBehaviour {
             Vector3 Pos = Vector3.zero;
             Pos.x = StartPos.x + X;
             CameraPos.y = m_CameraMove.m_Pos.y;
-            CameraPos.y = 40;
+            //CameraPos.y = 40;
             Pos.y = StartPos.y + Z ;
 
             transform.position = Pos;
@@ -113,9 +113,10 @@ public class PosBoxScript : MonoBehaviour {
             Vector3 CameraPos = Vector3.zero;
             CameraPos.x = X;
             CameraPos.y = m_CameraMove.m_Pos.y;
-            CameraPos.y = 40f;
-            CameraPos.z = Y;
+            //CameraPos.y = 40f;
+            CameraPos.z = Y;// - 20f;
 
+            //m_Camera.position = CameraPos;
             m_CameraMove.m_Pos = CameraPos;
             yield return null;
         }

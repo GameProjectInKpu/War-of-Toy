@@ -60,10 +60,13 @@ public class BuildScript : MonoBehaviour
         BuildPos.z += 15f;
         PlanePos.y = BuildPos.y + 0.1f;
 
-        Building = (GameObject)PhotonNetwork.Instantiate(m_Building.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
-        Plane = (GameObject)PhotonNetwork.Instantiate(m_Plane.name, PlanePos, Quaternion.Euler(Vector3.zero), 0);
+        //Building = (GameObject)PhotonNetwork.Instantiate(m_Building.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
+        //Plane = (GameObject)PhotonNetwork.Instantiate(m_Plane.name, PlanePos, Quaternion.Euler(Vector3.zero), 0);
 
-        BuildingTemp = Building;
+        Building = (GameObject)Instantiate(m_Building, BuildPos, Quaternion.Euler(Vector3.zero));
+        Plane = (GameObject)Instantiate(m_Plane, PlanePos, Quaternion.Euler(Vector3.zero));
+
+        //BuildingTemp = Building;
         m_BuildOK.SetActive(true);
         m_BuildNO.SetActive(true);
 
@@ -253,13 +256,34 @@ public class BuildScript : MonoBehaviour
             StarScript.m_Instance.BuildByStar(50);
             //Building.GetComponent<NavMeshObstacle>().enabled = false;
             BuildingTemp = Building;
-            Building = null;
+            //Building = null;
+            Destroy(Building);
+            Destroy(Plane);
+            Building = (GameObject)PhotonNetwork.Instantiate(m_Building.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
+            Building.transform.position = BuildPos;
+            switch (m_Building.tag)
+            {
+                case "B_Zenga":
+                    AttackArea = Building.transform.Find("AttackArea");
+                    AttackArea.gameObject.SetActive(false);
+                    break;
+                case "B_ToyFactory":
+                    FactoryScript FactoryFunc = Building.GetComponent<FactoryScript>();
+                    FactoryFunc.enabled = false;
+                    break;
+                default:
+                    break;
+
+            }
+            BuildingTemp = Building;
+
         }
 
         else
+        {
             Destroy(Building);
-            
-        Destroy(Plane);
+            Destroy(Plane);
+        }
        
 
         m_IsBuild = IsBuild;

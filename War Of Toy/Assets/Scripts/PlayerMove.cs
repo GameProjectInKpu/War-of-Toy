@@ -81,7 +81,7 @@ public class PlayerMove : MonoBehaviour {
             }
 
             //if (Input.touchCount == 1 && m_IsSelect == true)
-            if (Input.GetMouseButton(1) && m_IsSelect == true && BuildScript.Building == null)
+            if (Input.GetMouseButton(1) && m_IsSelect == true )//&& BuildScript.Building == null)
             {
                 if (m_Count < m_InitCount)
                 {
@@ -382,7 +382,7 @@ public class PlayerMove : MonoBehaviour {
             yield return null;
         }
 
-        Building.GetComponent<NavMeshObstacle>().enabled = true;       
+        //Building.GetComponent<NavMeshObstacle>().enabled = true;       
         transform.rotation = Quaternion.LookRotation(BuildScript.BuildPos - transform.position);
         BuildScript.m_IsBuild = false;
         m_Animator.SetBool("IsPick", false);
