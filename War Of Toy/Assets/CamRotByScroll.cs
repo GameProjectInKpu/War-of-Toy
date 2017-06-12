@@ -42,6 +42,7 @@ public class CamRotByScroll : MonoBehaviour
         m_Pos.y = m_Rot.x / 2f;
 
 
+
         m_CameraMove.m_Rot = Vector3.Lerp(m_CameraMove.m_Rot, m_Rot, 1f);//m_Rot;
         m_CameraMove.m_Pos = Vector3.Lerp(m_CameraMove.m_Pos, m_Pos, 1f);// m_Pos;
     }

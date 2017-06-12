@@ -128,9 +128,10 @@ public class PlayerMove : MonoBehaviour {
                                     Debug.Log("Resource");
                                     m_Animator.SetBool("IsMineral", true);
                                     while (m_NewOrder == false)
-                                    {    
+                                    {
+                                        Debug.Log(HitOb.transform.tag);
                                         yield return new WaitForSeconds(2.0f);
-                                        if (hit.transform.tag == "B_Batterys")
+                                        if (HitOb.tag == "B_Batterys")
                                             ++BatteryScript.m_Instance.m_BatteryNum;
                                         else
                                             ++StarScript.m_Instance.m_StarNum;
