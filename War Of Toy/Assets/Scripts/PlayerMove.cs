@@ -6,7 +6,9 @@ using UnityEngine.UI;
 
 public class PlayerMove : MonoBehaviour {
 
-    public enum UnitType { lego, soldier, bear, mouse };
+    //public int m_SerialNum;
+
+    public enum UnitType { lego, soldier, bear, mouse, balloon };
     public enum UnitState { idle, walk, mineral, build, trace, attack, die };
     public UnitState unitState = UnitState.idle;
 
@@ -14,6 +16,7 @@ public class PlayerMove : MonoBehaviour {
     private float m_MoveSpeed;
     public float m_Hp = 100f;
     public float m_InitHp;
+
     public Transform m_Team;
     public Image imgHpbar;
     public Image imgSelectbar;
@@ -22,11 +25,11 @@ public class PlayerMove : MonoBehaviour {
     public LayerMask m_LMUnit;
     public LayerMask m_LMGround;
     public NavMeshPath m_Path;
-    public GameObject m_Canvas;
+    //public GameObject m_Canvas;
     public Animator m_Animator;
 
-    public GameObject UnitButton;
-    GameObject SelectButton;
+    //public GameObject UnitButton;
+    //GameObject SelectButton;
     public bool m_IsSelect;
     public bool m_IsAlive;
     public bool m_NewOrder;
@@ -40,7 +43,7 @@ public class PlayerMove : MonoBehaviour {
     public float m_Count;
     public float m_InitCount;
 
-    public Text m_CurActionText;
+    //public Text m_CurActionText;
 
     GameObject HitOb;
     PlayerMove HitPM;
@@ -48,8 +51,9 @@ public class PlayerMove : MonoBehaviour {
     void OnEnable()
     {
         m_IsAlive = true;
+       // m_SerialNum = (int)Random.Range(0, 500);
         //SelectButton = Instantiate(UnitButton, transform.position, Quaternion.Euler(Vector2.zero));
-        UnitButton = SelectButton;
+        //UnitButton = SelectButton;
         //UnitButton.transform.SetParent(m_Canvas.transform, false);
         //UnitButton.transform.SetSiblingIndex(1);
         imgHpbar.enabled = false;
@@ -68,6 +72,40 @@ public class PlayerMove : MonoBehaviour {
         m_Count = 0f;
         m_InitCount = 100f;
     }
+
+    //IEnumerator UnitStatusRoutine()
+    //{
+    //    switch(unitState)
+    //    {
+    //        case UnitState.idle:
+    //            m_Animator.SetBool("IsPick", false);
+    //            m_Animator.SetBool("IsAttack", false);
+    //            m_Animator.SetBool("IsMineral", false);
+    //            m_Animator.SetBool("IsBuild", false);
+    //            break;
+    //        case UnitState.walk:
+    //            m_Animator.SetBool("IsPick", true);
+    //            break;
+    //        case UnitState.attack:
+    //            m_Animator.SetBool("IsAttack", true);
+    //            break;
+    //        case UnitState.trace:
+                
+    //            break;
+    //        case UnitState.mineral:
+    //            m_Animator.SetBool("IsMineral", true);
+    //            break;
+    //        case UnitState.build:
+    //            m_Animator.SetBool("IsBuild", true);
+    //            break;
+    //        case UnitState.die:
+    //            m_Animator.SetBool("IsDie", true);
+    //            break;
+    //    }
+
+
+    //    yield return null;
+    //}
 
 
     IEnumerator OrderRoutine()
@@ -94,7 +132,7 @@ public class PlayerMove : MonoBehaviour {
                     imgHpbar.enabled = false;
                     Debug.Log("명령 받음");
 
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position);
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position); // 
                     RaycastHit hit;
 
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity))
@@ -425,12 +463,13 @@ public class PlayerMove : MonoBehaviour {
     public void Death()
     {
         Destroy(gameObject);
-        Destroy(SelectButton);
+        //Destroy(SelectButton);
     }
 
 
     private void OnDestroy()
     {
         StopAllCoroutines();
+        m_IsAlive = false;
     }
 }

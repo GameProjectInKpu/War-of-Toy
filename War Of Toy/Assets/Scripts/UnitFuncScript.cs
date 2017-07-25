@@ -44,12 +44,24 @@ public class UnitFuncScript : MonoBehaviour {
                 m_AttackSlotList[i].gameObject.SetActive(true);
         }
 
+        else if (type == 12) // 중심 건물
+        {
+            ClearFunc();
+            for (int i = 0; i < m_InitUnitSlotList.Length; ++i)
+            {
+                if(m_InitUnitSlotList[i].gameObject.tag == "B_ToyCastle")
+                    m_InitUnitSlotList[i].gameObject.SetActive(true);
+            }
+
+        }
+
         else if(type == 10) // 공장
         {
             ClearFunc();
             for (int i = 0; i < m_InitUnitSlotList.Length; ++i)
             {
-                m_InitUnitSlotList[i].gameObject.SetActive(true);                
+                if (m_InitUnitSlotList[i].gameObject.tag == "B_ToyFactory")
+                    m_InitUnitSlotList[i].gameObject.SetActive(true);                
             }
                 
         }

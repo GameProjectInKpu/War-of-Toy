@@ -6,7 +6,8 @@ using UnityEngine.AI;
 
 public class BuildScript : MonoBehaviour
 {
-    public GameObject m_Building;
+    public GameObject m_Building_red;
+    public GameObject m_Building_blue;
     public GameObject m_Plane;
     public GameObject m_BuildOK;
     public GameObject m_BuildNO;
@@ -63,7 +64,7 @@ public class BuildScript : MonoBehaviour
         //Building = (GameObject)PhotonNetwork.Instantiate(m_Building.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
         //Plane = (GameObject)PhotonNetwork.Instantiate(m_Plane.name, PlanePos, Quaternion.Euler(Vector3.zero), 0);
 
-        Building = (GameObject)Instantiate(m_Building, BuildPos, Quaternion.Euler(Vector3.zero));
+        Building = (GameObject)Instantiate(m_Building_red, BuildPos, Quaternion.Euler(Vector3.zero));
         Plane = (GameObject)Instantiate(m_Plane, PlanePos, Quaternion.Euler(Vector3.zero));
 
         //BuildingTemp = Building;
@@ -96,7 +97,7 @@ public class BuildScript : MonoBehaviour
         Building.GetComponent<NavMeshObstacle>().carving = true;
         Vector3 RebakeSize = Building.GetComponent<NavMeshObstacle>().size;
         Vector3 Scale = transform.localScale;
-        switch (m_Building.tag)
+        switch (m_Building_red.tag)
         {
             case "B_Zenga":
                 Scale.x *= 0.5f;
@@ -259,9 +260,9 @@ public class BuildScript : MonoBehaviour
             //Building = null;
             Destroy(Building);
             Destroy(Plane);
-            Building = (GameObject)PhotonNetwork.Instantiate(m_Building.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
+            Building = (GameObject)PhotonNetwork.Instantiate(m_Building_red.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
             Building.transform.position = BuildPos;
-            switch (m_Building.tag)
+            switch (m_Building_red.tag)
             {
                 case "B_Zenga":
                     AttackArea = Building.transform.Find("AttackArea");

@@ -43,7 +43,7 @@ public class FactoryScript : MonoBehaviour {
                 //Fm.m_IsSelect = false;
 
                 GetComponent<FactoryScript>();
-                m_IsSelect = true;// m_IsSelect = true; //
+                m_IsSelect = true;// 
                 UnitStatusScript.m_Instance.SetUnitImage(hit, 0);
                 InitUnitScript.m_Factory = transform;
                 m_IsSelect = false;

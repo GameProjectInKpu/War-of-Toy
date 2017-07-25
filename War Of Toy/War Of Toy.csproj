@@ -99,10 +99,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\BuildingStatus.cs" />
-    <Compile Include="Assets\CamRotByScroll.cs" />
-    <Compile Include="Assets\GameManager.cs" />
-    <Compile Include="Assets\Launcher.cs" />
     <Compile Include="Assets\Photon Unity Networking\Demos\Demo2DJumpAndRunWithPhysics\Scripts\Demo2DJumpAndRun.cs" />
     <Compile Include="Assets\Photon Unity Networking\Demos\Demo2DJumpAndRunWithPhysics\Scripts\JumpAndRunMovement.cs" />
     <Compile Include="Assets\Photon Unity Networking\Demos\DemoBoxes\ColorPerPlayer.cs" />
@@ -253,24 +249,30 @@
     <Compile Include="Assets\Scripts\BoxCamScript.cs" />
     <Compile Include="Assets\Scripts\BuildPlaneScript.cs" />
     <Compile Include="Assets\Scripts\BuildScript.cs" />
+    <Compile Include="Assets\Scripts\BuildingStatus.cs" />
     <Compile Include="Assets\Scripts\BulletRigidbody.cs" />
     <Compile Include="Assets\Scripts\CamDontClear.cs" />
+    <Compile Include="Assets\Scripts\CamRotByScroll.cs" />
     <Compile Include="Assets\Scripts\DrawCamPos.cs" />
     <Compile Include="Assets\Scripts\FactoryScript.cs" />
     <Compile Include="Assets\Scripts\FixHpbarScript.cs" />
+    <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\InitUnitScript.cs" />
+    <Compile Include="Assets\Scripts\Launcher.cs" />
     <Compile Include="Assets\Scripts\MoveCamera.cs" />
     <Compile Include="Assets\Scripts\PlayerMove.cs" />
     <Compile Include="Assets\Scripts\PosBoxScript.cs" />
+    <Compile Include="Assets\Scripts\SelectBuildingScript.cs" />
+    <Compile Include="Assets\Scripts\SelectUnitScript.cs" />
     <Compile Include="Assets\Scripts\StarScript.cs" />
     <Compile Include="Assets\Scripts\TouchScript.cs" />
     <Compile Include="Assets\Scripts\UnitFuncScript.cs" />
     <Compile Include="Assets\Scripts\UnitStatusScript.cs" />
-    <Compile Include="Assets\SelectUnitScript.cs" />
-    <Compile Include="Assets\ZengaBulletRigidbody.cs" />
-    <Compile Include="Assets\ZengaScript.cs" />
+    <Compile Include="Assets\Scripts\ZengaBulletRigidbody.cs" />
+    <Compile Include="Assets\Scripts\ZengaScript.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\GLSL shader for toon shading.shader" />
     <None Include="Assets\Materials\FOWShader.shader" />
     <None Include="Assets\Photon Unity Networking\Demos\DemoBoxes\Resources\eurof_tt.txt" />
     <None Include="Assets\Photon Unity Networking\Demos\DemoRockPaperScissors\Assets\OpenSans\Apache License.txt" />
@@ -281,13 +283,6 @@
     <None Include="Assets\Photon Unity Networking\readme.txt" />
     <None Include="Assets\Plugins\Photon3Unity3D.xml" />
     <None Include="Assets\Plugins\release_history.txt" />
-    <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
-    <None Include="Assets\Standard Assets\Effects\ImageEffects\Readme.txt" />
-    <None Include="Assets\Standard Assets\Effects\Projectors\Guidelines.txt" />
-    <None Include="Assets\Standard Assets\Effects\Projectors\Shaders\ProjectorLight.shader" />
-    <None Include="Assets\Standard Assets\Effects\Projectors\Shaders\ProjectorMultiply.shader" />
-    <None Include="Assets\Standard Assets\Effects\TessellationShaders\Shaders\BumpedSpecularDisplacement.shader" />
-    <None Include="Assets\Standard Assets\Effects\TessellationShaders\Shaders\BumpedSpecularSmooth.shader" />
     <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonBasic.shader" />
     <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonBasicOutline.shader" />
     <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonLit.shader" />
