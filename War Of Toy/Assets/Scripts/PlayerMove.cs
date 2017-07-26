@@ -132,7 +132,7 @@ public class PlayerMove : MonoBehaviour {
                     imgHpbar.enabled = false;
                     Debug.Log("명령 받음");
 
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position); // 
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position); //
                     RaycastHit hit;
 
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity))

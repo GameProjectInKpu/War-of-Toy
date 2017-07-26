@@ -14,7 +14,7 @@ public class BuildScript : MonoBehaviour
 
     public static GameObject Building;
     public static GameObject BuildingTemp;
-    GameObject Plane;
+    public GameObject Plane;
 
     public static Vector3 BuildPos;
     Vector3 PlanePos;
@@ -99,6 +99,11 @@ public class BuildScript : MonoBehaviour
         Vector3 Scale = transform.localScale;
         switch (m_Building_red.tag)
         {
+            case "B_Batterys":
+                Scale.x *= 0.7f;
+                Scale.z *= 0.7f;
+                
+                break;
             case "B_Zenga":
                 Scale.x *= 0.5f;
                 Scale.z *= 0.5f;
@@ -131,7 +136,7 @@ public class BuildScript : MonoBehaviour
     {
         while (true)
         {
-            
+
             if (Input.GetMouseButton(0))    // 버튼이 눌러지는 동안
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -204,6 +209,7 @@ public class BuildScript : MonoBehaviour
 
             else
             {
+                
                 OKPos.x = BuildPos.x - 5f;
                 OKPos.z = BuildPos.z + 10f;
                 NOPos.x = BuildPos.x + 5f;
@@ -230,15 +236,19 @@ public class BuildScript : MonoBehaviour
 
                 PlanePos = Vector3.zero;
                 PlanePos.y = 0.1f;
-                Plane.transform.localPosition = PlanePos;
+                if(Plane != null)
+                    Plane.transform.localPosition = PlanePos;
             }
 
 
-
-            if (Plane.GetComponent<Renderer>().material.color == Color.blue)   
-                m_CanBuild = true;
-            else
-                m_CanBuild = false;
+            if(Plane != null)
+            {
+                if (Plane.GetComponent<Renderer>().material.color == Color.blue)
+                    m_CanBuild = true;
+                else
+                    m_CanBuild = false;
+            }
+            
             
             yield return null;
         }
@@ -250,8 +260,10 @@ public class BuildScript : MonoBehaviour
     {
         if (IsBuild)
         {
+            Debug.Log("짓는다 ");
             if (!m_CanBuild)
                 return;
+            
             if (StarScript.m_Instance.m_StarNum - 50 < 0)
                 return;
             StarScript.m_Instance.BuildByStar(50);
@@ -282,8 +294,10 @@ public class BuildScript : MonoBehaviour
 
         else
         {
+            
             Destroy(Building);
             Destroy(Plane);
+            Plane = null;
         }
        
 
