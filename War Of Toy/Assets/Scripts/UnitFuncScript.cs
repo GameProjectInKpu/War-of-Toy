@@ -13,8 +13,10 @@ public class UnitFuncScript : MonoBehaviour {
     public BuildScript[] m_BuildSlotList;   // 건물 생성 버튼
     public InitUnitScript[] m_InitUnitSlotList; // 유닛 생성 버튼
     public AttackByBomb[] m_AttackSlotList;   // 공격 버튼
+    public SelectUnitScript[] m_LegoOrderSlotList;   // 기본 유닛 명령 버튼
+    public SelectUnitScript[] m_BaseAttackSlotList;   // 기본 유닛 명령 버튼
     //public int[] m_TypeList;
-    
+
 
     void Awake()
     {
@@ -22,6 +24,8 @@ public class UnitFuncScript : MonoBehaviour {
         m_BuildSlotList = GetComponentsInChildren<BuildScript>();    // BuildScript 가지고 있는 자식들
         m_InitUnitSlotList = GetComponentsInChildren<InitUnitScript>();    // InitUnitScript 가지고 있는 자식들
         m_AttackSlotList = GetComponentsInChildren<AttackByBomb>();
+        m_LegoOrderSlotList = GetComponentsInChildren<SelectUnitScript>();
+        m_BaseAttackSlotList = GetComponentsInChildren<SelectUnitScript>();
         ClearFunc();
 
       
@@ -35,6 +39,8 @@ public class UnitFuncScript : MonoBehaviour {
             ClearFunc();
             for (int i = 0; i < m_BuildSlotList.Length; ++i)
                 m_BuildSlotList[i].gameObject.SetActive(true);
+            for (int i = 0; i < m_LegoOrderSlotList.Length; ++i)
+                m_LegoOrderSlotList[i].gameObject.SetActive(true);
         }
 
         else if(type == 6)  // 열기구
@@ -85,6 +91,12 @@ public class UnitFuncScript : MonoBehaviour {
 
         for (int i = 0; i < m_AttackSlotList.Length; ++i)
             m_AttackSlotList[i].gameObject.SetActive(false);
+
+        for (int i = 0; i < m_LegoOrderSlotList.Length; ++i)
+            m_LegoOrderSlotList[i].gameObject.SetActive(false);
+
+        for (int i = 0; i < m_BaseAttackSlotList.Length; ++i)
+            m_BaseAttackSlotList[i].gameObject.SetActive(false);
     }
 
     void OnDestroy()

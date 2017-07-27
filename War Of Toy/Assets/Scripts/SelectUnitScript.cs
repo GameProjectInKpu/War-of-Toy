@@ -12,6 +12,7 @@ public class SelectUnitScript : MonoBehaviour {
     public bool m_IsSelect;
     static public List<PlayerMove> PM;
     BuildingStatus Bs;  // 현재 선택하는 빌딩
+    PlayerMove Pm;  // 현재 선택하는 유닛
 
 
     void Start () {
@@ -29,14 +30,14 @@ public class SelectUnitScript : MonoBehaviour {
     {
         while(true)
         {
-            if(Input.GetMouseButtonDown(0))
-            //if (Input.touchCount == 1 && m_IsSelect == false)
+            //if(Input.GetMouseButtonDown(0))
+            if (Input.touchCount == 1 )//&& m_IsSelect == false)
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position);
+                Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position); //(Input.mousePosition); 
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMUnit)) 
                 {
-                    PlayerMove Pm = hit.transform.GetComponent<PlayerMove>();
+                    Pm = hit.transform.GetComponent<PlayerMove>();
                     if (Pm.m_IsBuild) goto CannotOrder;
 
                     m_IsSelect = true;
@@ -55,7 +56,8 @@ public class SelectUnitScript : MonoBehaviour {
                     CannotOrder:;
                 }
 
-                else if(Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMBuilding) && TouchScript.IsOver && m_BuildOK.activeSelf == false)
+                else if(Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMBuilding) 
+                    && TouchScript.IsOver && m_BuildOK.activeSelf == false)
                 {
                     Bs = hit.transform.GetComponent<BuildingStatus>();
                     m_IsSelect = true;
@@ -171,9 +173,28 @@ public class SelectUnitScript : MonoBehaviour {
             Bs.m_IsSelect = false;
             Bs.imgSelectbar.enabled = false;
         }
-        
-        
 
+    }
+
+    public void OrderToPick()
+    {
+        Pm.m_IsPick = true;
+        Pm.imgSelectbar.enabled = false;
+        Pm.imgHpbar.enabled = false;
+    }
+
+    public void OrderToMineral()
+    {
+        Pm.m_IsMineral = true;
+        Pm.imgSelectbar.enabled = false;
+        Pm.imgHpbar.enabled = false;
+    }
+
+    public void OrderToAttack()
+    {
+        Pm.m_IsAttack = true;
+        Pm.imgSelectbar.enabled = false;
+        Pm.imgHpbar.enabled = false;
     }
 
     //private void OnTriggerEnter(Collider other)

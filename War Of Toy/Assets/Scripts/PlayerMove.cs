@@ -34,7 +34,11 @@ public class PlayerMove : MonoBehaviour {
     public bool m_IsAlive;
     public bool m_NewOrder;
     public bool m_Attackstop;
+
     public bool m_IsBuild;
+    public bool m_IsPick;
+    public bool m_IsAttack;
+    public bool m_IsMineral;
 
     public GameObject Building;
     public GameObject Bullet;
@@ -73,42 +77,186 @@ public class PlayerMove : MonoBehaviour {
         m_InitCount = 100f;
     }
 
-    //IEnumerator UnitStatusRoutine()
-    //{
-    //    switch(unitState)
-    //    {
-    //        case UnitState.idle:
-    //            m_Animator.SetBool("IsPick", false);
-    //            m_Animator.SetBool("IsAttack", false);
-    //            m_Animator.SetBool("IsMineral", false);
-    //            m_Animator.SetBool("IsBuild", false);
-    //            break;
-    //        case UnitState.walk:
-    //            m_Animator.SetBool("IsPick", true);
-    //            break;
-    //        case UnitState.attack:
-    //            m_Animator.SetBool("IsAttack", true);
-    //            break;
-    //        case UnitState.trace:
-                
-    //            break;
-    //        case UnitState.mineral:
-    //            m_Animator.SetBool("IsMineral", true);
-    //            break;
-    //        case UnitState.build:
-    //            m_Animator.SetBool("IsBuild", true);
-    //            break;
-    //        case UnitState.die:
-    //            m_Animator.SetBool("IsDie", true);
-    //            break;
-    //    }
+    IEnumerator UnitStatusRoutine()
+    {
+        switch (unitState)
+        {
+            case UnitState.idle:
+                m_Animator.SetBool("IsPick", false);
+                m_Animator.SetBool("IsAttack", false);
+                m_Animator.SetBool("IsMineral", false);
+                m_Animator.SetBool("IsBuild", false);
+                break;
+            case UnitState.walk:
+                m_Animator.SetBool("IsPick", true);
+                m_Animator.SetBool("IsAttack", false);
+                m_Animator.SetBool("IsMineral", false);
+                m_Animator.SetBool("IsBuild", false);
+                break;
+            case UnitState.attack:
+                m_Animator.SetBool("IsAttack", true);
+                break;
+            case UnitState.trace:
+
+                break;
+            case UnitState.mineral:
+                m_Animator.SetBool("IsMineral", false);
+                m_Animator.SetBool("IsMineral", true);
+                m_Animator.SetBool("IsPick", false);
+                m_Animator.SetBool("IsBuild", false);
+                break;
+            case UnitState.build:
+                m_Animator.SetBool("IsBuild", true);
+                break;
+            case UnitState.die:
+                m_Animator.SetBool("IsDie", true);
+                break;
+        }
 
 
-    //    yield return null;
-    //}
+        yield return null;
+    }
 
 
     IEnumerator OrderRoutine()
+    {
+        while(true)
+        {
+            if (m_IsPick)
+            {
+                if (Input.touchCount == 1 && m_IsSelect == true)
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position); //(Input.mousePosition); 
+                    RaycastHit hit;
+                    if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+                    {
+                        Debug.DrawRay(Camera.main.transform.position, hit.point - Camera.main.transform.position, Color.red);
+                        HitOb = hit.collider.gameObject;
+                        if (HitOb.layer == 30)   // Ground
+                        {
+                            unitState = UnitState.walk;
+                            //m_Animator.SetBool("IsAttack", false);
+                            //m_Animator.SetBool("IsMineral", false);
+                            //m_Animator.SetBool("IsBuild", false);
+                            StopCoroutine("AttackByBullet");
+                            yield return StartCoroutine("Picking", hit.point);
+                            m_IsSelect = false;
+                        }
+                    }
+                }
+            }
+        
+
+            else if (m_IsMineral)
+            {
+                if (Input.touchCount == 1 && m_IsSelect == true)
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position); //(Input.mousePosition); 
+                    RaycastHit hit;
+                    if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+                    {
+                        Debug.DrawRay(Camera.main.transform.position, hit.point - Camera.main.transform.position, Color.red);
+                        HitOb = hit.collider.gameObject;
+                        HitPM = HitOb.GetComponent<PlayerMove>();
+                        if (HitOb.layer == 26)   // Resource
+                        {
+                            if (transform.tag != "UnitLego")
+                                StopCoroutine("OrderRoutine");
+                            //m_Animator.SetBool("IsMineral", false);
+
+                            yield return StartCoroutine("Picking", hit.point);
+                            transform.rotation = Quaternion.LookRotation(hit.transform.position - transform.position);
+                            Debug.Log("Resource");
+                            unitState = UnitState.mineral;
+                            // m_Animator.SetBool("IsMineral", true);
+                            while (m_NewOrder == false)
+                            {
+                                Debug.Log(HitOb.transform.tag);
+                                yield return new WaitForSeconds(2.0f);
+                                if (HitOb.tag == "B_Batterys")
+                                    ++BatteryScript.m_Instance.m_BatteryNum;
+                                else
+                                    ++StarScript.m_Instance.m_StarNum;
+                            }
+                            unitState = UnitState.idle;
+                            //m_Animator.SetBool("IsMineral", false);
+                            //break;
+                        }
+                    }
+                }
+            }
+
+            else if(m_IsAttack)
+            {
+                if (Input.touchCount == 1 && m_IsSelect == true)
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position); //(Input.mousePosition); 
+                    RaycastHit hit;
+                    if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+                    {
+                        Debug.DrawRay(Camera.main.transform.position, hit.point - Camera.main.transform.position, Color.red);
+                        HitOb = hit.collider.gameObject;
+                        HitPM = HitOb.GetComponent<PlayerMove>();
+                        if (HitOb.layer == 28)   // Unit
+                        { 
+                            if (transform.tag == "UnitLego" || transform.tag == "UnitClockMouse" || HitOb.tag == "UnitAirballoon")
+                            {
+                                m_IsSelect = false;
+                                break;
+                            }
+                                       
+                            Debug.Log("타겟 확정");
+                            unitState = UnitState.attack;
+                            yield return StartCoroutine("Picking", hit.point);
+
+                            switch (transform.tag)
+                            {
+                                case "UnitSoldier":
+                                    {
+                                        m_Animator.SetBool("IsAttack", true);
+                                        StartCoroutine("AttackByBullet");
+                                        imgHpbar.enabled = true;
+                                        HitPM.imgHpbar.enabled = true;
+
+                                        yield return StartCoroutine("TraceRoutine");
+                                        imgHpbar.enabled = false;
+                                        HitPM.imgHpbar.enabled = false;
+                                        HitPM.m_Animator.SetBool("IsDie", true);
+                                        m_Animator.SetBool("IsAttack", false);
+                                        m_Animator.SetBool("IsPick", false);
+                                        StopCoroutine("AttackByBullet");
+                                        break;
+                                    }        
+                                case "UnitBear":
+                                    {
+                                        m_Animator.SetBool("IsAttack", true);
+                                        StartCoroutine("BearAttackRoutine");
+                                                
+                                        imgHpbar.enabled = true;
+                                        HitPM.imgHpbar.enabled = true;
+                                                
+                                        yield return StartCoroutine("TraceRoutine");
+                                        imgHpbar.enabled = false;
+                                        HitPM.imgHpbar.enabled = false;
+                                        HitPM.m_Animator.SetBool("IsDie", true);
+                                        m_Animator.SetBool("IsAttack", false);
+                                        StopCoroutine("BearAttackRoutine");
+                                        break;
+                                    }                     
+                                default:
+                                    break;
+                            }
+                                   
+                        }
+                    }
+                }
+                   
+             }
+        }
+    }
+
+
+    /*IEnumerator OrderRoutine()
     {
         while (true)
         {
@@ -118,21 +266,21 @@ public class PlayerMove : MonoBehaviour {
                 StopCoroutine("OrderRoutine");
             }
 
-            //if (Input.touchCount == 1 && m_IsSelect == true)
-            if (Input.GetMouseButton(1) && m_IsSelect == true )//&& BuildScript.Building == null)
+            if (Input.touchCount == 1 && m_IsSelect == true)
+            //if (Input.GetMouseButton(1) && m_IsSelect == true )//&& BuildScript.Building == null)
             {
                 if (m_Count < m_InitCount)
                 {
                     m_Count += 2f;
                 }
                 
-                if (m_Count == m_InitCount && m_IsSelect == true)
+                //if (m_Count == m_InitCount && m_IsSelect == true)
                 {
                     imgSelectbar.enabled = false;
                     imgHpbar.enabled = false;
                     Debug.Log("명령 받음");
 
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position); //
+                    Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position); //(Input.mousePosition); 
                     RaycastHit hit;
 
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity))
@@ -250,7 +398,7 @@ public class PlayerMove : MonoBehaviour {
 
             yield return null;
         }
-    }
+    }*/
 
 
     IEnumerator TraceRoutine()
