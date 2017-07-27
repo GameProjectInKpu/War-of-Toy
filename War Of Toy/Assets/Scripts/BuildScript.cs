@@ -4,13 +4,14 @@ using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BuildScript : MonoBehaviour
+public class BuildScript : Photon.PunBehaviour
 {
     public GameObject m_Building_red;
     public GameObject m_Building_blue;
     public GameObject m_Plane;
     public GameObject m_BuildOK;
     public GameObject m_BuildNO;
+    GameObject CheckTag;
 
     public static GameObject Building;
     public static GameObject BuildingTemp;
@@ -64,8 +65,16 @@ public class BuildScript : MonoBehaviour
         //Building = (GameObject)PhotonNetwork.Instantiate(m_Building.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
         //Plane = (GameObject)PhotonNetwork.Instantiate(m_Plane.name, PlanePos, Quaternion.Euler(Vector3.zero), 0);
 
-        Building = (GameObject)Instantiate(m_Building_red, BuildPos, Quaternion.Euler(Vector3.zero));
-        Plane = (GameObject)Instantiate(m_Plane, PlanePos, Quaternion.Euler(Vector3.zero));
+        if (PhotonNetwork.isMasterClient)
+        {
+            Building = PhotonNetwork.Instantiate(m_Building_red.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
+            Plane = PhotonNetwork.Instantiate(m_Plane.name, PlanePos, Quaternion.Euler(Vector3.zero), 0);
+        }
+        else
+        {
+            Building = PhotonNetwork.Instantiate(m_Building_blue.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
+            Plane = PhotonNetwork.Instantiate(m_Plane.name, PlanePos, Quaternion.Euler(Vector3.zero),0);
+        }
 
         //BuildingTemp = Building;
         m_BuildOK.SetActive(true);
@@ -97,7 +106,17 @@ public class BuildScript : MonoBehaviour
         Building.GetComponent<NavMeshObstacle>().carving = true;
         Vector3 RebakeSize = Building.GetComponent<NavMeshObstacle>().size;
         Vector3 Scale = transform.localScale;
-        switch (m_Building_red.tag)
+        
+
+        if (PhotonNetwork.isMasterClient)
+        {
+            CheckTag = m_Building_red;
+        }
+        else
+        {
+            CheckTag = m_Building_blue;
+        }
+        switch (CheckTag.name)
         {
             case "B_Batterys":
                 Scale.x *= 0.7f;
@@ -272,9 +291,16 @@ public class BuildScript : MonoBehaviour
             //Building = null;
             Destroy(Building);
             Destroy(Plane);
-            Building = (GameObject)PhotonNetwork.Instantiate(m_Building_red.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
+            if (PhotonNetwork.isMasterClient)
+            {
+                Building = (GameObject)PhotonNetwork.Instantiate(m_Building_red.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
+            }
+            else
+            {
+                Building = (GameObject)PhotonNetwork.Instantiate(m_Building_blue.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
+            }
             Building.transform.position = BuildPos;
-            switch (m_Building_red.tag)
+            switch (CheckTag.name)
             {
                 case "B_Zenga":
                     AttackArea = Building.transform.Find("AttackArea");
