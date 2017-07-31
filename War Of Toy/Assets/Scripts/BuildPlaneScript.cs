@@ -8,6 +8,8 @@ public class BuildPlaneScript : MonoBehaviour {
     private NavMeshAgent agent;
     public Transform[] RaycastPos;
     public Vector3[] RayPos;
+    public Color m_Color;
+    public bool Overlaped;
 
     void OnEnable()
     {
@@ -18,8 +20,9 @@ public class BuildPlaneScript : MonoBehaviour {
     private void Awake()
     {
         StartCoroutine("CheckingCanBuild");
-        
-        
+        m_Color = GetComponent<Renderer>().material.color;
+
+
     }
 
 
@@ -27,25 +30,33 @@ public class BuildPlaneScript : MonoBehaviour {
     {
         while (true)
         {
-
             NavMeshHit hit;
             for (int i = 0; i < RaycastPos.Length; ++i)
             {
                 RayPos[i] = RaycastPos[i].position;
 
                 Debug.DrawRay(RaycastPos[i].position, Vector3.down, Color.red);
-                if (NavMesh.Raycast(RaycastPos[i].position, RaycastPos[i].position + Vector3.down, out hit, NavMesh.AllAreas))
+                if (NavMesh.Raycast(RaycastPos[i].position, RaycastPos[i].position + Vector3.down, out hit, NavMesh.AllAreas)
+                    || Overlaped == true)
                 {
-                    GetComponent<Renderer>().material.color = Color.red;
+                    m_Color = Color.red;
                     break;
                 }
                 else
-                    GetComponent<Renderer>().material.color = Color.blue;
+                    m_Color = Color.blue;
+
+               
+                if(BuildScript.BuildPos.y > 5 || (BuildScript.BuildPos.y < 4 && BuildScript.BuildPos.y > 0.5f))
+                    m_Color = Color.red;
+
 
                 RaycastPos[i].position = RayPos[i];
             }
-            
 
+            GetComponent<Renderer>().material.color = m_Color;
+
+
+            //if(RaycastPos[i].position)
             yield return null;
         }
     }
@@ -58,5 +69,23 @@ public class BuildPlaneScript : MonoBehaviour {
 
     }
 
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == 28 || other.gameObject.layer == 27)
+        {
+            Debug.Log("유닛과 플레인 겹침");
+            Overlaped = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == 28 || other.gameObject.layer == 27)
+        {
+            Debug.Log("유닛과 플레인 분리됨");
+            Overlaped = false;
+        }
+    }
 
 }

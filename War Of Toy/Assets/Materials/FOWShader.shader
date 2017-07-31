@@ -30,7 +30,7 @@
 			fixed4 colorFocus = tex2D(_MainTex, IN.uv_MainTex);
 			fixed4 colorGray = tex2D(_MainTex2, IN.uv_MainTex);
 			o.Albedo = _Color;
-			float alpha = 0.6f - (colorFocus.g + colorGray.g);// / 1.5f;
+			float alpha = 0.7f - (colorFocus.g + colorGray.g);// / 1.5f;
 
 			o.Alpha = alpha;
 		

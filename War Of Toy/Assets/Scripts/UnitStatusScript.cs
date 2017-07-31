@@ -48,7 +48,7 @@ public class UnitStatusScript : MonoBehaviour {
                 UnitFuncScript.m_Instance.SetUnitFunc(6);
                 break;
             case "UnitClockmouse":
-                UnitImage.sprite = m_UnitSpriteList[2 + color];
+                UnitImage.sprite = m_UnitSpriteList[8 + color];
                 UnitFuncScript.m_Instance.SetUnitFunc(8);
                 break;
             case "B_ToyFactory":
@@ -58,6 +58,18 @@ public class UnitStatusScript : MonoBehaviour {
             case "B_ToyCastle":
                 UnitImage.sprite = m_UnitSpriteList[12 + color];
                 UnitFuncScript.m_Instance.SetUnitFunc(12);
+                break;
+            case "B_Batterys":
+                UnitImage.sprite = m_UnitSpriteList[14 + color];
+                UnitFuncScript.m_Instance.SetUnitFunc(14);
+                break;
+            case "B_CupCake":
+                UnitImage.sprite = m_UnitSpriteList[16 + color];
+                UnitFuncScript.m_Instance.SetUnitFunc(16);
+                break;
+            case "B_Zenga":
+                UnitImage.sprite = m_UnitSpriteList[18 + color];
+                UnitFuncScript.m_Instance.SetUnitFunc(18);
                 break;
         }
     }

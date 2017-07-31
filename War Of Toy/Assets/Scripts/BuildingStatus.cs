@@ -14,7 +14,7 @@ public class BuildingStatus : MonoBehaviour {
     public Image imgHpbar;
     public Image imgSelectbar;
 
-    // Use this for initialization
+  
     void Start()
     {
         imgHpbar.enabled = false;
@@ -26,6 +26,22 @@ public class BuildingStatus : MonoBehaviour {
     {
         m_Hp = 100f;
         m_InitHp = m_Hp;
+    }
+
+    private void Update()
+    {
+        if(m_IsSelect == true)
+        {
+            switch(transform.tag)
+            {
+                case "B_ToyFactory":
+                    InitUnitScript.m_Factory = transform;
+                    break;
+                default:
+                    break;
+            }
+        }
+        //if(transform.tag == "B_ToyFactory")
     }
 
     private void OnCollisionEnter(Collision bullet)

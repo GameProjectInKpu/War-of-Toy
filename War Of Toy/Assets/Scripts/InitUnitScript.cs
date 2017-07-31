@@ -11,6 +11,7 @@ public class InitUnitScript : MonoBehaviour {
     Vector3 UnitPos;
     public static Transform m_Castle;
     public static Transform m_Factory;//m_Camera;
+    //FactoryScript Fs;
     public static Transform m_Hospital;
     //private MoveCamera m_CameraMove;
 

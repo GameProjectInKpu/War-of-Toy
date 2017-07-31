@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class FactoryScript : MonoBehaviour {
 
-    public LayerMask m_LMBuilding;
-    FactoryScript Fm;
-    public bool m_IsSelect;
+    //public LayerMask m_LMBuilding;
+   // FactoryScript Fs;
+    //public bool m_IsSelect;
     public bool m_IsAlive;
 
     public static Animator m_Animator;
@@ -18,6 +18,7 @@ public class FactoryScript : MonoBehaviour {
     void Awake () {
         m_IsAlive = true;
         m_Animator = GetComponentInChildren<Animator>();
+        //Fs = transform.GetComponent<FactoryScript>();
     }
 
 
@@ -29,9 +30,9 @@ public class FactoryScript : MonoBehaviour {
         }
 
 
-        if (Input.GetMouseButtonDown(0) && m_IsSelect == false)     // 유닛 선택
-                                                                    //if (Input.touchCount == 1 && m_IsSelect == false)
-        {
+        //if (Input.GetMouseButtonDown(0) && m_IsSelect == false)     // 유닛 선택
+        //if (Input.touchCount == 1 && m_IsSelect == false)
+        /*{
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);//(Input.GetTouch(0).position);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMBuilding))
@@ -49,7 +50,8 @@ public class FactoryScript : MonoBehaviour {
                 m_IsSelect = false;
             }
 
-        }
+        }*/
+        //InitUnitScript.m_Factory = Fs.transform;
     }
 
     public void Death()
