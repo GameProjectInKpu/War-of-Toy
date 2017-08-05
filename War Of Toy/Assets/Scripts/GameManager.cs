@@ -37,17 +37,19 @@ namespace Com.MyCompany.MyGame
                 if (PhotonNetwork.isMasterClient)
                 {
                     PlayerRed =  PhotonNetwork.Instantiate(this.playerPrefabRed.name, new Vector3(75, 5, 15), Quaternion.identity, 0);
-                    PlayerMove Pm = PlayerRed.GetComponent<PlayerMove>();
+                    PlayerMove unit = PlayerRed.GetComponent<PlayerMove>();
                     //Pm.m_SerialNum = (int)UnityEngine.Random.Range(0, 500);
-                    SelectUnitScript.PM.Add(Pm);
+                    SelectUnitScript.m_Instance.LivingUnit.Add(unit);
+                    ++CurUnitNum.m_Instance.m_UnitNum;
                 }
 
                 else
                 {
                     PlayerBlue =  PhotonNetwork.Instantiate(this.playerPrefabBlue.name, new Vector3(25, 5, 85), Quaternion.identity, 0);
-                    PlayerMove Pm = PlayerBlue.GetComponent<PlayerMove>();
+                    PlayerMove unit = PlayerBlue.GetComponent<PlayerMove>();
                     //Pm.m_SerialNum = (int)UnityEngine.Random.Range(0, 500);
-                    SelectUnitScript.PM.Add(Pm);
+                    SelectUnitScript.m_Instance.LivingUnit.Add(unit);
+                    ++CurUnitNum.m_Instance.m_UnitNum;
                 }
 
                 // }

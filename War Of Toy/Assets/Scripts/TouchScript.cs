@@ -5,20 +5,20 @@ using UnityEngine.EventSystems;
 
 public class TouchScript : MonoBehaviour {
 
-    public static bool IsOver;
-    public static Vector2 m_TouchDeltha;
+    public bool IsOver;
+    public Vector2 m_TouchDeltha;
     public Vector2[] m_CurTouches = new Vector2[2];
     public Vector2[] m_PrevTouches = new Vector2[2];
 
-    //public static TouchScript m_Instance;
-    //public static TouchScript Instance
-    //{
-    //    get { return m_Instance;  }
-    //}
+    public static TouchScript m_Instance;
+    public static TouchScript Instance
+    {
+        get { return m_Instance; }
+    }
 
     void Awake()
     {
-       // m_Instance = this;
+        m_Instance = this;
         StartCoroutine("MultiTouchesRoutine");
     }
 
@@ -78,7 +78,7 @@ public class TouchScript : MonoBehaviour {
 
     void OnDestroy()
     {
-        //m_Instance = null;
+        m_Instance = null;
     }
 
 }

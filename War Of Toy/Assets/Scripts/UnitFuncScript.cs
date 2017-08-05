@@ -10,6 +10,7 @@ public class UnitFuncScript : MonoBehaviour {
     public GameObject m_ButtonPick;    // 이동명령버튼
     public GameObject m_ButtonMineral;     // 자원캐기버튼
     public GameObject m_ButtonAttack;    // 적군 공격버튼
+    public GameObject m_ButtonBoard;     // 공중 유닛 탑승버튼
 
     public bool ButtonRight;
     public bool ButtonLeft;
@@ -59,12 +60,14 @@ public class UnitFuncScript : MonoBehaviour {
                 ClearFunc();
                 m_ButtonPick.SetActive(true);
                 m_ButtonAttack.SetActive(true);
+                m_ButtonBoard.SetActive(true);
                 break;
 
             case 2:     // 레고
                 ClearFunc();
                 m_ButtonPick.SetActive(true);
                 m_ButtonMineral.SetActive(true);
+                m_ButtonBoard.SetActive(true);
                 m_ButtonRight.SetActive(true);
                 m_ButtonLeft.SetActive(true);
                 if (start == 4) end = m_BuildSlotList.Length;
@@ -76,6 +79,7 @@ public class UnitFuncScript : MonoBehaviour {
                 ClearFunc();
                 m_ButtonPick.SetActive(true);
                 m_ButtonAttack.SetActive(true);
+                m_ButtonBoard.SetActive(true);
                 break;
 
             case 6:     // 열기구
@@ -126,6 +130,7 @@ public class UnitFuncScript : MonoBehaviour {
         m_ButtonPick.SetActive(false);
         m_ButtonMineral.SetActive(false);
         m_ButtonAttack.SetActive(false);
+        m_ButtonBoard.SetActive(false);
 
         for (int i = 0; i < m_BuildSlotList.Length; ++i)
             m_BuildSlotList[i].gameObject.SetActive(false);

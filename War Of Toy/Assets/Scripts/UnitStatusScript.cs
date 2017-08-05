@@ -25,9 +25,9 @@ public class UnitStatusScript : MonoBehaviour {
 
     }
 
-    public void SetUnitImage(RaycastHit hit, int color)
+    public void SetUnitImage(Transform unit, int color)//(RaycastHit hit, int color)
     {
-        switch (hit.transform.tag)
+        switch (unit.tag)
         {
             case "UnitSoldier":
                 UnitImage.sprite = m_UnitSpriteList[0+ color];
@@ -43,7 +43,7 @@ public class UnitStatusScript : MonoBehaviour {
                 UnitFuncScript.m_Instance.SetUnitFunc(4);
                 break;
             case "UnitAirballoon":
-                AttackByBomb.CurBalloon = hit.collider.gameObject.transform;
+                AttackByBomb.CurBalloon = unit;// hit.collider.gameObject.transform;
                 UnitImage.sprite = m_UnitSpriteList[6 + color];
                 UnitFuncScript.m_Instance.SetUnitFunc(6);
                 break;

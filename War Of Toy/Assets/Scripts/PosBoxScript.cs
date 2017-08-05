@@ -44,7 +44,7 @@ public class PosBoxScript : MonoBehaviour {
 
     private void Update()
     {
-        if (TouchScript.m_TouchDeltha == Vector2.zero)
+        if (TouchScript.m_Instance.m_TouchDeltha == Vector2.zero)
             IsMainCamMove = false;
         else
             IsMainCamMove = true;

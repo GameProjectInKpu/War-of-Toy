@@ -34,6 +34,9 @@ public class BuildingStatus : MonoBehaviour {
         {
             switch(transform.tag)
             {
+                case "B_ToyCastle":
+                    InitUnitScript.m_Castle = transform;
+                    break;
                 case "B_ToyFactory":
                     InitUnitScript.m_Factory = transform;
                     break;

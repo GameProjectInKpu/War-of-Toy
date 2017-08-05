@@ -46,8 +46,8 @@ public class MoveCamera : MonoBehaviour
     {
         while (true)
         {
-            m_Pos.x -= m_CameraSpeed * TouchScript.m_TouchDeltha.x * Time.deltaTime;// * 10f;
-            m_Pos.z -= m_CameraSpeed * TouchScript.m_TouchDeltha.y * Time.deltaTime;// * 10f;
+            m_Pos.x -= m_CameraSpeed * TouchScript.m_Instance.m_TouchDeltha.x * Time.deltaTime;// * 10f;
+            m_Pos.z -= m_CameraSpeed * TouchScript.m_Instance.m_TouchDeltha.y * Time.deltaTime;// * 10f;
             m_Pos.y -= Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * 300f;
             
             m_Pos.x = Mathf.Clamp(m_Pos.x, 16.2f, 77f);

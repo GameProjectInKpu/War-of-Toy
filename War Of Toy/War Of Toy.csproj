@@ -99,6 +99,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\MultiSelectScript.cs" />
     <Compile Include="Assets\Photon Unity Networking\Demos\Demo2DJumpAndRunWithPhysics\Scripts\Demo2DJumpAndRun.cs" />
     <Compile Include="Assets\Photon Unity Networking\Demos\Demo2DJumpAndRunWithPhysics\Scripts\JumpAndRunMovement.cs" />
     <Compile Include="Assets\Photon Unity Networking\Demos\DemoBoxes\ColorPerPlayer.cs" />
@@ -243,6 +244,7 @@
     <Compile Include="Assets\PhotonChatApi\ChatState.cs" />
     <Compile Include="Assets\PhotonChatApi\ChatUserStatus.cs" />
     <Compile Include="Assets\PhotonChatApi\IChatClientListener.cs" />
+    <Compile Include="Assets\ResourceStatus.cs" />
     <Compile Include="Assets\Scripts\AttackByBomb.cs" />
     <Compile Include="Assets\Scripts\BatteryScript.cs" />
     <Compile Include="Assets\Scripts\BombRigidbody.cs" />
@@ -253,6 +255,7 @@
     <Compile Include="Assets\Scripts\BulletRigidbody.cs" />
     <Compile Include="Assets\Scripts\CamDontClear.cs" />
     <Compile Include="Assets\Scripts\CamRotByScroll.cs" />
+    <Compile Include="Assets\Scripts\CurUnitNum.cs" />
     <Compile Include="Assets\Scripts\DrawCamPos.cs" />
     <Compile Include="Assets\Scripts\FactoryScript.cs" />
     <Compile Include="Assets\Scripts\FixHpbarScript.cs" />

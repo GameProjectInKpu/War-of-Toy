@@ -41,15 +41,15 @@ public class SelectBuildingScript : MonoBehaviour
                     m_IsSelect = true;
                     CurBuilding.m_IsSelect = true;
                     if (CurBuilding.m_Team.gameObject.layer == 23)
-                        UnitStatusScript.m_Instance.SetUnitImage(hit, 0);
+                        UnitStatusScript.m_Instance.SetUnitImage(hit.transform, 0);
                     else
-                        UnitStatusScript.m_Instance.SetUnitImage(hit, 1);
+                        UnitStatusScript.m_Instance.SetUnitImage(hit.transform, 1);
 
                     CurBuilding.imgSelectbar.enabled = true;
                     
                 }
 
-                if (TouchScript.IsOver
+                if (TouchScript.m_Instance.IsOver
                     && !Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMUnit)
                     && !Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMBuilding)
                     && m_BuildOK.activeSelf == false)

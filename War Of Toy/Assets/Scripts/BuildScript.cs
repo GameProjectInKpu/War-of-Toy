@@ -44,6 +44,7 @@ public class BuildScript : Photon.PunBehaviour
 
     private void Awake()
     {
+        
         m_Camera = Camera.main.transform;
         m_CameraMove = m_Camera.GetComponent<MoveCamera>();
         
@@ -54,6 +55,7 @@ public class BuildScript : Photon.PunBehaviour
         if (m_BuildOK.activeSelf == true)
             return;
 
+        IsButtonPressed = false;
         BuildPos = m_Camera.position;
         PlanePos = m_Camera.position;
         BuildPos.y = 0.1f;
@@ -282,8 +284,8 @@ public class BuildScript : Photon.PunBehaviour
 
     public void SelectbyButton(bool IsBuild)
     {
+        StopAllCoroutines();
         IsButtonPressed = true;
-        StopCoroutine("CheckingCanBuild");
         if (Plane == null)
             return;
 
@@ -291,11 +293,7 @@ public class BuildScript : Photon.PunBehaviour
         {
             Debug.Log(m_CanBuild);
             if (!m_CanBuild || StarScript.m_Instance.m_StarNum - 50 < 0)
-            {
-                StartCoroutine("CheckingCanBuild");
-                IsButtonPressed = false;
-                return;
-            }            
+                return; 
                 
             StarScript.m_Instance.BuildByStar(50);
             //Building.GetComponent<NavMeshObstacle>().enabled = false;
@@ -327,6 +325,9 @@ public class BuildScript : Photon.PunBehaviour
                     //FactoryScript FactoryFunc = Building.GetComponent<FactoryScript>();
                     //FactoryFunc.enabled = false;
                     break;
+                case "B_CupCake":
+                    SelectUnitScript.m_Instance.AcceptableUnit += 10;
+                    break;
                 default:
                     break;
 
@@ -348,11 +349,12 @@ public class BuildScript : Photon.PunBehaviour
         m_IsBuild = IsBuild;
         m_BuildOK.SetActive(false);
         m_BuildNO.SetActive(false);
+        IsButtonPressed = false;
         StopAllCoroutines();
         //m_IsBuild = false;
         m_CanBuild = false;
-        IsButtonPressed = false;
         m_CameraMove.enabled = true;
+        return;
     }
 
     private void Update()
