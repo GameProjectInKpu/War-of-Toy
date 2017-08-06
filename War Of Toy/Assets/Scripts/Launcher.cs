@@ -4,31 +4,23 @@ namespace Com.MyCompany.MyGame
 {
     public class Launcher : Photon.PunBehaviour
     {
-        #region Public Variables
-
         public PhotonLogLevel Loglevel = PhotonLogLevel.Informational;
 
         [Tooltip("The maximum number of players per room. When a room is full, it can't be joined by new players, and so new room will be created")]
         public byte MaxPlayersPerRoom = 4;
 
-        #endregion
 
-        #region Private Variables
-
-        /// <summary>
         /// This client's version number. Users are separated from each other by gameversion (which allows you to make breaking changes).
-        /// </summary>
         string _gameVersion = "1";
         bool isConnecting;
 
-        #endregion
 
         #region Public Properties
 
-        [Tooltip("The Ui Panel to let the user enter name, connect and play")]
-        public GameObject controlPanel;
-        [Tooltip("The UI Label to inform the user that the connection is in progress")]
-        public GameObject progressLabel;
+       // [Tooltip("The Ui Panel to let the user enter name, connect and play")]
+       // public GameObject controlPanel;
+       // [Tooltip("The UI Label to inform the user that the connection is in progress")]
+       // public GameObject progressLabel;
 
         #endregion
 
@@ -58,9 +50,9 @@ namespace Com.MyCompany.MyGame
         /// </summary>
         void Start()
         {
-            //  Connect();
-            progressLabel.SetActive(false);
-            controlPanel.SetActive(true);
+            Connect();
+           // progressLabel.SetActive(false);
+            //controlPanel.SetActive(true);
         }
 
         #endregion
@@ -79,8 +71,8 @@ namespace Com.MyCompany.MyGame
 
         public override void OnDisconnectedFromPhoton()
         {
-            progressLabel.SetActive(false);
-            controlPanel.SetActive(true);
+            //progressLabel.SetActive(false);
+           // controlPanel.SetActive(true);
             Debug.LogWarning("DemoAnimator/Launcher: OnDisconnectedFromPhoton() was called by PUN");
         }
 
@@ -120,8 +112,8 @@ namespace Com.MyCompany.MyGame
         public void Connect()
         {
             isConnecting = true;
-            progressLabel.SetActive(true);
-            controlPanel.SetActive(false);
+            //progressLabel.SetActive(true);
+            //controlPanel.SetActive(false);
 
             // we check if we are connected or not, we join if we are , else we initiate the connection to the server.
             if (PhotonNetwork.connected)
