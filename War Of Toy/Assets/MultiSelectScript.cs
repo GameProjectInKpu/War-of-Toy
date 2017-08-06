@@ -73,11 +73,18 @@ public class MultiSelectScript : MonoBehaviour {
                 SelectUnitScript.m_Instance.SelectUnit(unit.transform);
             }
         }
-        m_Size = Vector2.zero;
-        m_SelectImage.SetActive(false);
-        m_SelectImage.GetComponent<RectTransform>().pivot = Vector2.one;
-        m_SelectImage.GetComponent<RectTransform>().sizeDelta = Vector2.one;
 
+        Pivot = Vector2.zero;
+        m_Size = Vector2.zero;
+        m_StartPoint = Vector2.zero;
+        m_EndPoint = Vector2.zero;
+        DrawingPoint = Vector2.zero; 
+        m_SelectImage.SetActive(false);
+        rect = new Rect(Vector2.zero, Vector2.zero);
+        m_SelectImage.GetComponent<RectTransform>().pivot = Vector2.zero;
+        m_SelectImage.GetComponent<RectTransform>().sizeDelta = Vector2.one;
+        TouchScript.m_Instance.IsOver = true;
+        return;
     }
 
    
@@ -85,13 +92,14 @@ public class MultiSelectScript : MonoBehaviour {
     public void StartPointToSelect()
     {
         if (!IsOnMulti ) return;
-        
         m_StartPoint = Input.mousePosition;
-        m_SelectImage.SetActive(true);
         m_SelectImage.transform.position = m_StartPoint;
+        m_SelectImage.SetActive(true);
+        return;
     }
     public void DrawRect()
     {
+        if (!IsOnMulti) return;
         DrawingPoint = Input.mousePosition;
         
         if (m_StartPoint.y > DrawingPoint.y)
@@ -100,18 +108,12 @@ public class MultiSelectScript : MonoBehaviour {
             {
                 Pivot.x = 0;
                 Pivot.y = 1;
-                float tmp = m_StartPoint.y;
-                m_StartPoint.y = DrawingPoint.y;
-                DrawingPoint.y = tmp;
             }
 
             else
             {
                 Pivot.x = 1;
                 Pivot.y = 1;
-                Vector2 tmp = m_StartPoint;
-                m_StartPoint = DrawingPoint;
-                DrawingPoint = tmp;
             }
         }
 
@@ -121,9 +123,12 @@ public class MultiSelectScript : MonoBehaviour {
             {
                 Pivot.x = 1;
                 Pivot.y = 0;
-                float tmp = m_StartPoint.x;
-                m_StartPoint.x = DrawingPoint.x;
-                DrawingPoint.x = tmp;
+            }
+
+            else
+            {
+                Pivot.x = 0;
+                Pivot.y = 0;
             }
         }
         m_SelectImage.GetComponent<RectTransform>().pivot = Pivot;
@@ -135,7 +140,7 @@ public class MultiSelectScript : MonoBehaviour {
             m_Size.y = -m_Size.y;
 
         
-        m_SelectImage.GetComponent<RectTransform>().localScale = m_Size * 2.5f;
+        m_SelectImage.GetComponent<RectTransform>().sizeDelta = m_Size * 2.5f;
     }
 
     public void EndPointToSelect()
@@ -152,6 +157,6 @@ public class MultiSelectScript : MonoBehaviour {
     {
         IsOnMulti = true;
         MoveCamera.m_Instance.enabled = false;
-        
+        return;
     }
 }

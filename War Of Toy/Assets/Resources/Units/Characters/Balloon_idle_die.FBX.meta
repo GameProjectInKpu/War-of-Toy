@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 25c0e55118904794b9bf1834b1f02ca2
+labels:
+- Character
 timeCreated: 1494762498
 licenseType: Free
 ModelImporter:

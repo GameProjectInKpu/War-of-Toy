@@ -63,7 +63,7 @@ public class TouchScript : MonoBehaviour {
     public void EndTouch()
     {
         m_TouchDeltha = Vector2.zero;
-        IsOver = false;
+        IsOver = true;
     }
 
     public void PointerEnter(bool isover)

@@ -15,6 +15,7 @@ public class SelectUnitScript : MonoBehaviour
     public List<PlayerMove> SelectedUnit;  // 현재 선택한 유닛들
 
     public int AcceptableUnit;
+    public bool IsSRrunning;
 
     static public SelectUnitScript m_Instance;
     static public SelectUnitScript Instance
@@ -39,8 +40,11 @@ public class SelectUnitScript : MonoBehaviour
 
     IEnumerator SelectRoutine()
     {
+        IsSRrunning = true;
         while (true)
         {
+            
+            Debug.Log("선택루틴 실행중");
             if(Input.GetMouseButtonDown(0))// && m_IsSelect == false)
             //if (Input.touchCount == 1 && TouchScript.IsOver)//&& m_IsSelect == false)
             {
@@ -78,7 +82,9 @@ public class SelectUnitScript : MonoBehaviour
             }
 
             yield return null;
+            
         }
+        IsSRrunning = false;
     }
 
   
@@ -87,15 +93,19 @@ public class SelectUnitScript : MonoBehaviour
     {
         while (true)
         {
-            for (int i = 0; i < LivingUnit.Count; i++)
+            foreach (PlayerMove unit in LivingUnit)
             {
-                if (LivingUnit[i].m_IsAlive == false)
+                if (unit.m_IsAlive == false)
                 {
-                    LivingUnit[i].Invoke("Death", 3f);
-                    LivingUnit.Remove(LivingUnit[i]);
+                    unit.Invoke("Death", 3f);
+                    LivingUnit.Remove(unit);
+                    SelectedUnit.Remove(unit);
                 }
 
             }
+
+            //if (IsSRrunning == false)
+            //    StartCoroutine("SelectedRoutine");
 
             yield return null;
         }
@@ -225,7 +235,7 @@ public class SelectUnitScript : MonoBehaviour
     {
         foreach (PlayerMove unit in SelectedUnit)
         {
-            if (unit.m_IsAttack)
+            if (unit.m_IsBoard)
                 return;
             StopCoroutine("SelectRoutine");
             unit.m_IsPick = false;

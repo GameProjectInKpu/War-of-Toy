@@ -235,6 +235,7 @@ public class PlayerMove : MonoBehaviour
                 //if (Input.touchCount == 1 && m_IsSelect == true)
                 {
                     //m_IsStartToMove = true;
+                    SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
                     imgSelectbar.enabled = false;
                     imgHpbar.enabled = false;
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position);
@@ -254,9 +255,20 @@ public class PlayerMove : MonoBehaviour
                             StopCoroutine("TraceRoutine");
                             yield return StartCoroutine("Picking", HitOb.transform.position);
                             m_IsSelect = false;
-                            yield return HitPM.StartCoroutine("LandingAndTakeOff", false);
-                            transform.gameObject.SetActive(false);
-                            yield return HitPM.StartCoroutine("LandingAndTakeOff", true);
+                            //yield return HitPM.StartCoroutine("LandingAndTakeOff", false);
+                            GetComponent<NavMeshAgent>().enabled = false;
+                            transform.SetParent(HitPM.BalloonHeight, false);
+                            Vector3 UPos = Vector3.zero;
+                            Vector3 URot = Vector3.zero; 
+                            Vector3 UScal = Vector3.one;
+                            UPos.x -= 5f;
+                            URot.z -= 90f;
+                            UScal *= 0.6f;
+                            transform.localPosition = UPos;
+                            transform.localRotation = Quaternion.Euler(URot);
+                            transform.localScale = UScal;
+                            
+                            //yield return HitPM.StartCoroutine("LandingAndTakeOff", true);
 
                         }
                     }
@@ -270,7 +282,7 @@ public class PlayerMove : MonoBehaviour
                 {
                     //m_IsStartToMove = true;
                     SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position); //
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position); 
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                     {
