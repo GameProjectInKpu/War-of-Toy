@@ -71,6 +71,14 @@ public class UnitStatusScript : MonoBehaviour {
                 UnitImage.sprite = m_UnitSpriteList[18 + color];
                 UnitFuncScript.m_Instance.SetUnitFunc(18);
                 break;
+            case "UnitDinosaur":
+                UnitImage.sprite = m_UnitSpriteList[20 + color];
+                UnitFuncScript.m_Instance.SetUnitFunc(20);
+                break;
+            case "UnitRCcar":
+                UnitImage.sprite = m_UnitSpriteList[22 + color];
+                UnitFuncScript.m_Instance.SetUnitFunc(22);
+                break;
         }
     }
 

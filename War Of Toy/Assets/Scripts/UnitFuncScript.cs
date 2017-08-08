@@ -114,7 +114,18 @@ public class UnitFuncScript : MonoBehaviour {
                         m_InitUnitSlotList[i].gameObject.SetActive(true);
                 }
                 break;
-            
+            case 20:    // 공룡
+                ClearFunc();
+                m_ButtonPick.SetActive(true);
+                m_ButtonAttack.SetActive(true);
+                m_ButtonBoard.SetActive(true);
+                break;
+            case 22:    // 카
+                ClearFunc();
+                m_ButtonPick.SetActive(true);
+                m_ButtonAttack.SetActive(true);
+                break;
+
             default:
                 ClearFunc();
                 break;

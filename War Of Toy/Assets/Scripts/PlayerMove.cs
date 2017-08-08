@@ -45,6 +45,7 @@ public class PlayerMove : MonoBehaviour
     public GameObject Bullet;
     public Transform FireHole;
     public Transform BalloonHeight;
+    public bool IsStartParticle;
 
     public float m_Count;
     public float m_InitCount;
@@ -342,6 +343,26 @@ public class PlayerMove : MonoBehaviour
                                         StopCoroutine("BearAttackRoutine");
                                         break;
                                     }
+                                case "UnitDinosaur":
+                                    {
+                                        m_Animator.SetBool("IsAttack", true);
+                                        imgHpbar.enabled = true;
+                                        HitPM.imgHpbar.enabled = true;
+                                        StartCoroutine("AttackByFlare");
+                                        yield return StartCoroutine("TraceRoutine");
+                                        imgHpbar.enabled = false;
+                                        HitPM.imgHpbar.enabled = false;
+                                        HitPM.unitState = UnitState.die;
+                                        HitPM.m_Animator.SetBool("IsDie", true);
+                                        HitPM.m_IsAlive = false;
+                                        m_Animator.SetBool("IsAttack", false);
+                                        unitState = UnitState.idle;
+                                        m_Animator.SetBool("IsPick", false);
+
+                                        StopCoroutine("AttackByFlare");
+                                        break;
+                                    }
+
                                 default:
                                     break;
                             }
@@ -368,6 +389,7 @@ public class PlayerMove : MonoBehaviour
                 switch (transform.tag)
                 {
                     case "UnitSoldier": tracedis = 5f; break;
+                    case "UnitDinosaur": tracedis = 8f; break;
                     case "UnitBear": tracedis = 2f; break;
                     default: tracedis = 2f; break;
 
@@ -375,6 +397,7 @@ public class PlayerMove : MonoBehaviour
                 m_Animator.SetBool("IsPick", true);
                 m_Animator.SetBool("IsAttack", false);
                 m_Attackstop = true;
+                IsStartParticle = false;
                 NavMesh.CalculatePath(transform.position, HitPM.transform.position, NavMesh.AllAreas, m_Path);
                 Vector3[] TraceCorners = m_Path.corners;
                 int TraceIndex = 1;
@@ -394,7 +417,7 @@ public class PlayerMove : MonoBehaviour
             {
                 m_Animator.SetBool("IsPick", false);
                 m_Animator.SetBool("IsAttack", true);
-                m_Attackstop = false;
+                m_Attackstop = false;             
             }
 
 
@@ -414,12 +437,43 @@ public class PlayerMove : MonoBehaviour
                 StopCoroutine("AttackByBullet");
             }
                 
-            if (m_Attackstop == false)
+
+            if (m_Attackstop == false )
             {
                 GameObject Obj = (GameObject)PhotonNetwork.Instantiate(Bullet.name, FireHole.position, FireHole.rotation, 0);
             }
 
+            
             yield return new WaitForSeconds(2.5f);
+        }
+
+    }
+
+    IEnumerator AttackByFlare()
+    {
+        while (true)
+        {
+
+            if (m_IsAttack == false)
+            {
+                unitState = UnitState.idle;     
+                StopCoroutine("AttackByFlare");
+            }
+
+            if (m_Attackstop == false)
+            {
+                if (IsStartParticle == true)
+                {
+                    GameObject Obj = (GameObject)Instantiate(Bullet, FireHole.position, FireHole.rotation);
+                    Destroy(Obj, 0.5f);
+                }
+                else
+                    IsStartParticle = true;
+                    
+            }
+            
+            yield return new WaitForSeconds(1.7f);
+
         }
 
     }
@@ -451,6 +505,7 @@ public class PlayerMove : MonoBehaviour
             {
                 case "UnitSoldier": dis = 5f; break;
                 case "UnitBear": dis = 2f; break;
+                case "UnitDinosaur": dis = 9f; break;
                 default: dis = 1f; break;
 
             }
