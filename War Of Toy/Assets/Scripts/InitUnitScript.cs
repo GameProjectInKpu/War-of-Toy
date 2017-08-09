@@ -63,7 +63,6 @@ public class InitUnitScript : MonoBehaviour {
         if (PhotonNetwork.isMasterClient)
         {
             Obj = (GameObject)PhotonNetwork.Instantiate(this.InitUnitRed.name, UnitPos, Quaternion.Euler(Vector3.zero), 0);
-            Debug.Log(Obj.transform.tag);
             if (Obj.transform.tag != "UnitAirballoon")
                 Obj.GetComponent<PlayerMove>().enabled = true;
             PlayerMove Pm = Obj.GetComponent<PlayerMove>();

@@ -362,6 +362,25 @@ public class PlayerMove : MonoBehaviour
                                         StopCoroutine("AttackByFlare");
                                         break;
                                     }
+                                case "UnitRCcar":
+                                    {
+                                        m_Animator.SetBool("IsAttack", true);
+                                        imgHpbar.enabled = true;
+                                        HitPM.imgHpbar.enabled = true;
+                                        //StartCoroutine("AttackByFlare");
+                                        yield return StartCoroutine("TraceRoutine");
+                                        imgHpbar.enabled = false;
+                                        HitPM.imgHpbar.enabled = false;
+                                        HitPM.unitState = UnitState.die;
+                                        HitPM.m_Animator.SetBool("IsDie", true);
+                                        HitPM.m_IsAlive = false;
+                                        m_Animator.SetBool("IsAttack", false);
+                                        unitState = UnitState.idle;
+                                        m_Animator.SetBool("IsPick", false);
+
+                                        //StopCoroutine("AttackByFlare");
+                                        break;
+                                    }
 
                                 default:
                                     break;
@@ -391,6 +410,7 @@ public class PlayerMove : MonoBehaviour
                     case "UnitSoldier": tracedis = 5f; break;
                     case "UnitDinosaur": tracedis = 8f; break;
                     case "UnitBear": tracedis = 2f; break;
+                    case "UnitRCcar": tracedis = 4f; break;
                     default: tracedis = 2f; break;
 
                 }
@@ -506,6 +526,7 @@ public class PlayerMove : MonoBehaviour
                 case "UnitSoldier": dis = 5f; break;
                 case "UnitBear": dis = 2f; break;
                 case "UnitDinosaur": dis = 9f; break;
+                case "UnitRCcar": dis = 2f; break;
                 default: dis = 1f; break;
 
             }
@@ -574,11 +595,21 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision bullet)
+    private void OnCollisionEnter(Collision damage)
     {
-        if (bullet.transform.tag == "Bullet")
+        if (damage.transform.tag == "Bullet")
         {
             m_Hp -= 10f;
+            if (m_Hp < 0f)
+                m_IsAlive = false;
+            imgHpbar.enabled = true;
+            imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
+        }
+
+        if (damage.transform.tag == "AttackArea")
+        {
+            Debug.Log("카에 맞음");
+            m_Hp -= 20f;
             if (m_Hp < 0f)
                 m_IsAlive = false;
             imgHpbar.enabled = true;

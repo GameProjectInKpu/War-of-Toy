@@ -76,6 +76,7 @@ public class UnitStatusScript : MonoBehaviour {
                 UnitFuncScript.m_Instance.SetUnitFunc(20);
                 break;
             case "UnitRCcar":
+                Debug.Log("카 이미지 출력");
                 UnitImage.sprite = m_UnitSpriteList[22 + color];
                 UnitFuncScript.m_Instance.SetUnitFunc(22);
                 break;
