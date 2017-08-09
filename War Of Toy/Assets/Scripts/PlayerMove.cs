@@ -45,6 +45,7 @@ public class PlayerMove : MonoBehaviour
     public GameObject Bullet;
     public Transform FireHole;
     public Transform BalloonHeight;
+    public Transform CarAttakArea;
     public bool IsStartParticle;
 
     public float m_Count;
@@ -162,6 +163,8 @@ public class PlayerMove : MonoBehaviour
                         HitOb = hit.collider.gameObject;
                         if (HitOb.layer == 30)   // Ground
                         {
+                            SelectUnitScript.m_Instance.m_PickImage.transform.position = hit.point;
+                            SelectUnitScript.m_Instance.m_PickImage.SetActive(true);
                             unitState = UnitState.walk;
                             m_Animator.SetBool("IsAttack", false);
                             m_Animator.SetBool("IsMineral", false);
@@ -169,6 +172,7 @@ public class PlayerMove : MonoBehaviour
                             StopCoroutine("AttackByBullet");
                             StopCoroutine("TraceRoutine");
                             yield return StartCoroutine("Picking", hit.point);
+                            SelectUnitScript.m_Instance.m_PickImage.SetActive(false);
                             m_IsSelect = false;
                          }
                     }
@@ -367,6 +371,7 @@ public class PlayerMove : MonoBehaviour
                                         m_Animator.SetBool("IsAttack", true);
                                         imgHpbar.enabled = true;
                                         HitPM.imgHpbar.enabled = true;
+                                        CarAttakArea.gameObject.SetActive(true);
                                         //StartCoroutine("AttackByFlare");
                                         yield return StartCoroutine("TraceRoutine");
                                         imgHpbar.enabled = false;
@@ -377,7 +382,7 @@ public class PlayerMove : MonoBehaviour
                                         m_Animator.SetBool("IsAttack", false);
                                         unitState = UnitState.idle;
                                         m_Animator.SetBool("IsPick", false);
-
+                                        CarAttakArea.gameObject.SetActive(false);
                                         //StopCoroutine("AttackByFlare");
                                         break;
                                     }
@@ -408,16 +413,23 @@ public class PlayerMove : MonoBehaviour
                 switch (transform.tag)
                 {
                     case "UnitSoldier": tracedis = 5f; break;
-                    case "UnitDinosaur": tracedis = 8f; break;
+                    case "UnitDinosaur":
+                        tracedis = 8f;
+                        IsStartParticle = false;
+                        break;
                     case "UnitBear": tracedis = 2f; break;
-                    case "UnitRCcar": tracedis = 4f; break;
+                    case "UnitRCcar":
+                        tracedis = 2f;
+                        CarAttakArea.gameObject.SetActive(false);
+                        break;
                     default: tracedis = 2f; break;
 
                 }
                 m_Animator.SetBool("IsPick", true);
                 m_Animator.SetBool("IsAttack", false);
                 m_Attackstop = true;
-                IsStartParticle = false;
+                GetComponent<NavMeshAgent>().enabled = true;
+
                 NavMesh.CalculatePath(transform.position, HitPM.transform.position, NavMesh.AllAreas, m_Path);
                 Vector3[] TraceCorners = m_Path.corners;
                 int TraceIndex = 1;
@@ -437,6 +449,8 @@ public class PlayerMove : MonoBehaviour
             {
                 m_Animator.SetBool("IsPick", false);
                 m_Animator.SetBool("IsAttack", true);
+                if(transform.tag == "UnitRCcar")
+                    CarAttakArea.gameObject.SetActive(true);
                 m_Attackstop = false;             
             }
 
@@ -528,7 +542,6 @@ public class PlayerMove : MonoBehaviour
                 case "UnitDinosaur": dis = 9f; break;
                 case "UnitRCcar": dis = 2f; break;
                 default: dis = 1f; break;
-
             }
         }
 
@@ -599,6 +612,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (damage.transform.tag == "Bullet")
         {
+            Debug.Log("총에 맞음");
             m_Hp -= 10f;
             if (m_Hp < 0f)
                 m_IsAlive = false;
@@ -606,10 +620,9 @@ public class PlayerMove : MonoBehaviour
             imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
         }
 
-        if (damage.transform.tag == "AttackArea")
+        else if (damage.transform.tag == "AttackArea")
         {
-            Debug.Log("카에 맞음");
-            m_Hp -= 20f;
+            m_Hp -= 10f;
             if (m_Hp < 0f)
                 m_IsAlive = false;
             imgHpbar.enabled = true;

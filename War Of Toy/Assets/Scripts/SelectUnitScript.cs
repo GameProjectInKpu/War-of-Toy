@@ -9,6 +9,7 @@ public class SelectUnitScript : MonoBehaviour
     public LayerMask m_LMUnit;
     public LayerMask m_LMBuilding;
     public GameObject m_BuildOK;
+    public GameObject m_PickImage;
    // public bool m_IsSelect;
     public List<PlayerMove> LivingUnit; // 현재 살아있는 유닛들
     BuildingStatus Bs;  // 현재 선택하는 빌딩
@@ -151,6 +152,7 @@ public class SelectUnitScript : MonoBehaviour
 
         SelectedUnit.Add(Unit);
 
+        m_PickImage.SetActive(false);
         Unit.m_IsSelect = true;
         Unit.imgSelectbar.enabled = true;
         Unit.m_Animator.SetBool("IsPick", false);
@@ -168,6 +170,7 @@ public class SelectUnitScript : MonoBehaviour
     private void AllSelectOff()
     {
         Debug.Log("체크해제 호출됨");
+
         UnitFuncScript.m_Instance.ClearFunc();
         foreach (PlayerMove unit in LivingUnit)
         {

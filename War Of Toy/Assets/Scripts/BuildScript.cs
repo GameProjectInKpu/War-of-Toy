@@ -315,6 +315,10 @@ public class BuildScript : Photon.PunBehaviour
             Vector3 RebakeSize = Building.GetComponent<NavMeshObstacle>().size;
             switch (CheckTag.tag)
             {
+                case "B_Batterys":
+                    RebakeSize.x *= 4f;
+                    RebakeSize.z *= 4f;
+                    break;
                 case "B_Zenga":
                     AttackArea = Building.transform.Find("AttackArea");
                     AttackArea.gameObject.SetActive(false);
@@ -327,6 +331,7 @@ public class BuildScript : Photon.PunBehaviour
                     break;
                 case "B_CupCake":
                     SelectUnitScript.m_Instance.AcceptableUnit += 10;
+                    RebakeSize.z *= 2f;
                     break;
                 default:
                     break;
