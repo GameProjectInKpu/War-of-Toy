@@ -46,13 +46,17 @@ public class BuildPlaneScript : MonoBehaviour {
                     m_Color = Color.blue;
 
                
-                if(BuildScript.BuildPos.y > 5 || (BuildScript.BuildPos.y < 4 && BuildScript.BuildPos.y > 0.5f))
-                    m_Color = Color.red;
+                
 
 
                 RaycastPos[i].position = RayPos[i];
             }
 
+            if (BuildScript.BuildPos.y > 5 || (BuildScript.BuildPos.y < 4 && BuildScript.BuildPos.y > 0.5f))
+                m_Color = Color.red;
+            if((BuildScript.BuildPos.x == 65f && BuildScript.BuildPos.z == 25f)
+                || (BuildScript.BuildPos.x == 70f && BuildScript.BuildPos.z == 25f))
+                m_Color = Color.red;
             GetComponent<Renderer>().material.color = m_Color;
 
 
@@ -70,7 +74,7 @@ public class BuildPlaneScript : MonoBehaviour {
     }
 
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.layer == 28 || other.gameObject.layer == 27)
         {

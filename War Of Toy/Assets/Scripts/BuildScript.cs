@@ -139,6 +139,14 @@ public class BuildScript : Photon.PunBehaviour
                 Scale.x *= 0.5f;
                 Scale.z *= 0.5f;
                 break;
+            case "B_Lab":
+                Scale.x *= 0.6f;
+                Scale.z *= 0.6f;
+                break;
+            case "B_Hospital":
+                Scale.x *= 0.7f;
+                Scale.z *= 0.5f;
+                break;
             default:
                 break;
 
@@ -284,16 +292,26 @@ public class BuildScript : Photon.PunBehaviour
 
     public void SelectbyButton(bool IsBuild)
     {
-        StopAllCoroutines();
+        //StopAllCoroutines();
         IsButtonPressed = true;
         if (Plane == null)
             return;
 
-        if (IsBuild)
+        if (IsBuild == true)
         {
             Debug.Log(m_CanBuild);
-            if (!m_CanBuild || StarScript.m_Instance.m_StarNum - 50 < 0)
-                return; 
+            if(!m_CanBuild )
+            {
+                NoticeScript.m_Instance.Notice("건물을 지을수 없는 구역입니다\n");
+                IsButtonPressed = false;
+                return;
+            }
+            if(StarScript.m_Instance.m_StarNum - 50 < 0)
+            {
+                NoticeScript.m_Instance.Notice("자원이 부족합니다\n");
+                IsButtonPressed = false;
+                return;
+            }
                 
             StarScript.m_Instance.BuildByStar(50);
             //Building.GetComponent<NavMeshObstacle>().enabled = false;

@@ -11,9 +11,11 @@ public class UnitFuncScript : MonoBehaviour {
     public GameObject m_ButtonMineral;     // 자원캐기버튼
     public GameObject m_ButtonAttack;    // 적군 공격버튼
     public GameObject m_ButtonBoard;     // 공중 유닛 탑승버튼
+    public GameObject m_ButtonDrop;      // 열기구에서 유닛 내려주기
 
     public bool ButtonRight;
     public bool ButtonLeft;
+    public bool IsAirUnitfull;
     public int CurUnit;
 
     static public UnitFuncScript m_Instance;
@@ -84,7 +86,11 @@ public class UnitFuncScript : MonoBehaviour {
 
             case 6:     // 열기구
                 ClearFunc();
-                m_ButtonPick.SetActive(true);
+                if(IsAirUnitfull)
+                {
+                    m_ButtonPick.SetActive(true);
+                    m_ButtonDrop.SetActive(true);
+                }
                 for (int i = start; i < m_AttackSlotList.Length; ++i)
                     m_AttackSlotList[i].gameObject.SetActive(true);
                 break;

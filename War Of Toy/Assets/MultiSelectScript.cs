@@ -21,7 +21,13 @@ public class MultiSelectScript : MonoBehaviour {
     void Start () {
         Pivot = m_SelectImage.GetComponent<RectTransform>().pivot;
     }
-	
+
+    public Vector2 InputSpot()
+    {
+        return (Input.mousePosition);
+        //return (Input.GetTouch(0).position);
+    }
+
     private void MultiSelect()
     {
         if (m_StartPoint.y > m_EndPoint.y)
@@ -60,7 +66,7 @@ public class MultiSelectScript : MonoBehaviour {
             m_Size.y = -m_Size.y;
 
         rect = new Rect(m_StartPoint, m_Size);
-        m_SelectImage.GetComponent<RectTransform>().sizeDelta = m_Size * 2.5f;
+        m_SelectImage.GetComponent<RectTransform>().sizeDelta = m_Size;// * 2.5f;
 
         foreach (PlayerMove unit in SelectUnitScript.m_Instance.LivingUnit)
         {
@@ -92,7 +98,7 @@ public class MultiSelectScript : MonoBehaviour {
     public void StartPointToSelect()
     {
         if (!IsOnMulti ) return;
-        m_StartPoint = Input.mousePosition;
+        m_StartPoint = InputSpot();
         m_SelectImage.transform.position = m_StartPoint;
         m_SelectImage.SetActive(true);
         return;
@@ -139,14 +145,14 @@ public class MultiSelectScript : MonoBehaviour {
         if (m_Size.y < 0)
             m_Size.y = -m_Size.y;
 
-        
-        m_SelectImage.GetComponent<RectTransform>().sizeDelta = m_Size * 2.5f;
+
+        m_SelectImage.GetComponent<RectTransform>().sizeDelta = m_Size;// * 2.5f;
     }
 
     public void EndPointToSelect()
     {
         if (!IsOnMulti) return;
-        m_EndPoint = Input.mousePosition;
+        m_EndPoint = InputSpot(); 
         MultiSelect();
         MoveCamera.m_Instance.enabled = true;
         IsOnMulti = false;

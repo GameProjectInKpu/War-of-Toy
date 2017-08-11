@@ -40,6 +40,7 @@ public class PlayerMove : MonoBehaviour
     public bool m_IsAttack;
     public bool m_IsMineral;
     public bool m_IsBoard;
+    public bool m_IsFull;   // 열기구에 누군가 탔는지
 
     public GameObject Building;
     public GameObject Bullet;
@@ -136,8 +137,21 @@ public class PlayerMove : MonoBehaviour
     }*/
 
 
+    public bool IsInputRight()
+    {
+        return (Input.GetMouseButton(0) && m_IsSelect);
+        //return ((Input.touchCount == 1) && m_IsSelect);
+    }
+
+    public Vector3 InputSpot()
+    {
+        return (Input.mousePosition);
+        //return (Input.GetTouch(0).position);
+    }
+
     IEnumerator OrderRoutine()
     {
+
         while (true)
         {
             if (BuildScript.m_IsBuild && m_IsSelect == true && transform.tag == "UnitLego")
@@ -149,13 +163,12 @@ public class PlayerMove : MonoBehaviour
 
             else if (m_IsPick)
             {
-                if (Input.GetMouseButton(0) && m_IsSelect == true && TouchScript.m_Instance.IsOver)
-                //if (Input.touchCount == 1 && m_IsSelect == true)
+                if (IsInputRight() && TouchScript.m_Instance.IsOver)
                 {
                     //m_IsStartToMove = true;
                     imgSelectbar.enabled = false;
                     imgHpbar.enabled = false;
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position);
+                    Ray ray = Camera.main.ScreenPointToRay(InputSpot());
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                     {
@@ -182,13 +195,12 @@ public class PlayerMove : MonoBehaviour
 
             else if (m_IsMineral)
             {
-                if (Input.GetMouseButton(0) && m_IsSelect == true)
-                //if (Input.touchCount == 1 && m_IsSelect == true)
+                if (IsInputRight())
                 {
                     //m_IsStartToMove = true;
                     imgSelectbar.enabled = false;
                     imgHpbar.enabled = false;
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position); //
+                    Ray ray = Camera.main.ScreenPointToRay(InputSpot()); 
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                     {
@@ -236,14 +248,13 @@ public class PlayerMove : MonoBehaviour
 
             else if (m_IsBoard)
             {
-                if (Input.GetMouseButton(0) && m_IsSelect == true && TouchScript.m_Instance.IsOver)
-                //if (Input.touchCount == 1 && m_IsSelect == true)
+                if (IsInputRight() && TouchScript.m_Instance.IsOver)
                 {
                     //m_IsStartToMove = true;
                     SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
                     imgSelectbar.enabled = false;
                     imgHpbar.enabled = false;
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position);
+                    Ray ray = Camera.main.ScreenPointToRay(InputSpot());
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                     {
@@ -260,7 +271,7 @@ public class PlayerMove : MonoBehaviour
                             StopCoroutine("TraceRoutine");
                             yield return StartCoroutine("Picking", HitOb.transform.position);
                             m_IsSelect = false;
-                            //yield return HitPM.StartCoroutine("LandingAndTakeOff", false);
+                            //yield return HitPM.StartCoroutine("Landing_TakeOff", false);
                             GetComponent<NavMeshAgent>().enabled = false;
                             transform.SetParent(HitPM.BalloonHeight, false);
                             Vector3 UPos = Vector3.zero;
@@ -272,8 +283,9 @@ public class PlayerMove : MonoBehaviour
                             transform.localPosition = UPos;
                             transform.localRotation = Quaternion.Euler(URot);
                             transform.localScale = UScal;
-                            
-                            //yield return HitPM.StartCoroutine("LandingAndTakeOff", true);
+                            //HitPM.m_IsFull = true;
+                            UnitFuncScript.m_Instance.IsAirUnitfull = true;
+                            //yield return HitPM.StartCoroutine("Landing_TakeOff", true);
 
                         }
                     }
@@ -282,12 +294,11 @@ public class PlayerMove : MonoBehaviour
 
             else if (m_IsAttack)
             {                
-                if (Input.GetMouseButton(0) && m_IsSelect == true)
-                //if (Input.touchCount == 1 && m_IsSelect == true)
+                if (IsInputRight())
                 {
                     //m_IsStartToMove = true;
                     SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position); 
+                    Ray ray = Camera.main.ScreenPointToRay(InputSpot());
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                     {
@@ -570,34 +581,39 @@ public class PlayerMove : MonoBehaviour
         StopCoroutine("Picking");
     }
 
-    IEnumerator LandingAndTakeOff(bool IsLanding)
+    IEnumerator Landing_TakeOff(bool IsLanding)
     {
-        
-        if (IsLanding)
+        Vector3 BallPos = BalloonHeight.localPosition;
+        while (true)
         {
-            Vector3 BallPos = BalloonHeight.position;
-            if (BallPos.y <= 11f)
+            if (IsLanding)
             {
-                BallPos.y += 0.1f;
-                BalloonHeight.position = BallPos;
+                //Vector3 BallPos = BalloonHeight.position;
+                if (BallPos.y <= 5.6f)
+                {
+                    BallPos.y += 0.01f;// * Time.deltaTime;
+                    BalloonHeight.localPosition = BallPos;
+                }
+                else
+                    StopCoroutine("Landing_TakeOff");
             }
-            else
-                StopCoroutine("LandingAndTakeOff");
-        }
 
-        else
-        {
-            Vector3 BallPos = BalloonHeight.position;
-            if (BallPos.y > 0f)
+            else
             {
-                BallPos.y -= 0.1f;
-                BalloonHeight.position = BallPos;
-            }
-            else
-                StopCoroutine("LandingAndTakeOff");
-        }
+                Debug.Log(BallPos);
+                //Vector3 BallPos = BalloonHeight.position;
+                if (BallPos.y > 0f)
+                {
+                    BallPos.y -= 0.1f;// 
+                    
+                }
+                else
+                    StopCoroutine("Landing_TakeOff");
 
-        yield return null;
+                BalloonHeight.localPosition += BallPos * Time.deltaTime;
+            }
+            yield return null;
+        }
     }
 
     private void OnTriggerEnter(Collider other)

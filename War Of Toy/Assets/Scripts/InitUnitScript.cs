@@ -28,7 +28,8 @@ public class InitUnitScript : MonoBehaviour {
     {
         if(CurUnitNum.m_Instance.m_UnitNum + 1 > SelectUnitScript.m_Instance.AcceptableUnit)
         {
-            Debug.Log("유닛을 더이상 수용할 수 없습니다. 숙소를 늘려주세요");
+            NoticeScript.m_Instance.Notice("숙소를 늘려주세요\n");
+          
             return;
         }
         switch (unit)
@@ -42,7 +43,7 @@ public class InitUnitScript : MonoBehaviour {
                 break;
 
             case 1: // 공장에서 생성
-                FactoryScript.m_Animator.SetBool("IsWork", true);
+                //FactoryScript.m_Animator.SetBool("IsWork", true);
                 UnitPos = m_Factory.position;
                 if ((UnitPos.x > 60f && UnitPos.z < 25f) || (UnitPos.x < 35f && UnitPos.z > 73f))
                     UnitPos.y = 4.5f;

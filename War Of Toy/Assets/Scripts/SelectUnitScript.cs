@@ -39,15 +39,16 @@ public class SelectUnitScript : MonoBehaviour
     }
 
 
+
+
     IEnumerator SelectRoutine()
     {
         IsSRrunning = true;
         while (true)
         {
-            
             Debug.Log("선택루틴 실행중");
-            if(Input.GetMouseButtonDown(0))// && m_IsSelect == false)
-            //if (Input.touchCount == 1 && TouchScript.IsOver)//&& m_IsSelect == false)
+            if(Input.GetMouseButton(0))
+            //if (Input.touchCount == 1 )
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position);
                 RaycastHit hit;
@@ -250,6 +251,23 @@ public class SelectUnitScript : MonoBehaviour
         }
 
     }
+
+    //public void OrderToDrop()
+    //{
+    //    foreach (PlayerMove unit in SelectedUnit)
+    //    {
+    //        if (unit.m_IsBoard)
+    //            return;
+    //        StopCoroutine("SelectRoutine");
+    //        unit.m_IsPick = false;
+    //        unit.m_IsMineral = false;
+    //        unit.m_IsAttack = false;
+    //        unit.m_IsBoard = true;
+    //        unit.imgSelectbar.enabled = false;
+    //        unit.imgHpbar.enabled = false;
+    //    }
+
+    //}
 
     void OnDestroy()
     {
