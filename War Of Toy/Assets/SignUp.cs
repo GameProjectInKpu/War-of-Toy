@@ -43,27 +43,19 @@ public class SignUp : MonoBehaviour {
 
        yield return www;
 
-        if (www.text == "IDIsAlreadyExist")
+        if (www.text == "0")
         {
-            Debug.Log("ID is already Exist");
+            Debug.Log("ID is already used");
             UsingIDWindow.SetActive(true);
         }
-
-        else if (www.text == "EmailIsAlreadyExist")
-        {
-            Debug.Log("Email Is Already Exist");
-           // UsingIDWindow.SetActive(true);
-        }
-
+        
         else
         {
-            Debug.Log("Sign Up Complete");
+            Debug.Log("Everyting OK");
+            StopCoroutine(SignUpToDB());
+            SignUpWindow.SetActive(false);
             SignUpFinish.SetActive(true);
         }
-
-    
-
-        
         
     }
 
@@ -80,7 +72,6 @@ public class SignUp : MonoBehaviour {
     public void CloseSignUpFinish()
     {
         SignUpFinish.SetActive(false);
-        SignUpWindow.SetActive(false);
     }
 
     public void CloseUsingIDWindow()
