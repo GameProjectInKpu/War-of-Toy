@@ -38,15 +38,21 @@ public class Login : MonoBehaviour
 
         yield return www;
 
-        if (www.text == "1")
+        if (www.text == "LoginOK")
         {
-            Debug.Log("if Login Success...! ");
+            Debug.Log("Login OK");
             AccessToLauncher.SetActive(true);
             // Application.LoadLevel("next");
         }
-        else
+
+        else if(www.text == "PasswordError")
         {
-            Debug.Log("Login Failed...! ");
+            Debug.Log("Password is Error");
+        }
+
+        else if(www.text == "UserNotFound")
+        {
+            Debug.Log("User Not Found");
         }
 
         StopCoroutine(LoginToDB(EnterID.text, EnterPassword.text));
