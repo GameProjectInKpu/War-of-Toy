@@ -44,10 +44,10 @@ public class BuildScript : Photon.PunBehaviour
 
     private void Awake()
     {
-        
+
         m_Camera = Camera.main.transform;
         m_CameraMove = m_Camera.GetComponent<MoveCamera>();
-        
+
     }
 
     public void Build()
@@ -60,22 +60,23 @@ public class BuildScript : Photon.PunBehaviour
         PlanePos = m_Camera.position;
         BuildPos.y = 0.1f;
         BuildPos.z += 15f;
-        
+
         if (Physics.Raycast(Camera.main.transform.position, BuildPos - Camera.main.transform.position, Mathf.Infinity, m_LMInBase))
             BuildPos.y = 4.5f;
         Debug.DrawRay(Camera.main.transform.position, BuildPos - Camera.main.transform.position, Color.red);
-        
+
         PlanePos.y = BuildPos.y + 0.1f;
 
         if (PhotonNetwork.isMasterClient)
         {
-            Building = PhotonNetwork.Instantiate(m_Building_red.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
-            Plane = PhotonNetwork.Instantiate(m_Plane.name, PlanePos, Quaternion.Euler(Vector3.zero), 0);
+            Building = Instantiate(m_Building_red, BuildPos, Quaternion.Euler(Vector3.zero));
+            Plane = Instantiate(m_Plane, PlanePos, Quaternion.Euler(Vector3.zero));
         }
+
         else
         {
-            Building = PhotonNetwork.Instantiate(m_Building_blue.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
-            Plane = PhotonNetwork.Instantiate(m_Plane.name, PlanePos, Quaternion.Euler(Vector3.zero),0);
+            Building = Instantiate(m_Building_blue, BuildPos, Quaternion.Euler(Vector3.zero));
+            Plane = Instantiate(m_Plane, PlanePos, Quaternion.Euler(Vector3.zero));
         }
 
         //BuildingTemp = Building;
@@ -102,10 +103,10 @@ public class BuildScript : Photon.PunBehaviour
         Plane.transform.SetParent(Building.transform, false);
         Plane.transform.localPosition = Vector3.zero;
 
-        BuildPlaneScript m_PlaneInfo =  Plane.GetComponent<BuildPlaneScript>();
+        BuildPlaneScript m_PlaneInfo = Plane.GetComponent<BuildPlaneScript>();
 
         Vector3 Scale = transform.localScale;
-        
+
 
         if (PhotonNetwork.isMasterClient)
         {
@@ -115,12 +116,13 @@ public class BuildScript : Photon.PunBehaviour
         {
             CheckTag = m_Building_blue;
         }
+
         switch (CheckTag.tag)
         {
             case "B_Batterys":
                 Scale.x *= 0.7f;
                 Scale.z *= 0.7f;
-                
+
                 break;
             case "B_Zenga":
                 Scale.x *= 0.5f;
@@ -161,7 +163,7 @@ public class BuildScript : Photon.PunBehaviour
     {
         while (true)
         {
-            
+
             Debug.DrawRay(Camera.main.transform.position, BuildPos - Camera.main.transform.position, Color.red);
             if (Input.GetMouseButton(0))    // 버튼이 눌러지는 동안
             {
@@ -179,19 +181,19 @@ public class BuildScript : Photon.PunBehaviour
                 m_IsClickBuilding = false;
                 m_CameraMove.enabled = true;
             }
-            
+
 
 
 
             if (m_IsClickBuilding == true && IsButtonPressed == false)
             {
-                
+
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);    // 스크린에서 월드방향으로 
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LayerMaskGround))
                 {
                     BuildPos = Building.transform.position;
-                    OKPos = Vector3.zero; 
+                    OKPos = Vector3.zero;
                     NOPos = Vector3.zero;
                     PlanePos = BuildPos;
                     PlanePos.y = BuildPos.y + 0.1f;
@@ -201,7 +203,7 @@ public class BuildScript : Photon.PunBehaviour
                     OKPos.x = BuildPos.x - 5f;
                     OKPos.z = BuildPos.z + 10f;
                     NOPos.x = BuildPos.x + 5f;
-                    NOPos.z = BuildPos.z + 10f;                
+                    NOPos.z = BuildPos.z + 10f;
 
                     OKPos.x = (int)OKPos.x;
                     OKPos.z = (int)OKPos.z;
@@ -242,7 +244,7 @@ public class BuildScript : Photon.PunBehaviour
 
             else
             {
-                
+
                 OKPos.x = BuildPos.x - 5f;
                 OKPos.z = BuildPos.z + 10f;
                 NOPos.x = BuildPos.x + 5f;
@@ -300,25 +302,26 @@ public class BuildScript : Photon.PunBehaviour
         if (IsBuild == true)
         {
             Debug.Log(m_CanBuild);
-            if(!m_CanBuild )
+            if (!m_CanBuild)
             {
                 NoticeScript.m_Instance.Notice("건물을 지을수 없는 구역입니다\n");
                 IsButtonPressed = false;
                 return;
             }
-            if(StarScript.m_Instance.m_StarNum - 50 < 0)
+            if (StarScript.m_Instance.m_StarNum - 50 < 0)
             {
                 NoticeScript.m_Instance.Notice("자원이 부족합니다\n");
                 IsButtonPressed = false;
                 return;
             }
-                
+
             StarScript.m_Instance.BuildByStar(50);
             //Building.GetComponent<NavMeshObstacle>().enabled = false;
             BuildingTemp = Building;
             //Building = null;
             Destroy(Building);
             Destroy(Plane);
+
             if (PhotonNetwork.isMasterClient)
             {
                 Building = (GameObject)PhotonNetwork.Instantiate(m_Building_red.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
@@ -327,6 +330,7 @@ public class BuildScript : Photon.PunBehaviour
             {
                 Building = (GameObject)PhotonNetwork.Instantiate(m_Building_blue.name, BuildPos, Quaternion.Euler(Vector3.zero), 0);
             }
+
             Building.transform.position = BuildPos;
             Building.AddComponent<NavMeshObstacle>();
             Building.GetComponent<NavMeshObstacle>().carving = true;
@@ -367,7 +371,7 @@ public class BuildScript : Photon.PunBehaviour
             Destroy(Plane);
             Plane = null;
         }
-       
+
 
         m_IsBuild = IsBuild;
         m_BuildOK.SetActive(false);
@@ -390,7 +394,6 @@ public class BuildScript : Photon.PunBehaviour
         StopAllCoroutines();
     }
 
-  
+
 
 }
-

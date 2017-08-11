@@ -15,6 +15,8 @@ public class UnitStatusScript : MonoBehaviour {
     //public List<Sprite> m_SpriteList = new List<Sprite>();
     // 이미지 관리
     public List<Sprite> m_UnitSpriteList;
+    public Image UnitHp;
+    public Image CurHp;
     public Image UnitImage;
     public Text  UnitActionText;
 
@@ -22,11 +24,18 @@ public class UnitStatusScript : MonoBehaviour {
     {
         m_Instance = this;
         UnitImage = GetComponent<Image>();
+        CurHp.enabled = false;
 
     }
 
-    public void SetUnitImage(Transform unit, int color)//(RaycastHit hit, int color)
+    public void SetUnitImage(Transform unit, int color, Image hp)//(RaycastHit hit, int color)
     {
+        CurHp.enabled = true;
+        UnitHp = hp;
+        StopCoroutine("HPRoutine");
+        StartCoroutine("HPRoutine");
+
+
         switch (unit.tag)
         {
             case "UnitSoldier":
@@ -83,10 +92,22 @@ public class UnitStatusScript : MonoBehaviour {
         }
     }
 
-
+    IEnumerator HPRoutine()
+    {
+        while(true)
+        {
+            if (CurHp.fillAmount <= 0)
+                StopCoroutine("HPRoutine");
+            CurHp.fillAmount = UnitHp.fillAmount;
+            //Debug.Log(CurHp.fillAmount);// = hp.fillAmount;
+            yield return null;
+        }
+    }
+    
 
     void OnDestroy()
     {
+        StopAllCoroutines();
         m_Instance = null;
     }
 

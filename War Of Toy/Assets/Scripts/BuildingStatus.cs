@@ -47,9 +47,18 @@ public class BuildingStatus : MonoBehaviour {
         //if(transform.tag == "B_ToyFactory")
     }
 
-    private void OnCollisionEnter(Collision bullet)
+    private void OnCollisionEnter(Collision damage)
     {
-        if (bullet.transform.tag == "Bullet")
+        if (damage.transform.tag == "Bullet")
+        {
+            m_Hp -= 10f;
+            if (m_Hp < 0f)
+                m_IsAlive = false;
+            imgHpbar.enabled = true;
+            imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
+        }
+
+        else if (damage.transform.tag == "AttackArea")
         {
             m_Hp -= 10f;
             if (m_Hp < 0f)

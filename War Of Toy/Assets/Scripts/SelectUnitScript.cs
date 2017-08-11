@@ -63,13 +63,15 @@ public class SelectUnitScript : MonoBehaviour
                     Bs = hit.transform.GetComponent<BuildingStatus>();
                     if (Bs.GetComponentInChildren<Renderer>().material.color == Color.red)
                         goto CannotOrder;
-                    Bs.m_IsSelect = true;
+                    
+                   
 
                     if (Bs.m_Team.gameObject.layer == 23)
-                        UnitStatusScript.m_Instance.SetUnitImage(hit.transform, 0);
+                        UnitStatusScript.m_Instance.SetUnitImage(hit.transform, 0, Bs.imgHpbar);
                     else
-                        UnitStatusScript.m_Instance.SetUnitImage(hit.transform, 1);
+                        UnitStatusScript.m_Instance.SetUnitImage(hit.transform, 1, Bs.imgHpbar);
 
+                    Bs.m_IsSelect = true;
                     Bs.imgSelectbar.enabled = true;
                     CannotOrder:;
                 }
@@ -124,31 +126,33 @@ public class SelectUnitScript : MonoBehaviour
         PlayerMove Unit = unit.GetComponent<PlayerMove>();
 
         if (Unit.m_IsBuild || Unit.m_IsSelect || m_BuildOK.activeSelf) goto CannotOrder;
+        
+       
 
         if (PhotonNetwork.isMasterClient)
         {
             if (Unit.m_Team.gameObject.layer == 22)
             {
-                UnitStatusScript.m_Instance.SetUnitImage(unit, 1);
+                UnitStatusScript.m_Instance.SetUnitImage(unit, 1, Unit.imgHpbar);
                 UnitFuncScript.m_Instance.ClearFunc();
                 goto CannotOrder;
             }
 
             else
-                UnitStatusScript.m_Instance.SetUnitImage(unit, 0);
+                UnitStatusScript.m_Instance.SetUnitImage(unit, 0, Unit.imgHpbar);
         }
 
         else
         {
             if (Unit.m_Team.gameObject.layer == 23)
             {
-                UnitStatusScript.m_Instance.SetUnitImage(unit, 0);
+                UnitStatusScript.m_Instance.SetUnitImage(unit, 0, Unit.imgHpbar);
                 UnitFuncScript.m_Instance.ClearFunc();
                 goto CannotOrder;
             }
 
             else
-                UnitStatusScript.m_Instance.SetUnitImage(unit, 1);
+                UnitStatusScript.m_Instance.SetUnitImage(unit, 1, Unit.imgHpbar);
         }
 
         SelectedUnit.Add(Unit);

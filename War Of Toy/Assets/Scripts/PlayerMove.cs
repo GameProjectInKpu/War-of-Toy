@@ -56,6 +56,7 @@ public class PlayerMove : MonoBehaviour
 
     GameObject HitOb;
     PlayerMove HitPM;
+    BuildingStatus HitBS;
 
     void OnEnable()
     {
@@ -304,10 +305,10 @@ public class PlayerMove : MonoBehaviour
                     {
                         Debug.DrawRay(Camera.main.transform.position, hit.point - Camera.main.transform.position, Color.red);
                         HitOb = hit.collider.gameObject;
-                        HitPM = HitOb.GetComponent<PlayerMove>();
-                       
+                        
                         if (HitOb.layer == 28)   // Unit
                         {
+                            HitPM = HitOb.GetComponent<PlayerMove>();
                             HitPM.m_IsSelect = false;
                             HitPM.imgSelectbar.enabled = false;
                             if (transform.tag == "UnitLego" || transform.tag == "UnitClockMouse" || HitOb.tag == "UnitAirballoon")
@@ -333,13 +334,13 @@ public class PlayerMove : MonoBehaviour
                                         imgHpbar.enabled = false;
                                         HitPM.imgHpbar.enabled = false;
                                         HitPM.unitState = UnitState.die;
-                                    HitPM.m_Animator.SetBool("IsDie", true);
-                                    HitPM.m_IsAlive = false;
-                                    m_Animator.SetBool("IsAttack", false);
-                                    unitState = UnitState.idle;
-                                    m_Animator.SetBool("IsPick", false);
+                                        HitPM.m_Animator.SetBool("IsDie", true);
+                                        HitPM.m_IsAlive = false;
+                                        m_Animator.SetBool("IsAttack", false);
+                                        unitState = UnitState.idle;
+                                        m_Animator.SetBool("IsPick", false);
 
-                                    StopCoroutine("AttackByBullet");
+                                        StopCoroutine("AttackByBullet");
                                         break;
                                     }
                                 case "UnitBear":
@@ -402,6 +403,104 @@ public class PlayerMove : MonoBehaviour
                                     break;
                             }
                         }
+
+                        else if(HitOb.layer == 27)  // Building
+                        {
+                            HitBS = HitOb.GetComponent<BuildingStatus>();
+                            HitBS.m_IsSelect = false;
+                            HitBS.imgSelectbar.enabled = false;
+                            if (transform.tag == "UnitLego" || transform.tag == "UnitClockMouse" || HitOb.tag == "UnitAirballoon")
+                            {
+                                m_IsSelect = false;
+                                break;
+                            }
+
+                            Debug.Log("타겟 확정");
+                            unitState = UnitState.attack;
+                            yield return StartCoroutine("Picking", hit.point);
+
+                            switch (transform.tag)
+                            {
+                                case "UnitSoldier":
+                                    {
+                                        m_Animator.SetBool("IsAttack", true);
+                                        StartCoroutine("AttackByBullet");
+                                        imgHpbar.enabled = true;
+                                        HitBS.imgHpbar.enabled = true;
+
+                                        //yield return StartCoroutine("TraceRoutine");
+                                        imgHpbar.enabled = false;
+                                        HitBS.imgHpbar.enabled = false;
+                                        //HitBS.unitState = UnitState.die;
+                                        //HitBS.m_Animator.SetBool("IsDie", true);
+                                        HitBS.m_IsAlive = false;
+                                        m_Animator.SetBool("IsAttack", false);
+                                        unitState = UnitState.idle;
+                                        m_Animator.SetBool("IsPick", false);
+
+                                        StopCoroutine("AttackByBullet");
+                                        break;
+                                    }
+                                case "UnitBear":
+                                    {
+                                        m_Animator.SetBool("IsAttack", true);
+                                        StartCoroutine("BearAttackRoutine");
+
+                                        imgHpbar.enabled = true;
+                                        HitBS.imgHpbar.enabled = true;
+
+                                        //yield return StartCoroutine("TraceRoutine");
+                                        imgHpbar.enabled = false;
+                                        HitBS.imgHpbar.enabled = false;
+                                        //HitBS.m_Animator.SetBool("IsDie", true);
+                                        m_Animator.SetBool("IsAttack", false);
+                                        StopCoroutine("BearAttackRoutine");
+                                        break;
+                                    }
+                                case "UnitDinosaur":
+                                    {
+                                        m_Animator.SetBool("IsAttack", true);
+                                        imgHpbar.enabled = true;
+                                        HitBS.imgHpbar.enabled = true;
+                                        StartCoroutine("AttackByFlare");
+                                        //yield return StartCoroutine("TraceRoutine");
+                                        imgHpbar.enabled = false;
+                                        HitBS.imgHpbar.enabled = false;
+                                        //HitBS.unitState = UnitState.die;
+                                        //HitBS.m_Animator.SetBool("IsDie", true);
+                                        HitBS.m_IsAlive = false;
+                                        m_Animator.SetBool("IsAttack", false);
+                                        unitState = UnitState.idle;
+                                        m_Animator.SetBool("IsPick", false);
+
+                                        StopCoroutine("AttackByFlare");
+                                        break;
+                                    }
+                                case "UnitRCcar":
+                                    {
+                                        m_Animator.SetBool("IsAttack", true);
+                                        imgHpbar.enabled = true;
+                                        HitBS.imgHpbar.enabled = true;
+                                        CarAttakArea.gameObject.SetActive(true);
+                                        StartCoroutine("AttackByFlare");
+                                        //yield return StartCoroutine("TraceRoutine");
+                                        imgHpbar.enabled = false;
+                                        HitBS.imgHpbar.enabled = false;
+                                        //HitBS.unitState = UnitState.die;
+                                        //HitBS.m_Animator.SetBool("IsDie", true);
+                                        HitBS.m_IsAlive = false;
+                                        m_Animator.SetBool("IsAttack", false);
+                                        unitState = UnitState.idle;
+                                        m_Animator.SetBool("IsPick", false);
+                                        CarAttakArea.gameObject.SetActive(false);
+                                        //StopCoroutine("AttackByFlare");
+                                        break;
+                                    }
+
+                                default:
+                                    break;
+                            }
+                        }
                     }
                 }
 
@@ -411,24 +510,33 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    public void ConditionForAttack(int HitOblayer)
+    {
+       // if(HitOblayer == 27)
 
+    }
    
 
     IEnumerator TraceRoutine()
     {
         while (HitPM.m_IsAlive)
         {
+            Debug.Log("추적 루틴 실행중");
             if (Vector3.Distance(transform.position, HitPM.transform.position) >= 10f)
             {
                 float tracedis = 0.0f;
                 switch (transform.tag)
                 {
-                    case "UnitSoldier": tracedis = 5f; break;
+                    case "UnitSoldier":
+                        tracedis = 5f;
+                        break;
                     case "UnitDinosaur":
                         tracedis = 8f;
                         IsStartParticle = false;
                         break;
-                    case "UnitBear": tracedis = 2f; break;
+                    case "UnitBear":
+                        tracedis = 2f;
+                        break;
                     case "UnitRCcar":
                         tracedis = 2f;
                         CarAttakArea.gameObject.SetActive(false);
@@ -439,7 +547,7 @@ public class PlayerMove : MonoBehaviour
                 m_Animator.SetBool("IsPick", true);
                 m_Animator.SetBool("IsAttack", false);
                 m_Attackstop = true;
-                GetComponent<NavMeshAgent>().enabled = true;
+                //GetComponent<NavMeshAgent>().enabled = true;
 
                 NavMesh.CalculatePath(transform.position, HitPM.transform.position, NavMesh.AllAreas, m_Path);
                 Vector3[] TraceCorners = m_Path.corners;
@@ -476,15 +584,11 @@ public class PlayerMove : MonoBehaviour
     {
         while (true)
         {
-            if (m_IsAttack == false)
-            {
-                unitState = UnitState.idle;
-                StopCoroutine("AttackByBullet");
-            }
-                
+            Debug.Log("공격루틴 실행중");                
 
             if (m_Attackstop == false )
             {
+                Debug.Log("총알 발사되고 있음");
                 GameObject Obj = (GameObject)PhotonNetwork.Instantiate(Bullet.name, FireHole.position, FireHole.rotation, 0);
             }
 
@@ -498,13 +602,6 @@ public class PlayerMove : MonoBehaviour
     {
         while (true)
         {
-
-            if (m_IsAttack == false)
-            {
-                unitState = UnitState.idle;     
-                StopCoroutine("AttackByFlare");
-            }
-
             if (m_Attackstop == false)
             {
                 if (IsStartParticle == true)
@@ -534,7 +631,7 @@ public class PlayerMove : MonoBehaviour
                     HitPM.m_IsAlive = false;
                 HitPM.imgHpbar.enabled = true;
                 HitPM.imgHpbar.fillAmount = (float)HitPM.m_Hp / (float)HitPM.m_InitHp;
-
+                
             }
             yield return new WaitForSeconds(2.5f);
         }
@@ -576,7 +673,7 @@ public class PlayerMove : MonoBehaviour
             yield return null;
         }
         m_Animator.SetBool("IsPick", false);
-        GetComponent<NavMeshAgent>().enabled = true;
+        //GetComponent<NavMeshAgent>().enabled = true;
         unitState = UnitState.idle;
         StopCoroutine("Picking");
     }
@@ -616,11 +713,26 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.tag == "MeshLink")
+    //    {
+    //        GetComponent<NavMeshAgent>().enabled = false;
+    //    }
+    //}
+
+    private void OnTriggerStay(Collider other)
     {
         if (other.tag == "MeshLink")
         {
             GetComponent<NavMeshAgent>().enabled = false;
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "MeshLink")
+        {
+            GetComponent<NavMeshAgent>().enabled = true;
         }
     }
 
