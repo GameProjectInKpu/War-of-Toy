@@ -14,6 +14,8 @@ public class BuildingStatus : MonoBehaviour {
     public Image imgHpbar;
     public Image imgSelectbar;
 
+    //public Material 
+
   
     void Start()
     {
@@ -44,7 +46,13 @@ public class BuildingStatus : MonoBehaviour {
                     break;
             }
         }
-        //if(transform.tag == "B_ToyFactory")
+        
+
+        if(m_IsAlive == false)
+        {
+            Invoke("Death", 3f);
+        }
+            
     }
 
     private void OnCollisionEnter(Collision damage)
@@ -67,4 +75,19 @@ public class BuildingStatus : MonoBehaviour {
             imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
         }
     }
+
+    public void Death()
+    {
+        Destroy(gameObject);
+        //Destroy(SelectButton);
+    }
+
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
+        m_IsAlive = false;
+    }
+
 }
+
+

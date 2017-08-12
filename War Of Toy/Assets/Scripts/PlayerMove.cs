@@ -189,7 +189,7 @@ public class PlayerMove : MonoBehaviour
                             yield return StartCoroutine("Picking", hit.point);
                             SelectUnitScript.m_Instance.m_PickImage.SetActive(false);
                             m_IsSelect = false;
-                         }
+                        }
                     }
                 }
             }
@@ -202,7 +202,7 @@ public class PlayerMove : MonoBehaviour
                     //m_IsStartToMove = true;
                     imgSelectbar.enabled = false;
                     imgHpbar.enabled = false;
-                    Ray ray = Camera.main.ScreenPointToRay(InputSpot()); 
+                    Ray ray = Camera.main.ScreenPointToRay(InputSpot());
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                     {
@@ -226,19 +226,19 @@ public class PlayerMove : MonoBehaviour
                                 yield return new WaitForSeconds(2.0f);
                                 if (HitOb.tag == "B_Stars")
                                 {
-                                   if (HitRS.m_Empty)
+                                    if (HitRS.m_Empty)
                                     {
                                         Destroy(HitOb);
                                         break;
                                     }
-                                       
-                                   ++StarScript.m_Instance.m_StarNum;
-                                   ++HitRS.m_gage;
+
+                                    ++StarScript.m_Instance.m_StarNum;
+                                    ++HitRS.m_gage;
                                 }
-                                    
+
                                 else
-                                   ++BatteryScript.m_Instance.m_BatteryNum;
-                                    
+                                    ++BatteryScript.m_Instance.m_BatteryNum;
+
                             }
                             unitState = UnitState.idle;
                             m_Animator.SetBool("IsMineral", false);
@@ -277,7 +277,7 @@ public class PlayerMove : MonoBehaviour
                             GetComponent<NavMeshAgent>().enabled = false;
                             transform.SetParent(HitPM.BalloonHeight, false);
                             Vector3 UPos = Vector3.zero;
-                            Vector3 URot = Vector3.zero; 
+                            Vector3 URot = Vector3.zero;
                             Vector3 UScal = Vector3.one;
                             UPos.x -= 5f;
                             URot.z -= 90f;
@@ -295,7 +295,7 @@ public class PlayerMove : MonoBehaviour
             }
 
             else if (m_IsAttack)
-            {                
+            {
                 if (IsInputRight())
                 {
                     //m_IsStartToMove = true;
@@ -306,7 +306,7 @@ public class PlayerMove : MonoBehaviour
                     {
                         Debug.DrawRay(Camera.main.transform.position, hit.point - Camera.main.transform.position, Color.red);
                         HitOb = hit.collider.gameObject;
-                        
+
                         if (HitOb.layer == 28)   // Unit
                         {
                             m_IsPM = true;
@@ -323,7 +323,7 @@ public class PlayerMove : MonoBehaviour
                             Debug.Log("타겟 확정");
                             unitState = UnitState.attack;
                             yield return StartCoroutine("Picking", hit.point);
-                                
+
                             switch (transform.tag)
                             {
                                 case "UnitSoldier":
@@ -343,6 +343,7 @@ public class PlayerMove : MonoBehaviour
                                         m_Animator.SetBool("IsPick", false);
 
                                         StopCoroutine("AttackByBullet");
+                                        m_IsAttack = false;
                                         break;
                                     }
                                 case "UnitBear":
@@ -357,6 +358,7 @@ public class PlayerMove : MonoBehaviour
                                         HitPM.m_Animator.SetBool("IsDie", true);
                                         m_Animator.SetBool("IsAttack", false);
                                         StopCoroutine("BearAttackRoutine");
+                                        m_IsAttack = false;
                                         break;
                                     }
                                 case "UnitDinosaur":
@@ -375,6 +377,7 @@ public class PlayerMove : MonoBehaviour
                                         unitState = UnitState.idle;
                                         m_Animator.SetBool("IsPick", false);
                                         StopCoroutine("AttackByFlare");
+                                        m_IsAttack = false;
                                         break;
                                     }
                                 case "UnitRCcar":
@@ -395,6 +398,7 @@ public class PlayerMove : MonoBehaviour
                                         m_Animator.SetBool("IsPick", false);
                                         CarAttakArea.gameObject.SetActive(false);
                                         //StopCoroutine("AttackByFlare");
+                                        m_IsAttack = false;
                                         break;
                                     }
 
@@ -404,7 +408,7 @@ public class PlayerMove : MonoBehaviour
                             m_IsPM = false;
                         }
 
-                        else if(HitOb.layer == 27)  // Building
+                        else if (HitOb.layer == 27)  // Building
                         {
                             m_IsPM = false;
                             m_IsBS = true;
@@ -426,28 +430,31 @@ public class PlayerMove : MonoBehaviour
                                 case "UnitSoldier":
                                     {
                                         m_Animator.SetBool("IsAttack", true);
-                                        yield return StartCoroutine("AttackByBullet");
                                         imgHpbar.enabled = true;
                                         HitBS.imgHpbar.enabled = true;
+                                        yield return StartCoroutine("AttackByBullet");
                                         imgHpbar.enabled = false;
                                         HitBS.imgHpbar.enabled = false;
                                         HitBS.m_IsAlive = false;
                                         m_Animator.SetBool("IsAttack", false);
                                         unitState = UnitState.idle;
                                         m_Animator.SetBool("IsPick", false);
-                                        StopCoroutine("AttackByBullet");
+                                        m_IsBS = false;
+                                        m_IsAttack = false;
                                         break;
                                     }
                                 case "UnitBear":
                                     {
                                         m_Animator.SetBool("IsAttack", true);
-                                        yield return StartCoroutine("BearAttackRoutine");
                                         imgHpbar.enabled = true;
                                         HitBS.imgHpbar.enabled = true;
+                                        yield return StartCoroutine("BearAttackRoutine");
+                                        Debug.Log("건물 다부시고 공격루틴 종료함");
                                         imgHpbar.enabled = false;
                                         HitBS.imgHpbar.enabled = false;
                                         m_Animator.SetBool("IsAttack", false);
-                                        StopCoroutine("BearAttackRoutine");
+                                        m_IsBS = false;
+                                        m_IsAttack = false;
                                         break;
                                     }
                                 case "UnitDinosaur":
@@ -462,7 +469,8 @@ public class PlayerMove : MonoBehaviour
                                         m_Animator.SetBool("IsAttack", false);
                                         unitState = UnitState.idle;
                                         m_Animator.SetBool("IsPick", false);
-                                        StopCoroutine("AttackByFlare");
+                                        m_IsBS = false;
+                                        m_IsAttack = false;
                                         break;
                                     }
                                 case "UnitRCcar":
@@ -472,14 +480,16 @@ public class PlayerMove : MonoBehaviour
                                         HitBS.imgHpbar.enabled = true;
                                         CarAttakArea.gameObject.SetActive(true);
                                         //StartCoroutine("AttackByFlare");
-                                        imgHpbar.enabled = false;
-                                        HitBS.imgHpbar.enabled = false;
-                                        HitBS.m_IsAlive = false;
+                                        //imgHpbar.enabled = false;
+                                        //HitBS.imgHpbar.enabled = false;
+                                        //HitBS.m_IsAlive = false;
                                         m_Animator.SetBool("IsAttack", false);
                                         unitState = UnitState.idle;
                                         m_Animator.SetBool("IsPick", false);
                                         CarAttakArea.gameObject.SetActive(false);
                                         //StopCoroutine("AttackByFlare");
+                                        m_IsBS = false;
+                                        m_IsAttack = false;
                                         break;
                                     }
 
@@ -488,7 +498,7 @@ public class PlayerMove : MonoBehaviour
                             }
                             m_IsBS = false;
                         }
-                        
+
                     }
                 }
 
@@ -499,10 +509,10 @@ public class PlayerMove : MonoBehaviour
 
     public void ConditionForAttack(int HitOblayer)
     {
-       // if(HitOblayer == 27)
+        // if(HitOblayer == 27)
 
     }
-   
+
 
     IEnumerator TraceRoutine()
     {
@@ -555,9 +565,9 @@ public class PlayerMove : MonoBehaviour
             {
                 m_Animator.SetBool("IsPick", false);
                 m_Animator.SetBool("IsAttack", true);
-                if(transform.tag == "UnitRCcar")
+                if (transform.tag == "UnitRCcar")
                     CarAttakArea.gameObject.SetActive(true);
-                m_Attackstop = false;             
+                m_Attackstop = false;
             }
 
 
@@ -575,14 +585,14 @@ public class PlayerMove : MonoBehaviour
             if (m_IsBS && !m_IsPM) condition = HitBS.m_IsAlive;
             if (m_IsPM && !m_IsBS) condition = HitPM.m_IsAlive;
 
-            Debug.Log("공격루틴 실행중");    
-            
+            Debug.Log("공격루틴 실행중");
+
             if (m_Attackstop == false)
             {
                 Debug.Log("총알 발사되고 있음");
                 GameObject Obj = (GameObject)PhotonNetwork.Instantiate(Bullet.name, FireHole.position, FireHole.rotation, 0);
             }
-            
+
             yield return new WaitForSeconds(2.5f);
         }
 
@@ -591,7 +601,7 @@ public class PlayerMove : MonoBehaviour
     IEnumerator AttackByFlare()
     {
         bool condition = true;
-        while (true)
+        while (condition)
         {
             if (m_IsBS && !m_IsPM) condition = HitBS.m_IsAlive;
             if (m_IsPM && !m_IsBS) condition = HitPM.m_IsAlive;
@@ -605,9 +615,9 @@ public class PlayerMove : MonoBehaviour
                 }
                 else
                     IsStartParticle = true;
-                    
+
             }
-            
+
             yield return new WaitForSeconds(1.7f);
 
         }
@@ -617,20 +627,39 @@ public class PlayerMove : MonoBehaviour
     IEnumerator BearAttackRoutine()
     {
         bool condition = true;
-        while (true)
+        while (condition)
         {
             if (m_IsBS && !m_IsPM) condition = HitBS.m_IsAlive;
             if (m_IsPM && !m_IsBS) condition = HitPM.m_IsAlive;
 
-            if (HitOb.layer == 28 && m_Attackstop == false)
+            if(m_Attackstop == false)
             {
-                HitPM.m_Hp -= 10f;
-                if (HitPM.m_Hp < 0f)
-                    HitPM.m_IsAlive = false;
-                HitPM.imgHpbar.enabled = true;
-                HitPM.imgHpbar.fillAmount = (float)HitPM.m_Hp / (float)HitPM.m_InitHp;
-                
+                if(HitOb.layer == 28)
+                {
+                    HitPM.m_Hp -= 10f;
+                    if (HitPM.m_Hp < 0f)
+                    {
+                        HitPM.m_IsAlive = false;
+                        StopCoroutine("BearAttackRoutine");
+                    }
+                        
+                    HitPM.imgHpbar.enabled = true;
+                    HitPM.imgHpbar.fillAmount = (float)HitPM.m_Hp / (float)HitPM.m_InitHp;
+                }
+
+                else if(HitOb.layer == 27)
+                {
+                    HitBS.m_Hp -= 10f;
+                    if (HitBS.m_Hp < 0f)
+                    {
+                        HitBS.m_IsAlive = false;
+                        StopCoroutine("BearAttackRoutine");
+                    }
+                    HitBS.imgHpbar.enabled = true;
+                    HitBS.imgHpbar.fillAmount = (float)HitBS.m_Hp / (float)HitBS.m_InitHp;
+                }
             }
+
             yield return new WaitForSeconds(2.5f);
         }
     }
@@ -663,14 +692,11 @@ public class PlayerMove : MonoBehaviour
         {
             Debug.DrawRay(Camera.main.transform.position, HitPoint - Camera.main.transform.position, Color.red);
             m_Dir = (Corners[Index] - transform.position).normalized;
-            //m_Dir.y = Mathf.Floor(m_Dir.y);
-            //m_Pos = m_Dir * m_MoveSpeed;// * Time.deltaTime;
-            //m_Pos.y = Mathf.Floor(m_Pos.y);
             transform.position += m_Dir * m_MoveSpeed * Time.deltaTime;
-            m_Pos = transform.position;
-            //m_Pos.y = (Mathf.Round(m_Pos.y / 0.01)) * 0.01;
-            //m_Pos.y.ToString("N2");
-            transform.position = m_Pos;
+            //m_Pos = transform.position;
+            //m_Pos.y.ToString("0000.00");
+            //Debug.Log(m_Pos.y);
+            //transform.position = m_Pos;
 
             if (transform.tag != "UnitAirballoon")
                 transform.rotation = Quaternion.LookRotation(m_Dir);
@@ -708,7 +734,7 @@ public class PlayerMove : MonoBehaviour
                 if (BallPos.y > 0f)
                 {
                     BallPos.y -= 0.1f;// 
-                    
+
                 }
                 else
                     StopCoroutine("Landing_TakeOff");
@@ -801,7 +827,7 @@ public class PlayerMove : MonoBehaviour
         yield return new WaitForSeconds(5.0f);
         Building.GetComponentInChildren<Renderer>().material.color = Color.white;
         unitState = UnitState.idle;
-         m_Animator.SetBool("IsBuild", false);
+        m_Animator.SetBool("IsBuild", false);
         m_IsSelect = false;
         m_IsBuild = false;
 

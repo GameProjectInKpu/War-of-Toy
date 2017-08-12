@@ -166,6 +166,7 @@ public class SelectUnitScript : MonoBehaviour
         Unit.m_IsPick = false;
         Unit.m_IsMineral = false;
         Unit.m_IsAttack = false;
+        //Unit.StopAllCoroutines();
         Unit.StopCoroutine("OrderRoutine");
         Unit.StartCoroutine("OrderRoutine");
         CannotOrder:;
