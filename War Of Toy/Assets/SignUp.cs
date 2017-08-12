@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SignUp : MonoBehaviour {
+public class SignUp : MonoBehaviour
+{
 
     string SignUpURL = "http://www.unitykds.tk/insert_user.php";
 
@@ -15,14 +16,16 @@ public class SignUp : MonoBehaviour {
     public InputField NewEmail;
 
     // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
     public void ClickSignUp()
     {
@@ -33,7 +36,7 @@ public class SignUp : MonoBehaviour {
         // DB연결 후
         // 아이디와 비밀번호 입력받고
         // 중복되는지 확인 후
-        
+
         WWWForm Signform = new WWWForm();
         Signform.AddField("usernamePost", NewID.text);
         Signform.AddField("passwordPost", NewPassword.text);
@@ -41,22 +44,25 @@ public class SignUp : MonoBehaviour {
 
         WWW www = new WWW(SignUpURL, Signform);
 
-       yield return www;
+        yield return www;
 
-        if (www.text == "0")
+        if (www.text == "IDIsAlreadyExist")
         {
-            Debug.Log("ID is already used");
+            Debug.Log("ID is already Exist");
             UsingIDWindow.SetActive(true);
         }
-        
+
+        else if (www.text == "EmailIsAlreadyExist")
+        {
+            Debug.Log("Email Is Already Exist");
+        }
         else
         {
-            Debug.Log("Everyting OK");
+            Debug.Log("Sign Up Complete");
             StopCoroutine(SignUpToDB());
-            SignUpWindow.SetActive(false);
             SignUpFinish.SetActive(true);
         }
-        
+
     }
 
     public void ShowSignUpWindow()
@@ -72,6 +78,7 @@ public class SignUp : MonoBehaviour {
     public void CloseSignUpFinish()
     {
         SignUpFinish.SetActive(false);
+        SignUpWindow.SetActive(false);
     }
 
     public void CloseUsingIDWindow()
