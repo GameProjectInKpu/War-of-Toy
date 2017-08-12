@@ -10,7 +10,7 @@ public class PlayerMove : MonoBehaviour
     public enum UnitState { idle, walk, mineral, build, trace, attack, die };
     public UnitState unitState = UnitState.idle;
 
-    private Vector3 m_Pos;
+    private Vector3 m_Dir;
     private float m_MoveSpeed;
     public float m_Hp = 100f;
     public float m_InitHp;
@@ -541,9 +541,9 @@ public class PlayerMove : MonoBehaviour
                 int TraceIndex = 1;
                 while (TraceIndex < TraceCorners.Length)
                 {
-                    m_Pos = (TraceCorners[TraceIndex] - transform.position).normalized;
-                    transform.position += m_Pos * m_MoveSpeed * Time.deltaTime;
-                    transform.rotation = Quaternion.LookRotation(m_Pos);
+                    m_Dir = (TraceCorners[TraceIndex] - transform.position).normalized;
+                    transform.position += m_Dir * m_MoveSpeed * Time.deltaTime;
+                    transform.rotation = Quaternion.LookRotation(m_Dir);
                     if (Vector3.Distance(transform.position, TraceCorners[TraceIndex]) < tracedis)
                         TraceIndex++;
                     yield return null;
@@ -658,14 +658,22 @@ public class PlayerMove : MonoBehaviour
         NavMesh.CalculatePath(transform.position, HitPoint, NavMesh.AllAreas, m_Path);
         Vector3[] Corners = m_Path.corners;
         int Index = 1;
+        Vector3 m_Pos = transform.position;
         while (Index < Corners.Length)
         {
             Debug.DrawRay(Camera.main.transform.position, HitPoint - Camera.main.transform.position, Color.red);
-            m_Pos = (Corners[Index] - transform.position).normalized;
-            transform.position += m_Pos * m_MoveSpeed * Time.deltaTime;
-         
+            m_Dir = (Corners[Index] - transform.position).normalized;
+            //m_Dir.y = Mathf.Floor(m_Dir.y);
+            //m_Pos = m_Dir * m_MoveSpeed;// * Time.deltaTime;
+            //m_Pos.y = Mathf.Floor(m_Pos.y);
+            transform.position += m_Dir * m_MoveSpeed * Time.deltaTime;
+            m_Pos = transform.position;
+            //m_Pos.y = (Mathf.Round(m_Pos.y / 0.01)) * 0.01;
+            //m_Pos.y.ToString("N2");
+            transform.position = m_Pos;
+
             if (transform.tag != "UnitAirballoon")
-                transform.rotation = Quaternion.LookRotation(m_Pos);
+                transform.rotation = Quaternion.LookRotation(m_Dir);
             if (Vector3.Distance(transform.position, Corners[Index]) < dis)
                 Index++;
             yield return null;
@@ -775,9 +783,9 @@ public class PlayerMove : MonoBehaviour
         while (Index < Corners.Length)
         {
             Debug.DrawRay(Camera.main.transform.position, BuildScript.BuildPos - Camera.main.transform.position, Color.red);
-            m_Pos = (Corners[Index] - transform.position).normalized;
-            transform.position += m_Pos * m_MoveSpeed * Time.deltaTime;
-            transform.rotation = Quaternion.LookRotation(m_Pos);
+            m_Dir = (Corners[Index] - transform.position).normalized;
+            transform.position += m_Dir * m_MoveSpeed * Time.deltaTime;
+            transform.rotation = Quaternion.LookRotation(m_Dir);
             if (Vector3.Distance(transform.position, Corners[Index]) < dis)
                 Index++;
             yield return null;
