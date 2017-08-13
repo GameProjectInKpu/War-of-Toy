@@ -13,6 +13,8 @@ public class UnitFuncScript : MonoBehaviour {
     public GameObject m_ButtonBoard;     // 공중 유닛 탑승버튼
     public GameObject m_ButtonDrop;      // 열기구에서 유닛 내려주기
 
+    public GameObject m_ButtonUpgrade;      // 유닛 업그레이드
+
     public bool ButtonRight;
     public bool ButtonLeft;
     public bool IsAirUnitfull;
@@ -131,7 +133,10 @@ public class UnitFuncScript : MonoBehaviour {
                 m_ButtonPick.SetActive(true);
                 m_ButtonAttack.SetActive(true);
                 break;
-
+            case 24:    // 연구소
+                ClearFunc();
+                m_ButtonUpgrade.SetActive(true);
+                break;
             default:
                 ClearFunc();
                 break;
@@ -148,6 +153,7 @@ public class UnitFuncScript : MonoBehaviour {
         m_ButtonMineral.SetActive(false);
         m_ButtonAttack.SetActive(false);
         m_ButtonBoard.SetActive(false);
+        m_ButtonUpgrade.SetActive(false);
 
         for (int i = 0; i < m_BuildSlotList.Length; ++i)
             m_BuildSlotList[i].gameObject.SetActive(false);

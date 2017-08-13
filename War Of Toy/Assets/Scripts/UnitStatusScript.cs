@@ -89,6 +89,12 @@ public class UnitStatusScript : MonoBehaviour {
                 UnitImage.sprite = m_UnitSpriteList[22 + color];
                 UnitFuncScript.m_Instance.SetUnitFunc(22);
                 break;
+            case "B_Lab":
+                UnitImage.sprite = m_UnitSpriteList[24 + color];
+                UnitFuncScript.m_Instance.SetUnitFunc(24);
+                break;
+            default:
+                break;
         }
     }
 

@@ -42,6 +42,7 @@ public class BuildingStatus : MonoBehaviour {
                 case "B_ToyFactory":
                     InitUnitScript.m_Factory = transform;
                     break;
+                    
                 default:
                     break;
             }
@@ -88,6 +89,13 @@ public class BuildingStatus : MonoBehaviour {
         m_IsAlive = false;
     }
 
+    public void UpgradeByButton()
+    {
+        // 유닛 선택
+        // 선택한 유닛이 자기 팀인지 
+        // 자기 팀이면 업그레이드
+        // 업그레이드 내용은 유닛의 체력, 공격력, 미네랄 캐는 능력?
+    }
 }
 
 
