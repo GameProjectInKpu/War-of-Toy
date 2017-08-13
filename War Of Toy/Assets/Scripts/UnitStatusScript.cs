@@ -111,6 +111,16 @@ public class UnitStatusScript : MonoBehaviour {
                 if (m_IsMayTeam)
                     UnitFuncScript.m_Instance.SetUnitFunc(24);
                 break;
+            case "B_Hospital":
+                UnitImage.sprite = m_UnitSpriteList[26 + color];
+                if (m_IsMayTeam)
+                    UnitFuncScript.m_Instance.SetUnitFunc(26);
+                break;
+            case "UnitCupid":
+                UnitImage.sprite = m_UnitSpriteList[28 + color];
+                if (m_IsMayTeam)
+                    UnitFuncScript.m_Instance.SetUnitFunc(28);
+                break;
             default:
                 break;
         }

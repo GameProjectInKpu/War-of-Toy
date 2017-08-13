@@ -42,9 +42,9 @@ public class BuildingStatus : MonoBehaviour {
                 case "B_ToyFactory":
                     InitUnitScript.m_Factory = transform;
                     break;
-                //case "B_Lab":
-                //    PlayerMove.LabPos = transform.position;
-                //    break;
+                case "B_Hospital":
+                    InitUnitScript.m_Hospital = transform;
+                    break;
                 default:
                     break;
             }

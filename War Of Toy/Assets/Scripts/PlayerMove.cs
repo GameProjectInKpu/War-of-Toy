@@ -15,6 +15,7 @@ public class PlayerMove : MonoBehaviour
     public float m_Hp = 100f;
     public float m_InitHp;
     public float m_Power;
+    public float m_Heal;
 
 
     public Transform m_Team;
@@ -41,11 +42,13 @@ public class PlayerMove : MonoBehaviour
     public bool m_IsPick;
     public bool m_IsAttack;
     public bool m_IsMineral;
+    public bool m_IsHeal;
     public bool m_IsBoard;
     public bool m_IsFull;   // 열기구에 누군가 탔는지
     public bool m_IsPM; // 공격대상이 유닛인지
     public bool m_IsBS; // 공격대상이 건물인지
     public bool m_IsUpgraded;
+    public bool m_IsInHealArea;
 
     public GameObject Building;
     public GameObject Bullet;
@@ -53,7 +56,8 @@ public class PlayerMove : MonoBehaviour
     public Transform FireHole;
     public Transform BalloonHeight;
     public Transform CarAttakArea;
-   // public static Vector3 LabPos;
+    public Transform HealArea;
+
     public bool IsStartParticle;
 
     public float m_Count;
@@ -77,6 +81,9 @@ public class PlayerMove : MonoBehaviour
         imgHpbar.enabled = false;
         imgSelectbar.enabled = false;
         m_Team = transform.Find("MiniMap");
+        if (transform.tag != "UnitCupid")
+           StartCoroutine("InTheArea");
+        HealArea.gameObject.SetActive(false);
     }
 
     void Awake()
@@ -90,7 +97,8 @@ public class PlayerMove : MonoBehaviour
         m_Count = 0f;
         m_InitCount = 100f;
         m_Power = 10f;
-        //StartCoroutine("UnitStatusRoutine");
+        m_Heal = 10f;
+        
     }
 
     /*IEnumerator UnitStatusRoutine()
@@ -189,6 +197,7 @@ public class PlayerMove : MonoBehaviour
                             unitState = UnitState.walk;
                             m_Animator.SetBool("IsAttack", false);
                             m_Animator.SetBool("IsMineral", false);
+                            m_Animator.SetBool("IsHeal", false);
                             m_Animator.SetBool("IsBuild", false);
                             StopCoroutine("AttackByBullet");
                             StopCoroutine("TraceRoutine");
@@ -509,12 +518,15 @@ public class PlayerMove : MonoBehaviour
                 }
             }
 
-            //else if(m_IsUpgraded)
-            //{
-            //    //Debug.Log(LabPos.position);
-            //    yield return StartCoroutine("Picking", LabPos);
-            //    m_IsSelect = false;
-            //}
+            else if (m_IsHeal)
+            {
+                imgSelectbar.enabled = false;
+                imgHpbar.enabled = false;
+                HealArea.gameObject.SetActive(true);
+                m_Animator.SetBool("IsHeal", true);
+                transform.Rotate(Vector3.up * 200f * Time.deltaTime);
+                m_IsSelect = false;
+            }
 
             yield return null;
         }
@@ -650,7 +662,7 @@ public class PlayerMove : MonoBehaviour
             {
                 if(HitOb.layer == 28)
                 {
-                    HitPM.m_Hp -= 10f;
+                    HitPM.m_Hp -= m_Power;
                     if (HitPM.m_Hp < 0f)
                     {
                         HitPM.m_IsAlive = false;
@@ -663,7 +675,7 @@ public class PlayerMove : MonoBehaviour
 
                 else if(HitOb.layer == 27)
                 {
-                    HitBS.m_Hp -= 10f;
+                    HitBS.m_Hp -= m_Power;
                     if (HitBS.m_Hp < 0f)
                     {
                         HitBS.m_IsAlive = false;
@@ -698,7 +710,6 @@ public class PlayerMove : MonoBehaviour
         Debug.Log("피킹중");
         unitState = UnitState.walk;
         m_Animator.SetBool("IsPick", true);
-        Debug.Log(HitPoint);
         NavMesh.CalculatePath(transform.position, HitPoint, NavMesh.AllAreas, m_Path);
         Vector3[] Corners = m_Path.corners;
         int Index = 1;
@@ -767,12 +778,26 @@ public class PlayerMove : MonoBehaviour
         {
             GetComponent<NavMeshAgent>().enabled = false;
         }
+
+        if (other.transform.tag == "HealArea")
+        {
+            if(SelectUnitScript.m_Instance.IsMyTeam(other.GetComponentInParent<PlayerMove>()))  // 자기팀인지 검사
+                m_IsInHealArea = true;
+            else
+                m_IsInHealArea = false;
+        }
+
+        
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "MeshLink")
         {
             GetComponent<NavMeshAgent>().enabled = true;
+        }
+        if (other.transform.tag == "HealArea")
+        {
+            m_IsInHealArea = false;
         }
     }
 
@@ -781,23 +806,44 @@ public class PlayerMove : MonoBehaviour
         if (damage.transform.tag == "Bullet")
         {
             Debug.Log("총에 맞음");
-            m_Hp -= 10f;
+            m_Hp -= m_Power;
             if (m_Hp < 0f)
                 m_IsAlive = false;
             imgHpbar.enabled = true;
             imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
         }
 
-        else if (damage.transform.tag == "AttackArea")
+        if (damage.transform.tag == "AttackArea")
         {
-            m_Hp -= 10f;
+            m_Hp -= (m_Power + 5f);
             if (m_Hp < 0f)
                 m_IsAlive = false;
             imgHpbar.enabled = true;
             imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
         }
+
+        
     }
 
+    IEnumerator InTheArea()
+    {
+        while(true)
+        {
+            Debug.Log("area루틴실행중");
+            if (m_IsInHealArea)
+            {
+                Debug.Log("치료받는중");
+                if (m_Hp < m_InitHp)
+                    m_Hp += m_Heal;
+                imgHpbar.enabled = true;
+                imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
+            }
+
+
+            yield return new WaitForSeconds(1.5f);
+        }
+        
+    }
 
     IEnumerator BuildRoutine()
     {
@@ -873,9 +919,11 @@ public class PlayerMove : MonoBehaviour
         m_Hp += 50f;
         m_MoveSpeed += 2f;
         m_Power += 5f;
+        HealArea.gameObject.GetComponent<SphereCollider>().radius += 3f;
         m_IsUpgraded = true;
         Vector3 Rot = Vector3.zero;
         Rot.x = -90f;
+        HealArea.GetComponentInChildren<Light>().spotAngle += 14f;
         GameObject Obj = (GameObject)Instantiate(UpgParticle,
                                                    transform.position,
                                                    Quaternion.Euler(Rot));

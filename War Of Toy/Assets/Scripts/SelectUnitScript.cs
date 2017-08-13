@@ -135,16 +135,7 @@ public class SelectUnitScript : MonoBehaviour
 
 
         if(IsMyTeam(Unit) == true)
-        {
-            //if (m_IsUpgradeMode)
-            //{
-                
-            //    //Unit.Upgrade();
-            //    //Unit.m_IsUpgraded = true;
-            //    goto CannotOrder;
-            //}
             UnitStatusScript.m_Instance.m_IsMayTeam = true;
-        }
             
             
         else
@@ -155,20 +146,6 @@ public class SelectUnitScript : MonoBehaviour
 
         UnitStatusScript.m_Instance.SetUnitImage(unit, 0, Unit.imgHpbar);
 
-        //if (m_IsUpgradeMode)
-        //{
-        //    if(Unit.m_IsUpgraded)
-        //}
-
-        //if (m_IsUpgradeMode && Unit.m_IsUpgraded)
-        //   goto CannotOrder;
-        //else if(m_IsUpgradeMode && !Unit.m_IsUpgraded)
-        //{
-        //    //Unit.LabPos = LabPos;
-        //    Unit.m_IsUpgraded = true;
-        //    Unit.StartCoroutine("Upgrade");
-
-        //}
 
         SelectedUnit.Add(Unit);
 
@@ -217,6 +194,9 @@ public class SelectUnitScript : MonoBehaviour
             if (unit.m_IsPick || m_BuildOK.activeSelf)
                 return;
             unit.m_IsAttack = false;
+            unit.m_IsHeal = false;
+            if(unit.gameObject.tag == "UnitCupid")
+                unit.HealArea.gameObject.SetActive(false);
             unit.m_IsMineral = false;
             unit.m_IsPick = true;
 
@@ -229,7 +209,7 @@ public class SelectUnitScript : MonoBehaviour
     {
         foreach (PlayerMove unit in SelectedUnit)
         {
-            if (unit.m_IsMineral || m_BuildOK.activeSelf)
+            if (unit.gameObject.tag != "UnitLego" || unit.m_IsMineral || m_BuildOK.activeSelf)
                 return;
             unit.m_IsPick = false;
             unit.m_IsAttack = false;
@@ -243,7 +223,7 @@ public class SelectUnitScript : MonoBehaviour
     {
         foreach (PlayerMove unit in SelectedUnit)
         {
-            if (unit.m_IsAttack)
+            if (unit.gameObject.tag == "UnitCupid" || unit.gameObject.tag == "UnitLego" || unit.m_IsAttack)
                 return;
             StopCoroutine("SelectRoutine");
             unit.m_IsPick = false;
@@ -272,6 +252,22 @@ public class SelectUnitScript : MonoBehaviour
 
     }
 
+    public void OrderToHeal()
+    {
+        foreach (PlayerMove unit in SelectedUnit)
+        {
+            if (unit.gameObject.tag != "UnitCupid" || unit.m_IsHeal)
+                return;
+            unit.m_IsPick = false;
+            unit.m_IsMineral = false;
+            unit.m_IsAttack = false;
+            unit.m_IsHeal= true;
+            unit.imgSelectbar.enabled = false;
+            unit.imgHpbar.enabled = false;
+        }
+
+    }
+
     //public void OrderToDrop()
     //{
     //    foreach (PlayerMove unit in SelectedUnit)
@@ -289,22 +285,6 @@ public class SelectUnitScript : MonoBehaviour
 
     //}
 
-    //public void UpgradeByButton(string unitTag)
-    //{
-    //    for(int i = 0; i < LivingUnit.Count; ++i)
-    //    {
-    //        if (IsMyTeam(LivingUnit[i]) && LivingUnit[i].gameObject.tag == unitTag )
-    //        {
-    //            if(LivingUnit[i].m_IsUpgraded)
-    //            {
-    //                NoticeScript.m_Instance.Notice("이미 강화된 종족입니다\n");
-    //                return;
-    //            }
-    //            LivingUnit[i].Upgrade();
-    //        }  
-    //    }
-    //    return;
-    //}
 
     public bool IsMyTeam (PlayerMove Unit)//같은 팀인지 검사
     {

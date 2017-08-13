@@ -54,7 +54,12 @@ public class InitUnitScript : MonoBehaviour {
                 break;
 
             case 2: // 병원에서 생성
-                
+                UnitPos = m_Hospital.position;
+                if ((UnitPos.x > 60f && UnitPos.z < 25f) || (UnitPos.x < 35f && UnitPos.z > 73f))
+                    UnitPos.y = 4.5f;
+                else
+                    UnitPos.y = 0.15f;
+                UnitPos.z -= 5f;
                 break;
 
 
@@ -87,6 +92,6 @@ public class InitUnitScript : MonoBehaviour {
 
     void IsWorkFalse()
     {
-        FactoryScript.m_Animator.SetBool("IsWork", false);
+        //FactoryScript.m_Animator.SetBool("IsWork", false);
     }
 }

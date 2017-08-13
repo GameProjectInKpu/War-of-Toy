@@ -11,6 +11,7 @@ public class UnitFuncScript : MonoBehaviour {
     public GameObject m_ButtonMineral;     // 자원캐기버튼
     public GameObject m_ButtonAttack;    // 적군 공격버튼
     public GameObject m_ButtonBoard;     // 공중 유닛 탑승버튼
+    public GameObject m_ButtonHeal;     // 공중 유닛 탑승버튼
     public GameObject m_ButtonDrop;      // 열기구에서 유닛 내려주기
 
     //public GameObject m_ButtonUpgrade;      // 유닛 업그레이드
@@ -145,12 +146,27 @@ public class UnitFuncScript : MonoBehaviour {
                    m_UpgradeSlotList[i].gameObject.SetActive(true);
                 }
                 break;
+            case 26:    // 병원
+                ClearFunc();
+                
+                for (int i = start; i < m_InitUnitSlotList.Length; ++i)
+                {
+                    if (m_InitUnitSlotList[i].gameObject.tag == "B_Hospital")
+                        m_InitUnitSlotList[i].gameObject.SetActive(true);
+                }
+                break;
+            case 28:    // 큐피드
+                ClearFunc();
+                m_ButtonPick.SetActive(true);
+                m_ButtonHeal.SetActive(true);
+                break;
             default:
                 ClearFunc();
                 break;
         }
-       
-        
+        ButtonRight = false;
+
+
     }
 
     public void ClearFunc()
@@ -161,6 +177,7 @@ public class UnitFuncScript : MonoBehaviour {
         m_ButtonMineral.SetActive(false);
         m_ButtonAttack.SetActive(false);
         m_ButtonBoard.SetActive(false);
+        m_ButtonHeal.SetActive(false);
 
         for (int i = 0; i < m_BuildSlotList.Length; ++i)
             m_BuildSlotList[i].gameObject.SetActive(false);
