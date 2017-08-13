@@ -14,6 +14,8 @@ public class PlayerMove : MonoBehaviour
     private float m_MoveSpeed;
     public float m_Hp = 100f;
     public float m_InitHp;
+    public float m_Power;
+
 
     public Transform m_Team;
     public Image imgHpbar;
@@ -43,12 +45,15 @@ public class PlayerMove : MonoBehaviour
     public bool m_IsFull;   // 열기구에 누군가 탔는지
     public bool m_IsPM; // 공격대상이 유닛인지
     public bool m_IsBS; // 공격대상이 건물인지
+    public bool m_IsUpgraded;
 
     public GameObject Building;
     public GameObject Bullet;
+    public GameObject UpgParticle;
     public Transform FireHole;
     public Transform BalloonHeight;
     public Transform CarAttakArea;
+   // public static Vector3 LabPos;
     public bool IsStartParticle;
 
     public float m_Count;
@@ -84,6 +89,7 @@ public class PlayerMove : MonoBehaviour
         m_InitHp = m_Hp;
         m_Count = 0f;
         m_InitCount = 100f;
+        m_Power = 10f;
         //StartCoroutine("UnitStatusRoutine");
     }
 
@@ -501,8 +507,15 @@ public class PlayerMove : MonoBehaviour
 
                     }
                 }
-
             }
+
+            //else if(m_IsUpgraded)
+            //{
+            //    //Debug.Log(LabPos.position);
+            //    yield return StartCoroutine("Picking", LabPos);
+            //    m_IsSelect = false;
+            //}
+
             yield return null;
         }
     }
@@ -512,6 +525,7 @@ public class PlayerMove : MonoBehaviour
         // if(HitOblayer == 27)
 
     }
+
 
 
     IEnumerator TraceRoutine()
@@ -684,10 +698,11 @@ public class PlayerMove : MonoBehaviour
         Debug.Log("피킹중");
         unitState = UnitState.walk;
         m_Animator.SetBool("IsPick", true);
+        Debug.Log(HitPoint);
         NavMesh.CalculatePath(transform.position, HitPoint, NavMesh.AllAreas, m_Path);
         Vector3[] Corners = m_Path.corners;
         int Index = 1;
-        Vector3 m_Pos = transform.position;
+        //Vector3 m_Pos = transform.position;
         while (Index < Corners.Length)
         {
             Debug.DrawRay(Camera.main.transform.position, HitPoint - Camera.main.transform.position, Color.red);
@@ -849,7 +864,26 @@ public class PlayerMove : MonoBehaviour
         StopCoroutine("BuildRoutine");
     }
 
+    public void Upgrade()
+    {
+        if (m_IsUpgraded == true)
+            return;
 
+        m_InitHp += 50f;
+        m_Hp += 50f;
+        m_MoveSpeed += 2f;
+        m_Power += 5f;
+        m_IsUpgraded = true;
+        Vector3 Rot = Vector3.zero;
+        Rot.x = -90f;
+        GameObject Obj = (GameObject)Instantiate(UpgParticle,
+                                                   transform.position,
+                                                   Quaternion.Euler(Rot));
+
+        Destroy(Obj, 3f);
+
+        return;
+    }
 
     public void SelectbyButton()
     {

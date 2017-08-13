@@ -201,6 +201,7 @@
     <Compile Include="Assets\Scripts\TouchScript.cs" />
     <Compile Include="Assets\Scripts\UnitFuncScript.cs" />
     <Compile Include="Assets\Scripts\UnitStatusScript.cs" />
+    <Compile Include="Assets\Scripts\UpgradeScript.cs" />
     <Compile Include="Assets\Scripts\ZengaBulletRigidbody.cs" />
     <Compile Include="Assets\Scripts\ZengaScript.cs" />
   </ItemGroup>

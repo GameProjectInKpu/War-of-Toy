@@ -17,6 +17,8 @@ public class SelectUnitScript : MonoBehaviour
 
     public int AcceptableUnit;
     public bool IsSRrunning;
+    //public bool m_IsUpgradeMode;
+    //public Transform LabPos;
 
     static public SelectUnitScript m_Instance;
     static public SelectUnitScript Instance
@@ -53,7 +55,9 @@ public class SelectUnitScript : MonoBehaviour
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position);
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMUnit) && TouchScript.m_Instance.IsOver)
-                    SelectUnit(hit.transform);
+                        SelectUnit(hit.transform);
+                     
+                    
 
                 else if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMBuilding)
                     && TouchScript.m_Instance.IsOver && m_BuildOK.activeSelf == false)
@@ -101,6 +105,7 @@ public class SelectUnitScript : MonoBehaviour
             {
                 if (unit.m_IsAlive == false)
                 {
+                    unit.StopAllCoroutines();
                     unit.Invoke("Death", 3f);
                     LivingUnit.Remove(unit);
                     SelectedUnit.Remove(unit);
@@ -126,34 +131,44 @@ public class SelectUnitScript : MonoBehaviour
         PlayerMove Unit = unit.GetComponent<PlayerMove>();
 
         if (Unit.m_IsBuild || Unit.m_IsSelect || m_BuildOK.activeSelf) goto CannotOrder;
-        
-       
 
-        if (PhotonNetwork.isMasterClient)
+
+
+        if(IsMyTeam(Unit) == true)
         {
-            if (Unit.m_Team.gameObject.layer == 22)
-            {
-                UnitStatusScript.m_Instance.SetUnitImage(unit, 1, Unit.imgHpbar);
-                UnitFuncScript.m_Instance.ClearFunc();
-                goto CannotOrder;
-            }
-
-            else
-                UnitStatusScript.m_Instance.SetUnitImage(unit, 0, Unit.imgHpbar);
+            //if (m_IsUpgradeMode)
+            //{
+                
+            //    //Unit.Upgrade();
+            //    //Unit.m_IsUpgraded = true;
+            //    goto CannotOrder;
+            //}
+            UnitStatusScript.m_Instance.m_IsMayTeam = true;
         }
-
+            
+            
         else
         {
-            if (Unit.m_Team.gameObject.layer == 23)
-            {
-                UnitStatusScript.m_Instance.SetUnitImage(unit, 0, Unit.imgHpbar);
-                UnitFuncScript.m_Instance.ClearFunc();
-                goto CannotOrder;
-            }
-
-            else
-                UnitStatusScript.m_Instance.SetUnitImage(unit, 1, Unit.imgHpbar);
+            UnitStatusScript.m_Instance.m_IsMayTeam = false;
+            goto CannotOrder;
         }
+
+        UnitStatusScript.m_Instance.SetUnitImage(unit, 0, Unit.imgHpbar);
+
+        //if (m_IsUpgradeMode)
+        //{
+        //    if(Unit.m_IsUpgraded)
+        //}
+
+        //if (m_IsUpgradeMode && Unit.m_IsUpgraded)
+        //   goto CannotOrder;
+        //else if(m_IsUpgradeMode && !Unit.m_IsUpgraded)
+        //{
+        //    //Unit.LabPos = LabPos;
+        //    Unit.m_IsUpgraded = true;
+        //    Unit.StartCoroutine("Upgrade");
+
+        //}
 
         SelectedUnit.Add(Unit);
 
@@ -273,6 +288,44 @@ public class SelectUnitScript : MonoBehaviour
     //    }
 
     //}
+
+    //public void UpgradeByButton(string unitTag)
+    //{
+    //    for(int i = 0; i < LivingUnit.Count; ++i)
+    //    {
+    //        if (IsMyTeam(LivingUnit[i]) && LivingUnit[i].gameObject.tag == unitTag )
+    //        {
+    //            if(LivingUnit[i].m_IsUpgraded)
+    //            {
+    //                NoticeScript.m_Instance.Notice("이미 강화된 종족입니다\n");
+    //                return;
+    //            }
+    //            LivingUnit[i].Upgrade();
+    //        }  
+    //    }
+    //    return;
+    //}
+
+    public bool IsMyTeam (PlayerMove Unit)//같은 팀인지 검사
+    {
+        if (PhotonNetwork.isMasterClient)   // 같은 편인지 검사
+        {
+            if (Unit.m_Team.gameObject.layer == 22)
+                return false;
+
+            else
+                return true;
+        }
+
+        else
+        {
+            if (Unit.m_Team.gameObject.layer == 23)
+                return false;
+
+            else
+                return true;
+        }
+    }
 
     void OnDestroy()
     {

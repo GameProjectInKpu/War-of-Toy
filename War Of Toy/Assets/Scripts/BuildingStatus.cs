@@ -42,7 +42,9 @@ public class BuildingStatus : MonoBehaviour {
                 case "B_ToyFactory":
                     InitUnitScript.m_Factory = transform;
                     break;
-                    
+                //case "B_Lab":
+                //    PlayerMove.LabPos = transform.position;
+                //    break;
                 default:
                     break;
             }
@@ -89,13 +91,25 @@ public class BuildingStatus : MonoBehaviour {
         m_IsAlive = false;
     }
 
-    public void UpgradeByButton()
-    {
-        // 유닛 선택
-        // 선택한 유닛이 자기 팀인지 
-        // 자기 팀이면 업그레이드
-        // 업그레이드 내용은 유닛의 체력, 공격력, 미네랄 캐는 능력?
-    }
+    //public void UpgradeByButton()
+    //{
+    //    // 유닛 선택
+    //    SelectUnitScript.m_Instance.m_IsUpgradeMode = true;
+    //    SelectUnitScript.m_Instance.LabPos = transform;
+
+
+
+    //    //if (// 선택한 유닛이 자기 팀이면 && unit.m_IsUpgrade == false)
+    //    //{
+    //    //    unit.m_IsUpgrade = true;
+
+    //    //    //업그레이드
+    //    //}
+    //    // 업그레이드 내용은 유닛의 체력, 공격력, 미네랄 캐는 능력?
+    //}
+
+
+
 }
 
 

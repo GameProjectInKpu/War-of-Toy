@@ -13,7 +13,7 @@ public class UnitFuncScript : MonoBehaviour {
     public GameObject m_ButtonBoard;     // 공중 유닛 탑승버튼
     public GameObject m_ButtonDrop;      // 열기구에서 유닛 내려주기
 
-    public GameObject m_ButtonUpgrade;      // 유닛 업그레이드
+    //public GameObject m_ButtonUpgrade;      // 유닛 업그레이드
 
     public bool ButtonRight;
     public bool ButtonLeft;
@@ -29,8 +29,9 @@ public class UnitFuncScript : MonoBehaviour {
     public BuildScript[] m_BuildSlotList;   // 건물 생성 버튼
     public InitUnitScript[] m_InitUnitSlotList; // 유닛 생성 버튼
     public AttackByBomb[] m_AttackSlotList;   // 공격 버튼
-    //public int[] m_TypeList;
-    
+    public UpgradeScript[] m_UpgradeSlotList;   // 강화 버튼
+                                              
+
 
     void Awake()
     {
@@ -38,6 +39,7 @@ public class UnitFuncScript : MonoBehaviour {
         m_BuildSlotList = GetComponentsInChildren<BuildScript>();    // BuildScript 가지고 있는 자식들
         m_InitUnitSlotList = GetComponentsInChildren<InitUnitScript>();    // InitUnitScript 가지고 있는 자식들
         m_AttackSlotList = GetComponentsInChildren<AttackByBomb>();
+        m_UpgradeSlotList = GetComponentsInChildren<UpgradeScript>();
         ClearFunc();
 
       
@@ -135,7 +137,13 @@ public class UnitFuncScript : MonoBehaviour {
                 break;
             case 24:    // 연구소
                 ClearFunc();
-                m_ButtonUpgrade.SetActive(true);
+                m_ButtonRight.SetActive(true);
+                m_ButtonLeft.SetActive(true);
+                if (start == 4) end = m_UpgradeSlotList.Length;
+                for (int i = start; i < end; ++i)
+                {
+                   m_UpgradeSlotList[i].gameObject.SetActive(true);
+                }
                 break;
             default:
                 ClearFunc();
@@ -153,7 +161,6 @@ public class UnitFuncScript : MonoBehaviour {
         m_ButtonMineral.SetActive(false);
         m_ButtonAttack.SetActive(false);
         m_ButtonBoard.SetActive(false);
-        m_ButtonUpgrade.SetActive(false);
 
         for (int i = 0; i < m_BuildSlotList.Length; ++i)
             m_BuildSlotList[i].gameObject.SetActive(false);
@@ -163,6 +170,9 @@ public class UnitFuncScript : MonoBehaviour {
 
         for (int i = 0; i < m_AttackSlotList.Length; ++i)
             m_AttackSlotList[i].gameObject.SetActive(false);
+
+        for (int i = 0; i < m_UpgradeSlotList.Length; ++i)
+            m_UpgradeSlotList[i].gameObject.SetActive(false);
     }
 
     void OnDestroy()
