@@ -94,7 +94,7 @@ public class UnitFuncScript : MonoBehaviour {
                 if(IsAirUnitfull)
                 {
                     m_ButtonPick.SetActive(true);
-                    m_ButtonDrop.SetActive(true);
+                    //m_ButtonDrop.SetActive(true);
                 }
                 for (int i = start; i < m_AttackSlotList.Length; ++i)
                     m_AttackSlotList[i].gameObject.SetActive(true);

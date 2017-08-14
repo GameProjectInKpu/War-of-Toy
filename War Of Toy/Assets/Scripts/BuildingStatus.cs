@@ -50,6 +50,10 @@ public class BuildingStatus : MonoBehaviour {
             }
         }
         
+        if(m_Hp < 0f)
+        {
+            m_IsAlive = false;
+        }
 
         if(m_IsAlive == false)
         {

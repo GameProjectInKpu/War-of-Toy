@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "170814 backup War Of Toy.Plugins", "170814 backup War Of Toy.Plugins.csproj", "{8566FBBC-7E39-43A5-BC2E-8015EA79ECDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "170814 backup War Of Toy", "170814 backup War Of Toy.csproj", "{3C440C24-5012-DC5E-9E51-31EE785242A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "170814 backup War Of Toy.Editor.Plugins", "170814 backup War Of Toy.Editor.Plugins.csproj", "{0E3CB59F-3107-EE89-6353-DF4FECB4DA09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "170814 backup War Of Toy.Editor", "170814 backup War Of Toy.Editor.csproj", "{6C8F4C59-0540-2EAE-27A7-21AD211E887A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8566FBBC-7E39-43A5-BC2E-8015EA79ECDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8566FBBC-7E39-43A5-BC2E-8015EA79ECDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8566FBBC-7E39-43A5-BC2E-8015EA79ECDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8566FBBC-7E39-43A5-BC2E-8015EA79ECDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C440C24-5012-DC5E-9E51-31EE785242A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C440C24-5012-DC5E-9E51-31EE785242A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C440C24-5012-DC5E-9E51-31EE785242A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C440C24-5012-DC5E-9E51-31EE785242A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E3CB59F-3107-EE89-6353-DF4FECB4DA09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E3CB59F-3107-EE89-6353-DF4FECB4DA09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E3CB59F-3107-EE89-6353-DF4FECB4DA09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E3CB59F-3107-EE89-6353-DF4FECB4DA09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C8F4C59-0540-2EAE-27A7-21AD211E887A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C8F4C59-0540-2EAE-27A7-21AD211E887A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C8F4C59-0540-2EAE-27A7-21AD211E887A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C8F4C59-0540-2EAE-27A7-21AD211E887A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

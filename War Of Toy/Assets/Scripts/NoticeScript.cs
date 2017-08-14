@@ -51,6 +51,9 @@ public class NoticeScript : MonoBehaviour {
     
 	// Update is called once per frame
 	void Update () {
+        if(timer >= float.MaxValue)
+            timer = 0f;
+
         timer += Time.deltaTime;
 
         if(timer - timecheck > 5f)

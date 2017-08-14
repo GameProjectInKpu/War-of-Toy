@@ -37,6 +37,7 @@ public class SelectUnitScript : MonoBehaviour
         LivingUnit = new List<PlayerMove>();
         AcceptableUnit = 10;
         StartCoroutine("SelectRoutine");
+        //InvokeRepeating("SelectRoutine", 1f,0.01f);
         StartCoroutine("IsAliveRoutine");
     }
 
@@ -45,7 +46,6 @@ public class SelectUnitScript : MonoBehaviour
 
     IEnumerator SelectRoutine()
     {
-        IsSRrunning = true;
         while (true)
         {
             Debug.Log("선택루틴 실행중");
@@ -92,7 +92,6 @@ public class SelectUnitScript : MonoBehaviour
             yield return null;
             
         }
-        IsSRrunning = false;
     }
 
   
@@ -101,15 +100,26 @@ public class SelectUnitScript : MonoBehaviour
     {
         while (true)
         {
+            foreach (PlayerMove unit in SelectedUnit)
+            {
+                Debug.Log(unit.tag);
+            }
+
             foreach (PlayerMove unit in LivingUnit)
             {
-                if (unit.m_IsAlive == false)
+                if(unit.m_Hp <= 0f)
                 {
                     unit.StopAllCoroutines();
+                    unit.m_IsAlive = false;
                     unit.Invoke("Death", 3f);
                     LivingUnit.Remove(unit);
                     SelectedUnit.Remove(unit);
                 }
+
+                if (unit.m_IsPM && unit.HitPM == null)    // 타겟 유닛이 죽었을때
+                    unit.m_IsPM = false;
+                if (unit.m_IsBS && unit.HitBS == null)    // 타겟 건물이 죽었을때
+                    unit.m_IsBS = false;
 
             }
 
@@ -158,7 +168,7 @@ public class SelectUnitScript : MonoBehaviour
         Unit.m_IsPick = false;
         Unit.m_IsMineral = false;
         Unit.m_IsAttack = false;
-        //Unit.StopAllCoroutines();
+        Unit.m_IsHeal = false;
         Unit.StopCoroutine("OrderRoutine");
         Unit.StartCoroutine("OrderRoutine");
         CannotOrder:;
@@ -195,7 +205,9 @@ public class SelectUnitScript : MonoBehaviour
                 return;
             unit.m_IsAttack = false;
             unit.m_IsHeal = false;
-            if(unit.gameObject.tag == "UnitCupid")
+            unit.HitPM = null;
+            unit.HitBS = null;
+            if (unit.gameObject.tag == "UnitCupid")
                 unit.HealArea.gameObject.SetActive(false);
             unit.m_IsMineral = false;
             unit.m_IsPick = true;
@@ -228,6 +240,9 @@ public class SelectUnitScript : MonoBehaviour
             StopCoroutine("SelectRoutine");
             unit.m_IsPick = false;
             unit.m_IsMineral = false;
+            unit.HitPM = null;
+            unit.HitBS = null;
+            unit.m_Animator.SetBool("IsAttack", false);
             unit.m_IsAttack = true;
             unit.imgSelectbar.enabled = false;
             unit.imgHpbar.enabled = false;
@@ -245,6 +260,8 @@ public class SelectUnitScript : MonoBehaviour
             unit.m_IsPick = false;
             unit.m_IsMineral = false;
             unit.m_IsAttack = false;
+            unit.HitPM = null;
+            unit.HitBS = null;
             unit.m_IsBoard = true;
             unit.imgSelectbar.enabled = false;
             unit.imgHpbar.enabled = false;
