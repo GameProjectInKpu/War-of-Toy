@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class SignUp : MonoBehaviour
 {
-
     string SignUpURL = "http://www.unitykds.tk/insert_user.php";
 
     public GameObject SignUpWindow;
@@ -14,18 +13,6 @@ public class SignUp : MonoBehaviour
     public InputField NewID;
     public InputField NewPassword;
     public InputField NewEmail;
-
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public void ClickSignUp()
     {

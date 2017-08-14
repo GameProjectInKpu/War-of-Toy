@@ -184,6 +184,7 @@
     <Compile Include="Assets\Scripts\FactoryScript.cs" />
     <Compile Include="Assets\Scripts\FixHpbarScript.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\Scripts\HelloToUser.cs" />
     <Compile Include="Assets\Scripts\InitUnitScript.cs" />
     <Compile Include="Assets\Scripts\Launcher.cs" />
     <Compile Include="Assets\Scripts\Login.cs" />

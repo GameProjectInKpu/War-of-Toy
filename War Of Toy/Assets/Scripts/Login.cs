@@ -2,19 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
 public class Login : MonoBehaviour
 {
     int CountPasswordChar = 0;
     static int MaxPassword = 15;
-
     string LoginURL = "http://www.unitykds.tk/Login.php";
     string[] MaskArray = new string[MaxPassword];
-
+    
     public Text StarPassword;
+    public Text NowLoginState;
     public InputField EnterID;
     public InputField EnterPassword;
-    public GameObject WarningPasswordCount;
     public GameObject AccessToLauncher;
 
     private void Start()
@@ -31,25 +29,26 @@ public class Login : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        // 
-    }
-
     public void PasswordToStar()
     {
         int CountPassword = EnterPassword.text.Length;
         if (CountPassword >= 15)
         {
-            WarningPasswordCount.SetActive(true);
+            //WarningCount.SetActive(true);
         }
+
         StarPassword.text = MaskArray[CountPassword];
-        Debug.Log(EnterPassword.text);
 
     }
+
     public void ClickLogin()
     {
         StartCoroutine(LoginToDB(EnterID.text, EnterPassword.text));
+    }
+
+    public void AdminLogin()
+    {
+        AccessToLauncher.SetActive(true);
     }
 
     IEnumerator LoginToDB(string username, string password)
@@ -57,27 +56,38 @@ public class Login : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("usernamePost", username);
         form.AddField("passwordPost", password);
-
         WWW www = new WWW(LoginURL, form);
 
         yield return www;
 
-        if (www.text == "LoginOK")
-        {
-            Debug.Log("Login OK");
-            AccessToLauncher.SetActive(true);
-        }
+      // Debug.Log("Last Login Date is " + www.text.Substring(0, www.text.Length - 3));
 
-        else if (www.text == "PasswordError")
+        if (www.text == "PE")
         {
             Debug.Log("Password is Error");
+           NowLoginState.text = "Password is Error";
         }
 
-        else if (www.text == "UserNotFound")
+        else if (www.text == "NF")
         {
             Debug.Log("User Not Found");
+           NowLoginState.text = "User Not Found";
+        }
+
+        else
+        {
+            Debug.Log("Login OK-> " + www.text.Substring(www.text.Length - 1, 1));
+          NowLoginState.text = "LoginOK";
+
+            PlayerPrefs.SetString("UserID", username);
+            PlayerPrefs.SetString("UserLastLogin", www.text.Substring(0, www.text.Length - 3));
+            PlayerPrefs.SetString("UserLevel", www.text.Substring(www.text.Length - 1, 1));
+
+            Application.LoadLevel("Waiting");
         }
 
         StopCoroutine(LoginToDB(EnterID.text, EnterPassword.text));
     }
 }
+
+

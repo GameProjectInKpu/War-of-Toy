@@ -82,7 +82,7 @@ public class PlayerMove : MonoBehaviour
         imgSelectbar.enabled = false;
         m_Team = transform.Find("MiniMap");
         if (transform.tag != "UnitCupid")
-           StartCoroutine("InTheArea");
+            StartCoroutine("InTheArea");
     }
 
     void Awake()
@@ -206,7 +206,7 @@ public class PlayerMove : MonoBehaviour
                             CancelInvoke("AttackByFlare");
                             yield return StartCoroutine("Picking", hit.point);
                             SelectUnitScript.m_Instance.m_PickImage.SetActive(false);
-                            
+
                             m_IsSelect = false;
                         }
                     }
@@ -349,7 +349,7 @@ public class PlayerMove : MonoBehaviour
                                         break;
                                     }
                                 case "UnitRCcar":
-                                    {               
+                                    {
                                         CarAttakArea.gameObject.SetActive(true);
                                         yield return StartCoroutine("ConditionForAttack", "no");
                                         CarAttakArea.gameObject.SetActive(false);
@@ -407,7 +407,7 @@ public class PlayerMove : MonoBehaviour
                                 default:
                                     break;
                             }
-                            
+
                         }
 
                     }
@@ -450,13 +450,13 @@ public class PlayerMove : MonoBehaviour
             m_IsPM = false;
         }
 
-        else if(!m_IsPM && m_IsBS)
+        else if (!m_IsPM && m_IsBS)
         {
             imgHpbar.enabled = true;
             HitBS.imgHpbar.enabled = true;
             HitBS.imgSelectbar.enabled = false;
             HitBS.imgHpbar.enabled = true;
-            if(type == "AttackByFlare")
+            if (type == "AttackByFlare")
                 InvokeRepeating("AttackByFlare", 1.8f, 1.5f);
             else
             {
@@ -482,14 +482,14 @@ public class PlayerMove : MonoBehaviour
             transform.Rotate(Vector3.up * 200f * Time.deltaTime);
             yield return null;
         }
-        
+
     }
 
     IEnumerator MineralRoutine()
     {
         m_Animator.SetBool("IsMineral", true);
         while (true)
-        {            
+        {
             if (HitOb.tag == "B_Stars")
             {
                 if (HitRS.m_Empty)
@@ -600,7 +600,7 @@ public class PlayerMove : MonoBehaviour
         if (m_IsPM && !m_IsBS) condition = HitPM.m_IsAlive;
         if (condition == false)
             StopCoroutine("AttackByCar");
-         yield return null;
+        yield return null;
     }
 
     public void AttackByFlare()
@@ -620,7 +620,7 @@ public class PlayerMove : MonoBehaviour
             imgHpbar.enabled = false;
             CancelInvoke("AttackByFlare");
         }
-            
+
         if (m_Attackstop == false)
         {
             FireHole.gameObject.SetActive(true);
@@ -635,7 +635,7 @@ public class PlayerMove : MonoBehaviour
     IEnumerator BearAttackRoutine()
     {
         bool condition = true;
-        while(condition)
+        while (condition)
         {
             if (m_IsBS && !m_IsPM) condition = HitBS.m_IsAlive;
             if (m_IsPM && !m_IsBS) condition = HitPM.m_IsAlive;
@@ -645,12 +645,6 @@ public class PlayerMove : MonoBehaviour
                 if (m_IsPM)
                 {
                     HitPM.m_Hp -= m_Power;
-                    //if (HitPM.m_Hp < 0f)
-                    //{
-                    //    HitPM.m_IsAlive = false;
-                    //    StopCoroutine("BearAttackRoutine");
-                    //}
-
                     HitPM.imgHpbar.enabled = true;
                     HitPM.imgHpbar.fillAmount = (float)HitPM.m_Hp / (float)HitPM.m_InitHp;
                 }
@@ -658,11 +652,6 @@ public class PlayerMove : MonoBehaviour
                 else if (m_IsBS)
                 {
                     HitBS.m_Hp -= m_Power;
-                    //if (HitBS.m_Hp < 0f)
-                    //{
-                    //    HitBS.m_IsAlive = false;
-                    //    StopCoroutine("BearAttackRoutine");
-                    //}
                     HitBS.imgHpbar.enabled = true;
                     HitBS.imgHpbar.fillAmount = (float)HitBS.m_Hp / (float)HitBS.m_InitHp;
                 }
@@ -671,7 +660,7 @@ public class PlayerMove : MonoBehaviour
 
             yield return new WaitForSeconds(2.5f);
         }
-        
+
     }
 
     IEnumerator Picking(Vector3 HitPoint)
@@ -696,16 +685,14 @@ public class PlayerMove : MonoBehaviour
         NavMesh.CalculatePath(transform.position, HitPoint, NavMesh.AllAreas, m_Path);
         Vector3[] Corners = m_Path.corners;
         int Index = 1;
-        //Vector3 m_Pos = transform.position;
+        Vector3 m_Pos = transform.position;
         while (Index < Corners.Length)
         {
             Debug.DrawRay(Camera.main.transform.position, HitPoint - Camera.main.transform.position, Color.red);
             m_Dir = (Corners[Index] - transform.position).normalized;
-            transform.position += m_Dir * m_MoveSpeed * Time.deltaTime;
-            //m_Pos = transform.position;
-            //m_Pos.y.ToString("0000.00");
-            //Debug.Log(m_Pos.y);
-            //transform.position = m_Pos;
+            m_Pos += m_Dir * m_MoveSpeed * Time.deltaTime;
+            m_Pos.y = Mathf.Clamp(m_Pos.y, float.MinValue, float.MaxValue - 0.01f);
+            transform.position = m_Pos;
 
             if (transform.tag != "UnitAirballoon")
                 transform.rotation = Quaternion.LookRotation(m_Dir);
@@ -764,13 +751,13 @@ public class PlayerMove : MonoBehaviour
 
         if (other.transform.tag == "HealArea")
         {
-            if(SelectUnitScript.m_Instance.IsMyTeam(other.GetComponentInParent<PlayerMove>()))  // 자기팀인지 검사
+            if (SelectUnitScript.m_Instance.IsMyTeam(other.GetComponentInParent<PlayerMove>()))  // 자기팀인지 검사
                 m_IsInHealArea = true;
             else
                 m_IsInHealArea = false;
         }
 
-        
+
     }
     private void OnTriggerExit(Collider other)
     {
@@ -805,17 +792,19 @@ public class PlayerMove : MonoBehaviour
             imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
         }
 
-        
+
     }
 
     IEnumerator InTheArea()
     {
-        while(true)
+        while (true)
         {
+            Vector3 m_Pos = transform.position;
+            m_Pos.y = Mathf.Clamp(m_Pos.y, float.MinValue, float.MaxValue - 0.01f);
+            transform.position = m_Pos;
             //Debug.Log("area루틴실행중");
             if (m_IsInHealArea)
             {
-                Debug.Log("치료받는중");
                 if (m_Hp < m_InitHp)
                     m_Hp += m_Heal;
                 imgHpbar.enabled = true;
@@ -825,7 +814,7 @@ public class PlayerMove : MonoBehaviour
 
             yield return new WaitForSeconds(1.5f);
         }
-        
+
     }
 
     IEnumerator BuildRoutine()
@@ -903,16 +892,16 @@ public class PlayerMove : MonoBehaviour
         m_MoveSpeed += 2f;
         m_Power += 5f;
         m_Mineral += 3;
-        if(transform.tag == "UnitCupid")
+        if (transform.tag == "UnitCupid")
         {
             HealArea.gameObject.GetComponent<SphereCollider>().radius += 3f;
             HealArea.GetComponentInChildren<Light>().spotAngle += 14f;
         }
-         
+
         m_IsUpgraded = true;
         Vector3 Rot = Vector3.zero;
         Rot.x = -90f;
-        
+
         GameObject Obj = (GameObject)Instantiate(UpgParticle,
                                                    transform.position,
                                                    Quaternion.Euler(Rot));
