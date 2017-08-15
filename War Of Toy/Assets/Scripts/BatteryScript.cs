@@ -24,7 +24,7 @@ public class BatteryScript : MonoBehaviour {
     {
         while (true)
         {
-            m_BatteryText.text = "Batterty " + m_BatteryNum + "";
+            m_BatteryText.text = " " + m_BatteryNum + "";
 
             yield return null;
         }

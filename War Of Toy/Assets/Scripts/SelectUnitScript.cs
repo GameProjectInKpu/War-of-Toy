@@ -39,7 +39,7 @@ public class SelectUnitScript : MonoBehaviour
         LivingUnit = new List<PlayerMove>();
         AcceptableUnit = 10;
         StartCoroutine("SelectRoutine");
-        //InvokeRepeating("SelectRoutine", 1f,0.01f);
+        //InvokeRepeating("SelectRoutine", 0f,0.01f);
         StartCoroutine("IsAliveRoutine");
     }
 
@@ -54,7 +54,7 @@ public class SelectUnitScript : MonoBehaviour
             if(Input.GetMouseButton(0))
             //if (Input.touchCount == 1 )
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position);
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position); // //
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMUnit) && TouchScript.m_Instance.IsOver)
                         SelectUnit(hit.transform);

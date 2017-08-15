@@ -24,7 +24,7 @@ public class StarScript : MonoBehaviour
     {
         while (true)
         {
-            m_StarText.text = "Star " + m_StarNum + "";
+            m_StarText.text = " " + m_StarNum + "";
 
             yield return null;
         }

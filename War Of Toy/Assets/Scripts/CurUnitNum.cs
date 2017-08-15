@@ -24,7 +24,7 @@ public class CurUnitNum : MonoBehaviour {
     {
         while (true)
         {
-            m_UnitText.text = "Unit " + m_UnitNum + "";
+            m_UnitText.text = " " + m_UnitNum + "";
 
             yield return null;
         }

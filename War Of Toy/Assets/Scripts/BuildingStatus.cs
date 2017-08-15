@@ -11,12 +11,16 @@ public class BuildingStatus : MonoBehaviour {
     public bool m_IsAlive;
     public bool m_IsSelect;
 
+    public GameObject m_Particle;
+    public bool m_IsParticle;
+
     public Image imgHpbar;
     public Image imgSelectbar;
+    GameObject Obj;
 
     //public Material 
 
-  
+
     void Start()
     {
         imgHpbar.enabled = false;
@@ -48,6 +52,18 @@ public class BuildingStatus : MonoBehaviour {
                 default:
                     break;
             }
+        }
+
+        if(m_Hp < 50f && !m_IsParticle)
+        {
+            Vector3 Pos = transform.position;
+            Vector3 Rot = Vector3.zero;
+            Pos.x -= 3f;
+            Pos.z -= 3.5f;
+            Rot.x -= 50f;
+
+            Obj = (GameObject)Instantiate(m_Particle, Pos,	Quaternion.Euler(Rot));
+            m_IsParticle = true;
         }
         
         if(m_Hp < 0f)
@@ -85,6 +101,11 @@ public class BuildingStatus : MonoBehaviour {
 
     public void Death()
     {
+        if(transform.tag == "B_ToyCastle")
+        {
+
+        }
+        Destroy(Obj);
         Destroy(gameObject);
         //Destroy(SelectButton);
     }

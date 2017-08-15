@@ -10,14 +10,18 @@ public class UnitFuncScript : MonoBehaviour {
     public GameObject m_ButtonPick;    // 이동명령버튼
     public GameObject m_ButtonMineral;     // 자원캐기버튼
     public GameObject m_ButtonAttack;    // 적군 공격버튼
+    public GameObject m_ButtonInitUnit;      // 유닛 생성
+    public GameObject m_ButtonBuild;
     public GameObject m_ButtonBoard;     // 공중 유닛 탑승버튼
     public GameObject m_ButtonHeal;     // 공중 유닛 탑승버튼
     public GameObject m_ButtonDrop;      // 열기구에서 유닛 내려주기
+    public bool IsCurFac;
 
     //public GameObject m_ButtonUpgrade;      // 유닛 업그레이드
 
     public bool ButtonRight;
     public bool ButtonLeft;
+    public bool IsInitAirUnit;
     public bool IsAirUnitfull;
     public int CurUnit;
 
@@ -29,7 +33,7 @@ public class UnitFuncScript : MonoBehaviour {
 
     public BuildScript[] m_BuildSlotList;   // 건물 생성 버튼
     public InitUnitScript[] m_InitUnitSlotList; // 유닛 생성 버튼
-    public AttackByBomb[] m_AttackSlotList;   // 공격 버튼
+    //public AttackByBomb[] m_AttackSlotList;   // 공격 버튼
     public UpgradeScript[] m_UpgradeSlotList;   // 강화 버튼
                                               
 
@@ -39,7 +43,7 @@ public class UnitFuncScript : MonoBehaviour {
         m_Instance = this;
         m_BuildSlotList = GetComponentsInChildren<BuildScript>();    // BuildScript 가지고 있는 자식들
         m_InitUnitSlotList = GetComponentsInChildren<InitUnitScript>();    // InitUnitScript 가지고 있는 자식들
-        m_AttackSlotList = GetComponentsInChildren<AttackByBomb>();
+        //m_AttackSlotList = GetComponentsInChildren<AttackByBomb>();
         m_UpgradeSlotList = GetComponentsInChildren<UpgradeScript>();
         ClearFunc();
 
@@ -67,26 +71,31 @@ public class UnitFuncScript : MonoBehaviour {
                 ClearFunc();
                 m_ButtonPick.SetActive(true);
                 m_ButtonAttack.SetActive(true);
-                m_ButtonBoard.SetActive(true);
+                if (IsInitAirUnit)
+                    m_ButtonBoard.SetActive(true);
                 break;
 
             case 2:     // 레고
                 ClearFunc();
                 m_ButtonPick.SetActive(true);
                 m_ButtonMineral.SetActive(true);
-                m_ButtonBoard.SetActive(true);
-                m_ButtonRight.SetActive(true);
-                m_ButtonLeft.SetActive(true);
-                if (start == 4) end = m_BuildSlotList.Length;
-                for (int i = start; i < end; ++i)
-                    m_BuildSlotList[i].gameObject.SetActive(true);
+                m_ButtonBuild.SetActive(true);
+                
+                if (IsInitAirUnit)
+                    m_ButtonBoard.SetActive(true);
+                //m_ButtonRight.SetActive(true);
+                //m_ButtonLeft.SetActive(true);
+                //if (start == 4) end = m_BuildSlotList.Length;
+                //for (int i = start; i < end; ++i)
+                //    m_BuildSlotList[i].gameObject.SetActive(true);
                 break;
 
             case 4:     // 곰탱
                 ClearFunc();
                 m_ButtonPick.SetActive(true);
                 m_ButtonAttack.SetActive(true);
-                m_ButtonBoard.SetActive(true);
+                if(IsInitAirUnit)
+                    m_ButtonBoard.SetActive(true);
                 break;
 
             case 6:     // 열기구
@@ -95,9 +104,10 @@ public class UnitFuncScript : MonoBehaviour {
                 {
                     m_ButtonPick.SetActive(true);
                     //m_ButtonDrop.SetActive(true);
+                    m_ButtonAttack.SetActive(true);
                 }
-                for (int i = start; i < m_AttackSlotList.Length; ++i)
-                    m_AttackSlotList[i].gameObject.SetActive(true);
+                //for (int i = start; i < m_AttackSlotList.Length; ++i)
+                //    m_AttackSlotList[i].gameObject.SetActive(true);
                 break;
 
             case 8:     // 쥐
@@ -107,29 +117,32 @@ public class UnitFuncScript : MonoBehaviour {
 
             case 10:    // 공장
                 ClearFunc();
-                m_ButtonRight.SetActive(true);
-                m_ButtonLeft.SetActive(true);
-                if (start == 4) end = m_InitUnitSlotList.Length;
-                for (int i = start; i < end; ++i)
-                {
-                    if (m_InitUnitSlotList[i].gameObject.tag == "B_ToyFactory")
-                        m_InitUnitSlotList[i].gameObject.SetActive(true);
-                }
+                IsCurFac = true;
+                m_ButtonInitUnit.SetActive(true);
+                //m_ButtonRight.SetActive(true);
+                //m_ButtonLeft.SetActive(true);
+                //if (start == 4) end = m_InitUnitSlotList.Length;
+                //for (int i = start; i < end; ++i)
+                //{
+                //    if (m_InitUnitSlotList[i].gameObject.tag == "B_ToyFactory")
+                //        m_InitUnitSlotList[i].gameObject.SetActive(true);
+                //}
                 break;
 
             case 12:    // 중심건물
                 ClearFunc();
-                for (int i = start; i < m_InitUnitSlotList.Length; ++i)
-                {
-                    if (m_InitUnitSlotList[i].gameObject.tag == "B_ToyCastle")
-                        m_InitUnitSlotList[i].gameObject.SetActive(true);
-                }
+                IsCurFac = false;
+                m_ButtonInitUnit.SetActive(true);
+                //for (int i = start; i < m_InitUnitSlotList.Length; ++i)
+                //{
+                //    if (m_InitUnitSlotList[i].gameObject.tag == "B_ToyCastle")
+                //        m_InitUnitSlotList[i].gameObject.SetActive(true);
+                //}
                 break;
             case 20:    // 공룡
                 ClearFunc();
                 m_ButtonPick.SetActive(true);
                 m_ButtonAttack.SetActive(true);
-                m_ButtonBoard.SetActive(true);
                 break;
             case 22:    // 카
                 ClearFunc();
@@ -169,6 +182,65 @@ public class UnitFuncScript : MonoBehaviour {
 
     }
 
+    public void SetInitUnitSlot()
+    {
+        ClearFunc();
+        int start, end = 0;
+        if (ButtonRight)
+            start = 4;
+
+        else
+        {
+            start = 0;
+            end = 4;
+        }
+
+        if(IsCurFac == true)
+        {
+            m_ButtonRight.SetActive(true);
+            m_ButtonLeft.SetActive(true);
+            if (start == 4) end = m_InitUnitSlotList.Length;
+            for (int i = start; i < end; ++i)
+            {
+                if (m_InitUnitSlotList[i].gameObject.tag == "B_ToyFactory")
+                    m_InitUnitSlotList[i].gameObject.SetActive(true);
+            }
+
+        }       
+
+        else
+        {
+            for (int i = start; i < m_InitUnitSlotList.Length; ++i)
+            {
+                if (m_InitUnitSlotList[i].gameObject.tag == "B_ToyCastle")
+                    m_InitUnitSlotList[i].gameObject.SetActive(true);
+            }
+        }
+        ButtonRight = false;
+    }
+
+    public void SetBuildSlot()
+    {
+        ClearFunc();
+        int start, end = 0;
+        if (ButtonRight)
+            start = 4;
+
+        else
+        {
+            start = 0;
+            end = 4;
+        }
+
+        m_ButtonRight.SetActive(true);
+        m_ButtonLeft.SetActive(true);
+        if (start == 4) end = m_BuildSlotList.Length;
+        for (int i = start; i < end; ++i)
+            m_BuildSlotList[i].gameObject.SetActive(true);
+
+        ButtonRight = false;
+    }
+
     public void ClearFunc()
     {
         m_ButtonRight.SetActive(false);
@@ -178,6 +250,8 @@ public class UnitFuncScript : MonoBehaviour {
         m_ButtonAttack.SetActive(false);
         m_ButtonBoard.SetActive(false);
         m_ButtonHeal.SetActive(false);
+        m_ButtonInitUnit.SetActive(false);
+        m_ButtonBuild.SetActive(false);
 
         for (int i = 0; i < m_BuildSlotList.Length; ++i)
             m_BuildSlotList[i].gameObject.SetActive(false);
@@ -185,8 +259,8 @@ public class UnitFuncScript : MonoBehaviour {
         for (int i = 0; i < m_InitUnitSlotList.Length; ++i)
             m_InitUnitSlotList[i].gameObject.SetActive(false);
 
-        for (int i = 0; i < m_AttackSlotList.Length; ++i)
-            m_AttackSlotList[i].gameObject.SetActive(false);
+        //for (int i = 0; i < m_AttackSlotList.Length; ++i)
+        //    m_AttackSlotList[i].gameObject.SetActive(false);
 
         for (int i = 0; i < m_UpgradeSlotList.Length; ++i)
             m_UpgradeSlotList[i].gameObject.SetActive(false);
@@ -201,13 +275,29 @@ public class UnitFuncScript : MonoBehaviour {
     {
         ButtonRight = Right;
         ButtonLeft = false;
-        SetUnitFunc(CurUnit);
+        if(CurUnit == 12 || CurUnit == 10)
+            SetInitUnitSlot();//SetUnitFunc(CurUnit);
+        if(CurUnit == 2)
+            SetBuildSlot();
     }
 
     public void ButtonLeftIsPressed(bool Left)
     {
         ButtonLeft = Left;
         ButtonRight = false;
-        SetUnitFunc(CurUnit);
+        if (CurUnit == 12 || CurUnit == 10)
+            SetInitUnitSlot();//SetUnitFunc(CurUnit);
+        if (CurUnit == 2)
+            SetBuildSlot();
+    }
+
+    public void CallBuildSlot()
+    {
+        SetBuildSlot();
+    }
+
+    public void CallInitUnitSlot()
+    {
+        SetInitUnitSlot();
     }
 }

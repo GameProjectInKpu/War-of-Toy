@@ -93,6 +93,7 @@ public class PlayerMove : MonoBehaviour
         m_AttackImage.SetActive(false);
         m_Animator = GetComponentInChildren<Animator>();
         m_Nav = GetComponent<NavMeshAgent>();
+        m_Nav.enabled = true;
         m_MoveSpeed = 6f;
         m_Hp = 100f;
         m_InitHp = m_Hp;
@@ -258,15 +259,23 @@ public class PlayerMove : MonoBehaviour
             {
                 if (IsInputRight())
                 {
-                    //TargetPointFalse();
-                    if (transform.tag == "UnitLego" || transform.tag == "UnitClockMouse" )
+                    //TargetPointFalse();                 
+
+                    //m_IsStartToMove = true;
+                    SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
+                    if (transform.tag == "UnitLego" || transform.tag == "UnitClockMouse")
                     {
                         m_IsSelect = false;
                         break;
                     }
 
-                    //m_IsStartToMove = true;
-                    SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
+                    if (transform.tag == "UnitAirBalloon")
+                    {
+                        GameObject Obj = (GameObject)Instantiate(Bullet, FireHole.position, FireHole.rotation);
+                        m_IsSelect = false;
+                        break;
+                    }
+
                     Ray ray = Camera.main.ScreenPointToRay(InputSpot());
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity))
@@ -331,6 +340,7 @@ public class PlayerMove : MonoBehaviour
                         else if (HitOb.layer == 27 
                             && !SelectUnitScript.m_Instance.IsBuildingMyTeam(HitOb.GetComponent<BuildingStatus>()))  // Building
                         {
+                            
                             m_IsPM = false;
                             m_IsBS = true;
                             HitBS = HitOb.GetComponent<BuildingStatus>();
@@ -546,11 +556,11 @@ public class PlayerMove : MonoBehaviour
             if (m_IsBS && !m_IsPM) condition = HitBS.m_IsAlive;
             if (m_IsPM && !m_IsBS) condition = HitPM.m_IsAlive;
 
-            Debug.Log("공격루틴 실행중");
+            //Debug.Log("공격루틴 실행중");
 
             if (m_Attackstop == false)
             {
-                Debug.Log("총알 발사되고 있음");
+                //Debug.Log("총알 발사되고 있음");
                 GameObject Obj = (GameObject)PhotonNetwork.Instantiate(Bullet.name, FireHole.position, FireHole.rotation, 0);
             }
 

@@ -40,15 +40,19 @@ public class InitUnitScript : MonoBehaviour {
             case 0: // 성에서 생성
                 //CastleScript.m_Animator.SetBool("IsWork", true);
                 UnitPos = m_Castle.position;
+                UnitPos.x += Random.Range(-1.5f, 1.5f);
                 UnitPos.y = 4.5f;
 
-                UnitPos.z -= 5f;
+                if(UnitPos.z < 6f)
+                    UnitPos.z += 5f;
+                else
+                    UnitPos.z -= 5f;
                 break;
 
             case 1: // 공장에서 생성
                 //FactoryScript.m_Animator.SetBool("IsWork", true);
                 UnitPos = m_Factory.position;
-
+                UnitPos.x += Random.Range(-1.5f, 1.5f);
                 UnitPos.z -= 5f;
                 UnitPos.y += 0.05f;
                 break;
@@ -68,6 +72,8 @@ public class InitUnitScript : MonoBehaviour {
             Obj = (GameObject)PhotonNetwork.Instantiate(this.InitUnitRed.name, UnitPos, Quaternion.Euler(Vector3.zero), 0);
             if (Obj.transform.tag != "UnitAirballoon")
                 Obj.GetComponent<PlayerMove>().enabled = true;
+            else
+                UnitFuncScript.m_Instance.IsInitAirUnit = true;
             PlayerMove unitRed = Obj.GetComponent<PlayerMove>();
             SelectUnitScript.m_Instance.LivingUnit.Add(unitRed);
             //SelectUnitScript.m_Instance.LivingEnemyUnit.Add(unitBlue);
@@ -78,6 +84,8 @@ public class InitUnitScript : MonoBehaviour {
             Obj = (GameObject)PhotonNetwork.Instantiate(this.InitUnitBlue.name, UnitPos, Quaternion.Euler(Vector3.zero), 0);
             if (Obj.transform.tag != "UnitAirballoon")
                 Obj.GetComponent<PlayerMove>().enabled = true;
+            else
+                UnitFuncScript.m_Instance.IsInitAirUnit = true;
             PlayerMove unitBlue = Obj.GetComponent<PlayerMove>();
             SelectUnitScript.m_Instance.LivingUnit.Add(unitBlue);
             //SelectUnitScript.m_Instance.LivingEnemyUnit.Add(unitRed);
