@@ -14,6 +14,9 @@ public class InitUnitScript : MonoBehaviour {
     public static Transform m_Hospital;
     //private MoveCamera m_CameraMove;
 
+    PlayerMove unitRed;
+    PlayerMove unitBlue;
+
     private void Awake()
     {
         //m_Camera = Camera.main.transform;
@@ -45,20 +48,14 @@ public class InitUnitScript : MonoBehaviour {
             case 1: // 공장에서 생성
                 //FactoryScript.m_Animator.SetBool("IsWork", true);
                 UnitPos = m_Factory.position;
-                if ((UnitPos.x > 60f && UnitPos.z < 25f) || (UnitPos.x < 35f && UnitPos.z > 73f))
-                    UnitPos.y = 4.5f;
-                else
-                    UnitPos.y = 0.15f;
+
                 UnitPos.z -= 5f;
-                //UnitPos.y = 0.15f;
+                UnitPos.y += 0.05f;
                 break;
 
             case 2: // 병원에서 생성
                 UnitPos = m_Hospital.position;
-                if ((UnitPos.x > 60f && UnitPos.z < 25f) || (UnitPos.x < 35f && UnitPos.z > 73f))
-                    UnitPos.y = 4.5f;
-                else
-                    UnitPos.y = 0.15f;
+
                 UnitPos.z -= 5f;
                 break;
 
@@ -71,8 +68,9 @@ public class InitUnitScript : MonoBehaviour {
             Obj = (GameObject)PhotonNetwork.Instantiate(this.InitUnitRed.name, UnitPos, Quaternion.Euler(Vector3.zero), 0);
             if (Obj.transform.tag != "UnitAirballoon")
                 Obj.GetComponent<PlayerMove>().enabled = true;
-            PlayerMove Pm = Obj.GetComponent<PlayerMove>();
-            SelectUnitScript.m_Instance.LivingUnit.Add(Pm);
+            PlayerMove unitRed = Obj.GetComponent<PlayerMove>();
+            SelectUnitScript.m_Instance.LivingUnit.Add(unitRed);
+            //SelectUnitScript.m_Instance.LivingEnemyUnit.Add(unitBlue);
             ++CurUnitNum.m_Instance.m_UnitNum;
         }
         else
@@ -80,18 +78,19 @@ public class InitUnitScript : MonoBehaviour {
             Obj = (GameObject)PhotonNetwork.Instantiate(this.InitUnitBlue.name, UnitPos, Quaternion.Euler(Vector3.zero), 0);
             if (Obj.transform.tag != "UnitAirballoon")
                 Obj.GetComponent<PlayerMove>().enabled = true;
-            PlayerMove Pm = Obj.GetComponent<PlayerMove>();
-            SelectUnitScript.m_Instance.LivingUnit.Add(Pm);
+            PlayerMove unitBlue = Obj.GetComponent<PlayerMove>();
+            SelectUnitScript.m_Instance.LivingUnit.Add(unitBlue);
+            //SelectUnitScript.m_Instance.LivingEnemyUnit.Add(unitRed);
             ++CurUnitNum.m_Instance.m_UnitNum;
         }
 
         //GameObject Obj = (GameObject)Instantiate(InitUnit, UnitPos, Quaternion.Euler(Vector3.zero));
         //Obj.GetComponent<PlayerMove>().enabled = true;
-        Invoke("IsWorkFalse", 5f);
+        //Invoke("IsWorkFalse", 5f);
     }
 
-    void IsWorkFalse()
-    {
+    //void IsWorkFalse()
+    //{
         //FactoryScript.m_Animator.SetBool("IsWork", false);
-    }
+    //}
 }

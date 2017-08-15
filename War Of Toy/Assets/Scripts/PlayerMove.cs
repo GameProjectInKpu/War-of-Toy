@@ -18,7 +18,7 @@ public class PlayerMove : MonoBehaviour
     public float m_Heal;
     public int m_Mineral;
 
-
+    public GameObject m_AttackImage;
     public Transform m_Team;
     public Image imgHpbar;
     public Image imgSelectbar;
@@ -35,7 +35,6 @@ public class PlayerMove : MonoBehaviour
     public bool m_IsSelect;
     public bool m_IsAlive;
 
-    //public bool m_NewOrder;
     //public bool m_IsStartToMove;
     public bool m_Attackstop;
 
@@ -61,6 +60,8 @@ public class PlayerMove : MonoBehaviour
 
     public float m_Count;
     public float m_InitCount;
+
+    public NavMeshAgent m_Nav;
 
     //public Text m_CurActionText;
 
@@ -89,7 +90,9 @@ public class PlayerMove : MonoBehaviour
     {
         m_Path = new NavMeshPath();
         //m_CurActionText = m_CurActionText.GetComponent<Text>();
+        m_AttackImage.SetActive(false);
         m_Animator = GetComponentInChildren<Animator>();
+        m_Nav = GetComponent<NavMeshAgent>();
         m_MoveSpeed = 6f;
         m_Hp = 100f;
         m_InitHp = m_Hp;
@@ -100,57 +103,17 @@ public class PlayerMove : MonoBehaviour
         m_Mineral = 1;
     }
 
-    /*IEnumerator UnitStatusRoutine()
-    {
-        while(m_IsAlive)
-        {
-            switch (unitState)
-            {
-                case UnitState.idle:
-                    Debug.Log("유닛 아이들 상태");
-                    m_Animator.SetBool("IsPick", false);
-                    m_Animator.SetBool("IsAttack", false);
-                    m_Animator.SetBool("IsMineral", false);
-                    m_Animator.SetBool("IsBuild", false);
-                    break;
+    //private void TargetPointFalse()
+    //{
+    //    for (int i = 0; i < SelectUnitScript.m_Instance.LivingUnit.Count; ++i)
+    //    {
+    //        if (SelectUnitScript.m_Instance.LivingUnit[i].m_AttackImage.activeSelf == true)
+    //        {
+    //            SelectUnitScript.m_Instance.LivingUnit[i].m_AttackImage.SetActive(false);
+    //        }
+    //    }
+    //}
 
-                case UnitState.walk:
-                    Debug.Log("유닛 걷기 상태");
-                    m_Animator.SetBool("IsPick", true);
-                    m_Animator.SetBool("IsAttack", false);
-                    m_Animator.SetBool("IsMineral", false);
-                    m_Animator.SetBool("IsBuild", false);
-                    break;
-
-                case UnitState.attack:
-                    m_Animator.SetBool("IsAttack", true);
-                    break;
-
-                case UnitState.trace:
-
-                    break;
-                case UnitState.mineral:
-                    m_Animator.SetBool("IsMineral", false);
-                    m_Animator.SetBool("IsMineral", true);
-                    m_Animator.SetBool("IsPick", false);
-                    m_Animator.SetBool("IsBuild", false);
-                    break;
-
-                case UnitState.build:
-                    m_Animator.SetBool("IsPick", false);
-                    m_Animator.SetBool("IsBuild", true);
-                    break;
-
-                case UnitState.die:
-                    m_Animator.SetBool("IsDie", true);
-                    break;
-
-                default:
-                    break;
-            }
-            yield return null;
-        }
-    }*/
 
 
     public bool IsInputRight()
@@ -271,7 +234,7 @@ public class PlayerMove : MonoBehaviour
                             yield return StartCoroutine("Picking", HitOb.transform.position);
                             m_IsSelect = false;
                             //yield return HitPM.StartCoroutine("Landing_TakeOff", false);
-                            GetComponent<NavMeshAgent>().enabled = false;
+                            m_Nav.enabled = false;
                             transform.SetParent(HitPM.BalloonHeight, false);
                             Vector3 UPos = Vector3.zero;
                             Vector3 URot = Vector3.zero;
@@ -295,6 +258,13 @@ public class PlayerMove : MonoBehaviour
             {
                 if (IsInputRight())
                 {
+                    //TargetPointFalse();
+                    if (transform.tag == "UnitLego" || transform.tag == "UnitClockMouse" )
+                    {
+                        m_IsSelect = false;
+                        break;
+                    }
+
                     //m_IsStartToMove = true;
                     SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
                     Ray ray = Camera.main.ScreenPointToRay(InputSpot());
@@ -304,7 +274,8 @@ public class PlayerMove : MonoBehaviour
                         Debug.DrawRay(Camera.main.transform.position, hit.point - Camera.main.transform.position, Color.red);
                         HitOb = hit.collider.gameObject;
                         UnitFuncScript.m_Instance.ClearFunc();
-                        if (HitOb.layer == 28)   // Unit
+                        if (HitOb.layer == 28 
+                            && !SelectUnitScript.m_Instance.IsUnitMyTeam(HitOb.GetComponent<PlayerMove>()))   // Unit
                         {
                             m_IsPM = true;
                             m_IsBS = false;
@@ -313,11 +284,7 @@ public class PlayerMove : MonoBehaviour
                             HitPM.imgSelectbar.enabled = false;
                             SelectUnitScript.m_Instance.SelectedUnit.Remove(HitPM);
                             SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
-                            if (transform.tag == "UnitLego" || transform.tag == "UnitClockMouse" || HitOb.tag == "UnitAirballoon")
-                            {
-                                m_IsSelect = false;
-                                break;
-                            }
+                            
 
                             unitState = UnitState.attack;
                             yield return StartCoroutine("Picking", hit.point);
@@ -361,18 +328,15 @@ public class PlayerMove : MonoBehaviour
                             }
                         }
 
-                        else if (HitOb.layer == 27)  // Building
+                        else if (HitOb.layer == 27 
+                            && !SelectUnitScript.m_Instance.IsBuildingMyTeam(HitOb.GetComponent<BuildingStatus>()))  // Building
                         {
                             m_IsPM = false;
                             m_IsBS = true;
                             HitBS = HitOb.GetComponent<BuildingStatus>();
                             HitBS.m_IsSelect = false;
                             HitBS.imgSelectbar.enabled = false;
-                            if (transform.tag == "UnitLego" || transform.tag == "UnitClockMouse" || HitOb.tag == "UnitAirballoon")
-                            {
-                                m_IsSelect = false;
-                                break;
-                            }
+                  
                             unitState = UnitState.attack;
                             yield return StartCoroutine("Picking", hit.point);
                             transform.rotation = Quaternion.LookRotation(hit.transform.position - transform.position);
@@ -513,8 +477,10 @@ public class PlayerMove : MonoBehaviour
 
     IEnumerator TraceRoutine()
     {
-        while (HitPM.m_IsAlive)
+        while (HitPM != null)//(HitPM.m_IsAlive)
         {
+            if (!HitPM.m_IsAlive)
+                StopCoroutine("TraceRoutine");
             Debug.Log("추적 루틴 실행중");
             if (Vector3.Distance(transform.position, HitPM.transform.position) >= 10f)
             {
@@ -540,7 +506,7 @@ public class PlayerMove : MonoBehaviour
                 m_Animator.SetBool("IsPick", true);
                 m_Animator.SetBool("IsAttack", false);
                 m_Attackstop = true;
-                //GetComponent<NavMeshAgent>().enabled = true;
+                //m_Nav.enabled = true;
 
                 NavMesh.CalculatePath(transform.position, HitPM.transform.position, NavMesh.AllAreas, m_Path);
                 Vector3[] TraceCorners = m_Path.corners;
@@ -701,7 +667,7 @@ public class PlayerMove : MonoBehaviour
             yield return null;
         }
         m_Animator.SetBool("IsPick", false);
-        //GetComponent<NavMeshAgent>().enabled = true;
+        //m_Nav.enabled = true;
         unitState = UnitState.idle;
         StopCoroutine("Picking");
     }
@@ -746,12 +712,12 @@ public class PlayerMove : MonoBehaviour
     {
         if (other.tag == "MeshLink")
         {
-            GetComponent<NavMeshAgent>().enabled = false;
+            m_Nav.enabled = false;
         }
 
         if (other.transform.tag == "HealArea")
         {
-            if (SelectUnitScript.m_Instance.IsMyTeam(other.GetComponentInParent<PlayerMove>()))  // 자기팀인지 검사
+            if (SelectUnitScript.m_Instance.IsUnitMyTeam(other.GetComponentInParent<PlayerMove>()))  // 자기팀인지 검사
                 m_IsInHealArea = true;
             else
                 m_IsInHealArea = false;
@@ -763,7 +729,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (other.tag == "MeshLink")
         {
-            GetComponent<NavMeshAgent>().enabled = true;
+            m_Nav.enabled = true;
         }
         if (other.transform.tag == "HealArea")
         {
@@ -777,7 +743,7 @@ public class PlayerMove : MonoBehaviour
         {
             //Debug.Log("총에 맞음");
             m_Hp -= m_Power;
-            if (m_Hp < 0f)
+            if (m_Hp <= 0f)
                 m_IsAlive = false;
             imgHpbar.enabled = true;
             imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
@@ -786,7 +752,7 @@ public class PlayerMove : MonoBehaviour
         if (damage.transform.tag == "AttackArea")
         {
             m_Hp -= (m_Power + 5f);
-            if (m_Hp < 0f)
+            if (m_Hp <= 0f)
                 m_IsAlive = false;
             imgHpbar.enabled = true;
             imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;

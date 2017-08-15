@@ -10,8 +10,10 @@ public class SelectUnitScript : MonoBehaviour
     public LayerMask m_LMBuilding;
     public GameObject m_BuildOK;
     public GameObject m_PickImage;
-   // public bool m_IsSelect;
+    
+    // public bool m_IsSelect;
     public List<PlayerMove> LivingUnit; // 현재 살아있는 유닛들
+    public List<PlayerMove> LivingEnemyUnit; // 현재 살아있는 유닛들
     BuildingStatus Bs;  // 현재 선택하는 빌딩
     public List<PlayerMove> SelectedUnit;  // 현재 선택한 유닛들
 
@@ -70,10 +72,18 @@ public class SelectUnitScript : MonoBehaviour
                     
                    
 
-                    if (Bs.m_Team.gameObject.layer == 23)
+                    if (IsBuildingMyTeam(Bs))
+                    {
+                        UnitStatusScript.m_Instance.m_IsMyTeam = true;
                         UnitStatusScript.m_Instance.SetUnitImage(hit.transform, 0, Bs.imgHpbar);
+                    }
+                        
                     else
-                        UnitStatusScript.m_Instance.SetUnitImage(hit.transform, 1, Bs.imgHpbar);
+                    {
+                        UnitStatusScript.m_Instance.m_IsMyTeam = false;
+                        UnitStatusScript.m_Instance.SetUnitImage(hit.transform, 0, Bs.imgHpbar);
+                    }
+                        
 
                     Bs.m_IsSelect = true;
                     Bs.imgSelectbar.enabled = true;
@@ -100,10 +110,14 @@ public class SelectUnitScript : MonoBehaviour
     {
         while (true)
         {
-            foreach (PlayerMove unit in SelectedUnit)
-            {
-                Debug.Log(unit.tag);
-            }
+            //if(LivingEnemyUnit !=  null)
+            //{
+            //    foreach (PlayerMove unit in LivingEnemyUnit)
+            //    {
+            //        Debug.Log(unit.tag);
+            //    }
+            //}
+            
 
             foreach (PlayerMove unit in LivingUnit)
             {
@@ -111,6 +125,7 @@ public class SelectUnitScript : MonoBehaviour
                 {
                     unit.StopAllCoroutines();
                     unit.m_IsAlive = false;
+                    unit.m_Animator.SetBool("IsDie", true);
                     unit.Invoke("Death", 3f);
                     LivingUnit.Remove(unit);
                     SelectedUnit.Remove(unit);
@@ -144,17 +159,22 @@ public class SelectUnitScript : MonoBehaviour
 
 
 
-        if(IsMyTeam(Unit) == true)
-            UnitStatusScript.m_Instance.m_IsMayTeam = true;
+        if(IsUnitMyTeam(Unit) == true)
+        {
+            UnitStatusScript.m_Instance.m_IsMyTeam = true;
+            UnitStatusScript.m_Instance.SetUnitImage(unit, 0, Unit.imgHpbar);
+        }
+            
             
             
         else
         {
-            UnitStatusScript.m_Instance.m_IsMayTeam = false;
+            UnitStatusScript.m_Instance.m_IsMyTeam = false;
+            UnitStatusScript.m_Instance.SetUnitImage(unit, 0, Unit.imgHpbar);
             goto CannotOrder;
         }
 
-        UnitStatusScript.m_Instance.SetUnitImage(unit, 0, Unit.imgHpbar);
+        
 
 
         SelectedUnit.Add(Unit);
@@ -233,21 +253,32 @@ public class SelectUnitScript : MonoBehaviour
 
     public void OrderToAttack()
     {
-        foreach (PlayerMove unit in SelectedUnit)
+        for(int i = 0; i < SelectedUnit.Count; ++i)
         {
-            if (unit.gameObject.tag == "UnitCupid" || unit.gameObject.tag == "UnitLego" || unit.m_IsAttack)
-                return;
-            StopCoroutine("SelectRoutine");
-            unit.m_IsPick = false;
-            unit.m_IsMineral = false;
-            unit.HitPM = null;
-            unit.HitBS = null;
-            unit.m_Animator.SetBool("IsAttack", false);
-            unit.m_IsAttack = true;
-            unit.imgSelectbar.enabled = false;
-            unit.imgHpbar.enabled = false;
+            if(SelectedUnit[i].tag != "UnitLego" 
+                && SelectedUnit[i].tag != "UnitCupid" && SelectedUnit[i].tag != "UnitClockMouse")
+            {
+                StopCoroutine("SelectRoutine");
+                SelectedUnit[i].m_IsPick = false;
+                SelectedUnit[i].m_IsMineral = false;
+                SelectedUnit[i].HitPM = null;
+                SelectedUnit[i].HitBS = null;
+                SelectedUnit[i].m_Animator.SetBool("IsAttack", false);
+                SelectedUnit[i].m_IsAttack = true;
+                SelectedUnit[i].imgSelectbar.enabled = false;
+                SelectedUnit[i].imgHpbar.enabled = false;
+            }
         }
-        
+
+        //for (int i = 0; i < LivingUnit.Count; ++i)
+        //{
+        //    if(!IsUnitMyTeam(LivingUnit[i]) && LivingUnit[i].m_IsSelect == false)
+        //    {
+        //        LivingUnit[i].m_AttackImage.SetActive(true);
+        //    }
+        //}
+
+
     }
 
     public void OrderToBoard()
@@ -303,7 +334,28 @@ public class SelectUnitScript : MonoBehaviour
     //}
 
 
-    public bool IsMyTeam (PlayerMove Unit)//같은 팀인지 검사
+    public bool IsUnitMyTeam (PlayerMove Unit)//유닛 같은 팀인지 검사
+    {
+        if (PhotonNetwork.isMasterClient)  
+        {
+            if (Unit.m_Team.gameObject.layer == 22)
+                return false;
+
+            else
+                return true;
+        }
+
+        else
+        {
+            if (Unit.m_Team.gameObject.layer == 23)
+                return false;
+
+            else
+                return true;
+        }
+    }
+
+    public bool IsBuildingMyTeam(BuildingStatus Unit)//같은 팀인지 검사
     {
         if (PhotonNetwork.isMasterClient)   // 같은 편인지 검사
         {

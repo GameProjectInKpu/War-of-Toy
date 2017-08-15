@@ -14,7 +14,7 @@ public class UpgradeScript : MonoBehaviour {
         bool found = false;
         for (int i = 0; i < SelectUnitScript.m_Instance.LivingUnit.Count; ++i)
         {
-            if (SelectUnitScript.m_Instance.IsMyTeam(SelectUnitScript.m_Instance.LivingUnit[i]) 
+            if (SelectUnitScript.m_Instance.IsUnitMyTeam(SelectUnitScript.m_Instance.LivingUnit[i]) 
                 && SelectUnitScript.m_Instance.LivingUnit[i].gameObject.tag == unitTag)
             {
                 if (SelectUnitScript.m_Instance.LivingUnit[i].m_IsUpgraded)

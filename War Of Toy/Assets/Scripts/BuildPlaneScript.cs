@@ -78,7 +78,7 @@ public class BuildPlaneScript : MonoBehaviour {
     {
         if (other.gameObject.layer == 28 || other.gameObject.layer == 27)
         {
-            Debug.Log("유닛과 플레인 겹침");
+            //Debug.Log("유닛과 플레인 겹침");
             Overlaped = true;
         }
     }
@@ -87,7 +87,7 @@ public class BuildPlaneScript : MonoBehaviour {
     {
         if (other.gameObject.layer == 28 || other.gameObject.layer == 27)
         {
-            Debug.Log("유닛과 플레인 분리됨");
+            //Debug.Log("유닛과 플레인 분리됨");
             Overlaped = false;
         }
     }
