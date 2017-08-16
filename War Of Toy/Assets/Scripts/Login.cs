@@ -82,8 +82,8 @@ public class Login : MonoBehaviour
             PlayerPrefs.SetString("UserID", username);
             PlayerPrefs.SetString("UserLastLogin", www.text.Substring(0, www.text.Length - 3));
             PlayerPrefs.SetString("UserLevel", www.text.Substring(www.text.Length - 1, 1));
-
-            Application.LoadLevel("Waiting");
+            AccessToLauncher.SetActive(true);
+            //Application.LoadLevel("Waiting");
         }
 
         StopCoroutine(LoginToDB(EnterID.text, EnterPassword.text));

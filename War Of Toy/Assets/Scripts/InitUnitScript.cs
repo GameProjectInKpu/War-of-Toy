@@ -14,8 +14,6 @@ public class InitUnitScript : MonoBehaviour {
     public static Transform m_Hospital;
     //private MoveCamera m_CameraMove;
 
-    PlayerMove unitRed;
-    PlayerMove unitBlue;
 
     private void Awake()
     {

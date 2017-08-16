@@ -56,7 +56,7 @@ public class SelectUnitScript : MonoBehaviour
             if(Input.GetMouseButton(0))
             //if (Input.touchCount == 1 )
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position); // //
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position); // // //
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMUnit) && TouchScript.m_Instance.IsOver)
                         SelectUnit(hit.transform);
@@ -125,9 +125,13 @@ public class SelectUnitScript : MonoBehaviour
             {
                 if(unit.m_Hp <= 0f)
                 {
+                    //Vector3 Pos = unit.transform.position;
+                    //Pos.y -= 100f; 
                     unit.StopAllCoroutines();
                     unit.m_IsAlive = false;
                     unit.m_Animator.SetBool("IsDie", true);
+                    //yield return new WaitForSeconds(2.5f);
+                    //unit.transform.position = Pos;
                     unit.Invoke("Death", 3f);
                     LivingUnit.Remove(unit);
                     SelectedUnit.Remove(unit);
@@ -235,16 +239,14 @@ public class SelectUnitScript : MonoBehaviour
             unit.m_IsPick = true;
 
         }
-        //SelectedUnit.imgSelectbar.enabled = false;
-        //SelectedUnit.imgHpbar.enabled = false;
     }
 
     public void OrderToMineral()
     {
         foreach (PlayerMove unit in SelectedUnit)
         {
-            if (unit.gameObject.tag != "UnitLego" || unit.m_IsMineral || m_BuildOK.activeSelf)
-                return;
+            //if (unit.gameObject.tag != "UnitLego" || unit.m_IsMineral || m_BuildOK.activeSelf)
+            //    return;
             unit.m_IsPick = false;
             unit.m_IsAttack = false;
             unit.m_IsMineral = true;
@@ -255,30 +257,47 @@ public class SelectUnitScript : MonoBehaviour
 
     public void OrderToAttack()
     {
-        for(int i = 0; i < SelectedUnit.Count; ++i)
+        foreach (PlayerMove unit in SelectedUnit)
         {
-            if(SelectedUnit[i].tag != "UnitLego" 
-                && SelectedUnit[i].tag != "UnitCupid" && SelectedUnit[i].tag != "UnitClockMouse")
+            //if (unit.tag == "UnitAirBalloon")
+            //{
+            //    Debug.Log("폭탄공격");
+            //    GameObject Obj = Instantiate(unit.Bullet, unit.FireHole.position, unit.FireHole.rotation);
+            //    unit.m_IsSelect = false;
+            //    return;
+            //}
+            if (unit.tag != "UnitLego"
+                && unit.tag != "UnitCupid" && unit.tag != "UnitClockMouse")
             {
                 StopCoroutine("SelectRoutine");
-                SelectedUnit[i].m_IsPick = false;
-                SelectedUnit[i].m_IsMineral = false;
-                SelectedUnit[i].HitPM = null;
-                SelectedUnit[i].HitBS = null;
-                SelectedUnit[i].m_Animator.SetBool("IsAttack", false);
-                SelectedUnit[i].m_IsAttack = true;
-                SelectedUnit[i].imgSelectbar.enabled = false;
-                SelectedUnit[i].imgHpbar.enabled = false;
+                unit.m_IsPick = false;
+                unit.m_IsMineral = false;
+                unit.HitPM = null;
+                unit.HitBS = null;
+                unit.m_Animator.SetBool("IsAttack", false);
+                unit.m_IsAttack = true;
+                unit.imgSelectbar.enabled = false;
+                unit.imgHpbar.enabled = false;
             }
         }
 
-        //for (int i = 0; i < LivingUnit.Count; ++i)
+        //for(int i = 0; i < SelectedUnit.Count; ++i)
         //{
-        //    if(!IsUnitMyTeam(LivingUnit[i]) && LivingUnit[i].m_IsSelect == false)
+        //    if(SelectedUnit[i].tag != "UnitLego" 
+        //        && SelectedUnit[i].tag != "UnitCupid" && SelectedUnit[i].tag != "UnitClockMouse")
         //    {
-        //        LivingUnit[i].m_AttackImage.SetActive(true);
+        //        StopCoroutine("SelectRoutine");
+        //        SelectedUnit[i].m_IsPick = false;
+        //        SelectedUnit[i].m_IsMineral = false;
+        //        SelectedUnit[i].HitPM = null;
+        //        SelectedUnit[i].HitBS = null;
+        //        SelectedUnit[i].m_Animator.SetBool("IsAttack", false);
+        //        SelectedUnit[i].m_IsAttack = true;
+        //        SelectedUnit[i].imgSelectbar.enabled = false;
+        //        SelectedUnit[i].imgHpbar.enabled = false;
         //    }
         //}
+
 
 
     }

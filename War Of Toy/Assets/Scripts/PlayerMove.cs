@@ -18,7 +18,7 @@ public class PlayerMove : MonoBehaviour
     public float m_Heal;
     public int m_Mineral;
 
-    public GameObject m_AttackImage;
+    //public GameObject m_AttackImage;
     public Transform m_Team;
     public Image imgHpbar;
     public Image imgSelectbar;
@@ -90,12 +90,12 @@ public class PlayerMove : MonoBehaviour
     {
         m_Path = new NavMeshPath();
         //m_CurActionText = m_CurActionText.GetComponent<Text>();
-        if(transform.tag != "UnitAirBalloon")
-            m_AttackImage.SetActive(false);
-        if (transform.tag == "UnitAirBalloon")
-            m_Animator = GetComponent<Animator>();
-        else
-            m_Animator = GetComponentInChildren<Animator>();
+        //if(transform.tag != "UnitAirBalloon")
+        //{
+        //    m_AttackImage.SetActive(false);
+            
+        //}
+        m_Animator = GetComponentInChildren<Animator>();
         m_Nav = GetComponent<NavMeshAgent>();
         m_Nav.enabled = true;
         m_MoveSpeed = 6f;
@@ -149,6 +149,8 @@ public class PlayerMove : MonoBehaviour
                 if (IsInputRight() && TouchScript.m_Instance.IsOver)
                 {
                     //m_IsStartToMove = true;
+                    SelectUnitScript.m_Instance.StopCoroutine("SelectRoutine");
+                    SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
                     imgSelectbar.enabled = false;
                     imgHpbar.enabled = false;
                     SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
@@ -187,6 +189,8 @@ public class PlayerMove : MonoBehaviour
                 if (IsInputRight())
                 {
                     //m_IsStartToMove = true;
+                    SelectUnitScript.m_Instance.StopCoroutine("SelectRoutine");
+                    SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
                     imgSelectbar.enabled = false;
                     imgHpbar.enabled = false;
                     SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
@@ -273,18 +277,15 @@ public class PlayerMove : MonoBehaviour
                         break;
                     }
 
-                    if (transform.tag == "UnitAirBalloon")
-                    {
-                        GameObject Obj = (GameObject)Instantiate(Bullet, FireHole.position, FireHole.rotation);
-                        m_IsSelect = false;
-                        break;
-                    }
+
+                    
 
                     Ray ray = Camera.main.ScreenPointToRay(InputSpot());
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                     {
                         Debug.DrawRay(Camera.main.transform.position, hit.point - Camera.main.transform.position, Color.red);
+                        SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
                         HitOb = hit.collider.gameObject;
                         UnitFuncScript.m_Instance.ClearFunc();
                         if (HitOb.layer == 28 
@@ -296,7 +297,7 @@ public class PlayerMove : MonoBehaviour
                             HitPM.m_IsSelect = false;
                             HitPM.imgSelectbar.enabled = false;
                             SelectUnitScript.m_Instance.SelectedUnit.Remove(HitPM);
-                            SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
+                            //SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
                             
 
                             unitState = UnitState.attack;
@@ -341,10 +342,10 @@ public class PlayerMove : MonoBehaviour
                             }
                         }
 
-                        else if (HitOb.layer == 27 
-                            && !SelectUnitScript.m_Instance.IsBuildingMyTeam(HitOb.GetComponent<BuildingStatus>()))  // Building
+                        else if (hit.transform.gameObject.layer == 27 
+                            && !SelectUnitScript.m_Instance.IsBuildingMyTeam(hit.transform.GetComponent<BuildingStatus>()))  // Building
                         {
-                            
+                            NoticeScript.m_Instance.Notice("빌딩 타겟 완료\n");
                             m_IsPM = false;
                             m_IsBS = true;
                             HitBS = HitOb.GetComponent<BuildingStatus>();

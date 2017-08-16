@@ -1,0 +1,25 @@
+fileFormatVersion: 2
+guid: fc3c22149f102ef4fa71681e4b3a8f12
+timeCreated: 1502858360
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Arita-dotum(TTF)
+  fontNames:
+  - Arita-dotum(TTF)
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 70a89632c206d32458e016ef481371ff, type: 3}
+  - {fileID: 12800000, guid: af085cb6bc7396940bb3f293e376a6cd, type: 3}
+  - {fileID: 12800000, guid: 17e3a21b75f6bc24a98b2050e3c800de, type: 3}
+  - {fileID: 12800000, guid: 54f0cebe31e18df498f19b378a6d8f75, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
