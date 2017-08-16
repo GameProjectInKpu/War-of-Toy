@@ -22,11 +22,26 @@ public class MoveCamera : MonoBehaviour
     {
         m_Instance = this;
         m_Rot.x = 70f;
+        if(PhotonNetwork.isMasterClient)
+        {
+            m_Pos.x = 77f;
+            m_Pos.y = 40f;
+            m_Pos.z = 2.7f;
+            transform.position = m_Pos;
+        }
+        else
+        {
+            m_Pos.x = 23f;
+            m_Pos.y = 40f;
+            m_Pos.z = 73f;
+            transform.position = m_Pos;
+        }
+
     }
 
     private void OnEnable()
     {
-        m_Pos = transform.position;
+        //m_Pos = transform.position;
         m_Rot = transform.rotation.eulerAngles;
         StartCoroutine("MoveRoutine");
     }
@@ -50,8 +65,8 @@ public class MoveCamera : MonoBehaviour
             m_Pos.z -= m_CameraSpeed * TouchScript.m_Instance.m_TouchDeltha.y * Time.deltaTime;// * 10f;
             m_Pos.y -= Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * 300f;
             
-            m_Pos.x = Mathf.Clamp(m_Pos.x, 16.2f, 77f);
-            m_Pos.z = Mathf.Clamp(m_Pos.z, 0f, 72.5f);
+            m_Pos.x = Mathf.Clamp(m_Pos.x, 20f, 77f);
+            m_Pos.z = Mathf.Clamp(m_Pos.z, 0f, 73f);
             m_Pos.y =  Mathf.Clamp(m_Pos.y, 15f, 50f);
             m_Rot.x = Mathf.Clamp(m_Rot.x, 10f, 90f);
 

@@ -16,6 +16,8 @@ public class BuildingStatus : MonoBehaviour {
 
     public Image imgHpbar;
     public Image imgSelectbar;
+
+
     GameObject Obj;
 
     //public Material 
@@ -103,7 +105,35 @@ public class BuildingStatus : MonoBehaviour {
     {
         if(transform.tag == "B_ToyCastle")
         {
+            if (PhotonNetwork.isMasterClient)
+            {
+                if (m_Team.gameObject.layer == 22)
+                {
+                    SelectUnitScript.m_Instance.m_Victory.SetActive(true);
+                    SelectUnitScript.m_Instance.m_Defeat.SetActive(false);
+                }
+                    
+                else
+                {
+                    SelectUnitScript.m_Instance.m_Victory.SetActive(false);
+                    SelectUnitScript.m_Instance.m_Defeat.SetActive(true);
+                }
+            }
 
+            else
+            {
+                if (m_Team.gameObject.layer == 23)
+                {
+                    SelectUnitScript.m_Instance.m_Victory.SetActive(true);
+                    SelectUnitScript.m_Instance.m_Defeat.SetActive(false);
+                }
+
+                else
+                {
+                    SelectUnitScript.m_Instance.m_Victory.SetActive(false);
+                    SelectUnitScript.m_Instance.m_Defeat.SetActive(true);
+                }
+            }
         }
         Destroy(Obj);
         Destroy(gameObject);

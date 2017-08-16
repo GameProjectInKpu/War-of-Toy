@@ -10,7 +10,9 @@ public class SelectUnitScript : MonoBehaviour
     public LayerMask m_LMBuilding;
     public GameObject m_BuildOK;
     public GameObject m_PickImage;
-    
+    public GameObject m_Victory;
+    public GameObject m_Defeat;
+
     // public bool m_IsSelect;
     public List<PlayerMove> LivingUnit; // 현재 살아있는 유닛들
     public List<PlayerMove> LivingEnemyUnit; // 현재 살아있는 유닛들

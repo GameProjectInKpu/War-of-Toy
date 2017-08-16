@@ -70,9 +70,9 @@ public class InitUnitScript : MonoBehaviour {
         if (PhotonNetwork.isMasterClient)
         {
             Obj = (GameObject)PhotonNetwork.Instantiate(this.InitUnitRed.name, UnitPos, Quaternion.Euler(Vector3.zero), 0);
-            if (Obj.transform.tag != "UnitAirballoon")
+            //if (Obj.transform.tag != "UnitAirballoon")
                 Obj.GetComponent<PlayerMove>().enabled = true;
-            else
+            if (Obj.transform.tag == "UnitAirballoon")
                 UnitFuncScript.m_Instance.IsInitAirUnit = true;
             PlayerMove unitRed = Obj.GetComponent<PlayerMove>();
             SelectUnitScript.m_Instance.LivingUnit.Add(unitRed);
@@ -82,9 +82,9 @@ public class InitUnitScript : MonoBehaviour {
         else
         {
             Obj = (GameObject)PhotonNetwork.Instantiate(this.InitUnitBlue.name, UnitPos, Quaternion.Euler(Vector3.zero), 0);
-            if (Obj.transform.tag != "UnitAirballoon")
+            //if (Obj.transform.tag != "UnitAirballoon")
                 Obj.GetComponent<PlayerMove>().enabled = true;
-            else
+            if (Obj.transform.tag == "UnitAirballoon")
                 UnitFuncScript.m_Instance.IsInitAirUnit = true;
             PlayerMove unitBlue = Obj.GetComponent<PlayerMove>();
             SelectUnitScript.m_Instance.LivingUnit.Add(unitBlue);

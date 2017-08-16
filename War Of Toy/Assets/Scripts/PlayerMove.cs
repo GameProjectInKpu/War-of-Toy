@@ -90,8 +90,12 @@ public class PlayerMove : MonoBehaviour
     {
         m_Path = new NavMeshPath();
         //m_CurActionText = m_CurActionText.GetComponent<Text>();
-        m_AttackImage.SetActive(false);
-        m_Animator = GetComponentInChildren<Animator>();
+        if(transform.tag != "UnitAirBalloon")
+            m_AttackImage.SetActive(false);
+        if (transform.tag == "UnitAirBalloon")
+            m_Animator = GetComponent<Animator>();
+        else
+            m_Animator = GetComponentInChildren<Animator>();
         m_Nav = GetComponent<NavMeshAgent>();
         m_Nav.enabled = true;
         m_MoveSpeed = 6f;
