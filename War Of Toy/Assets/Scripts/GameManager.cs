@@ -18,8 +18,7 @@ namespace Com.MyCompany.MyGame
         GameObject PlayerRed;
         GameObject PlayerBlue;
 
-        PlayerMove unitRed;
-        PlayerMove unitBlue;
+        
 
         // Use this for initialization
         void Start()
@@ -40,7 +39,7 @@ namespace Com.MyCompany.MyGame
                 if (PhotonNetwork.isMasterClient)
                 {
                     PlayerRed =  PhotonNetwork.Instantiate(this.playerPrefabRed.name, new Vector3(75, 5, 15), Quaternion.identity, 0);
-                    unitRed = PlayerRed.GetComponent<PlayerMove>();
+                    PlayerMove unitRed = PlayerRed.GetComponent<PlayerMove>();
                     SelectUnitScript.m_Instance.LivingUnit.Add(unitRed);
                     ++CurUnitNum.m_Instance.m_UnitNum;
                     //SelectUnitScript.m_Instance.LivingEnemyUnit.Add(unitBlue);
@@ -49,7 +48,7 @@ namespace Com.MyCompany.MyGame
                 else
                 {
                     PlayerBlue =  PhotonNetwork.Instantiate(this.playerPrefabBlue.name, new Vector3(25, 5, 85), Quaternion.identity, 0);
-                    unitBlue = PlayerBlue.GetComponent<PlayerMove>();
+                    PlayerMove unitBlue = PlayerBlue.GetComponent<PlayerMove>();
                     SelectUnitScript.m_Instance.LivingUnit.Add(unitBlue);
                     ++CurUnitNum.m_Instance.m_UnitNum;
                     //SelectUnitScript.m_Instance.LivingEnemyUnit.Add(unitRed);
