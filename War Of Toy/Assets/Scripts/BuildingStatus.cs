@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BuildingStatus : MonoBehaviour {
+public class BuildingStatus : Photon.PunBehaviour
+{
 
     public Transform m_Team;
     public float m_Hp = 100f;
@@ -38,9 +39,9 @@ public class BuildingStatus : MonoBehaviour {
 
     private void Update()
     {
-        if(m_IsSelect == true)
+        if (m_IsSelect == true)
         {
-            switch(transform.tag)
+            switch (transform.tag)
             {
                 case "B_ToyCastle":
                     InitUnitScript.m_Castle = transform;
@@ -56,7 +57,7 @@ public class BuildingStatus : MonoBehaviour {
             }
         }
 
-        if(m_Hp < 50f && !m_IsParticle)
+        if (m_Hp < 50f && !m_IsParticle)
         {
             Vector3 Pos = transform.position;
             Vector3 Rot = Vector3.zero;
@@ -64,20 +65,20 @@ public class BuildingStatus : MonoBehaviour {
             Pos.z -= 3.5f;
             Rot.x -= 50f;
 
-            Obj = (GameObject)Instantiate(m_Particle, Pos,	Quaternion.Euler(Rot));
+            Obj = (GameObject)PhotonNetwork.Instantiate(m_Particle.name, Pos, Quaternion.Euler(Rot), 0);
             m_IsParticle = true;
         }
-        
-        if(m_Hp < 0f)
+
+        if (m_Hp < 0f)
         {
             m_IsAlive = false;
         }
 
-        if(m_IsAlive == false)
+        if (m_IsAlive == false)
         {
             Invoke("Death", 3f);
         }
-            
+
     }
 
     private void OnCollisionEnter(Collision damage)
@@ -103,7 +104,7 @@ public class BuildingStatus : MonoBehaviour {
 
     public void Death()
     {
-        if(transform.tag == "B_ToyCastle")
+        if (transform.tag == "B_ToyCastle")
         {
             if (PhotonNetwork.isMasterClient)
             {
@@ -112,7 +113,7 @@ public class BuildingStatus : MonoBehaviour {
                     SelectUnitScript.m_Instance.m_Victory.SetActive(true);
                     SelectUnitScript.m_Instance.m_Defeat.SetActive(false);
                 }
-                    
+
                 else
                 {
                     SelectUnitScript.m_Instance.m_Victory.SetActive(false);
@@ -166,5 +167,4 @@ public class BuildingStatus : MonoBehaviour {
 
 
 }
-
 

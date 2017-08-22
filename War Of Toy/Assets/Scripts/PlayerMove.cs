@@ -149,8 +149,8 @@ public class PlayerMove : MonoBehaviour
                 if (IsInputRight() && TouchScript.m_Instance.IsOver)
                 {
                     //m_IsStartToMove = true;
-                    SelectUnitScript.m_Instance.StopCoroutine("SelectRoutine");
-                    SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
+                   // SelectUnitScript.m_Instance.StopCoroutine("SelectRoutine");
+                   // SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
                     imgSelectbar.enabled = false;
                     imgHpbar.enabled = false;
                     SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
@@ -189,8 +189,8 @@ public class PlayerMove : MonoBehaviour
                 if (IsInputRight())
                 {
                     //m_IsStartToMove = true;
-                    SelectUnitScript.m_Instance.StopCoroutine("SelectRoutine");
-                    SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
+                   // SelectUnitScript.m_Instance.StopCoroutine("SelectRoutine");
+                    //SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
                     imgSelectbar.enabled = false;
                     imgHpbar.enabled = false;
                     SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
@@ -270,7 +270,7 @@ public class PlayerMove : MonoBehaviour
                     //TargetPointFalse();                 
 
                     //m_IsStartToMove = true;
-                    SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
+                    //SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
                     if (transform.tag == "UnitLego" || transform.tag == "UnitClockMouse")
                     {
                         m_IsSelect = false;
@@ -285,7 +285,7 @@ public class PlayerMove : MonoBehaviour
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                     {
                         Debug.DrawRay(Camera.main.transform.position, hit.point - Camera.main.transform.position, Color.red);
-                        SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
+                        //SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
                         HitOb = hit.collider.gameObject;
                         UnitFuncScript.m_Instance.ClearFunc();
                         if (HitOb.layer == 28 
@@ -297,7 +297,7 @@ public class PlayerMove : MonoBehaviour
                             HitPM.m_IsSelect = false;
                             HitPM.imgSelectbar.enabled = false;
                             SelectUnitScript.m_Instance.SelectedUnit.Remove(HitPM);
-                            //SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
+                            SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
                             
 
                             unitState = UnitState.attack;
@@ -397,7 +397,7 @@ public class PlayerMove : MonoBehaviour
             {
                 imgSelectbar.enabled = false;
                 imgHpbar.enabled = false;
-                SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
+                //SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
                 m_IsSelect = false;
                 yield return StartCoroutine("HealRoutine");
                 HealArea.gameObject.SetActive(false);
