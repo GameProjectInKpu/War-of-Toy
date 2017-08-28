@@ -6,6 +6,7 @@ public class BulletRigidbody : Photon.PunBehaviour {
 
 	private Rigidbody	m_Rigidbody;
 	public  GameObject	m_Particle;
+    public  float m_Power; 
 
     void Awake(){
 	
@@ -13,10 +14,6 @@ public class BulletRigidbody : Photon.PunBehaviour {
         m_Rigidbody.AddForce(transform.forward * 800f);
     }
 
-    private void Update()
-    {
-        
-    }
 
     void OnCollisionEnter(Collision Col)
 	{

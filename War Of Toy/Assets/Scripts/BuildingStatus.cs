@@ -9,6 +9,7 @@ public class BuildingStatus : Photon.PunBehaviour
     public Transform m_Team;
     public float m_Hp = 100f;
     public float m_InitHp;
+    public float m_Damage;
     public bool m_IsAlive;
     public bool m_IsSelect;
 
@@ -83,10 +84,20 @@ public class BuildingStatus : Photon.PunBehaviour
 
     private void OnCollisionEnter(Collision damage)
     {
-        if (damage.transform.tag == "Bullet")
+        if (m_Team.gameObject.layer == 23 && damage.transform.tag == "Bullet_blue")
         {
-            m_Hp -= 10f;
-            if (m_Hp < 0f)
+            //Debug.Log("총에 맞음");
+            m_Hp -= m_Damage;
+            if (m_Hp <= 0f)
+                m_IsAlive = false;
+            imgHpbar.enabled = true;
+            imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
+        }
+
+        else if (m_Team.gameObject.layer == 22 && damage.transform.tag == "Bullet_red")
+        {
+            m_Hp -= m_Damage;
+            if (m_Hp <= 0f)
                 m_IsAlive = false;
             imgHpbar.enabled = true;
             imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
@@ -94,7 +105,7 @@ public class BuildingStatus : Photon.PunBehaviour
 
         else if (damage.transform.tag == "AttackArea")
         {
-            m_Hp -= 10f;
+            m_Hp -= m_Damage;
             if (m_Hp < 0f)
                 m_IsAlive = false;
             imgHpbar.enabled = true;
@@ -106,7 +117,18 @@ public class BuildingStatus : Photon.PunBehaviour
     {
         if (transform.tag == "B_ToyCastle")
         {
-            if (PhotonNetwork.isMasterClient)
+            //if(SelectUnitScript.m_Instance.IsBuildingMyTeam(this) == true)
+            //{
+            //    SelectUnitScript.m_Instance.m_Victory.SetActive(true);
+            //    SelectUnitScript.m_Instance.m_Defeat.SetActive(false);
+            //}
+
+            //else
+            //{
+            //    SelectUnitScript.m_Instance.m_Victory.SetActive(false);
+            //    SelectUnitScript.m_Instance.m_Defeat.SetActive(true);
+            //}
+            if (PhotonNetwork.isMasterClient)   
             {
                 if (m_Team.gameObject.layer == 22)
                 {

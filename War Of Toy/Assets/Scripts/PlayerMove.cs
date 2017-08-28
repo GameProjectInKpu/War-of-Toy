@@ -14,7 +14,8 @@ public class PlayerMove : MonoBehaviour
     private float m_MoveSpeed;
     public float m_Hp = 100f;
     public float m_InitHp;
-    public float m_Power;
+    public float m_Power;   // 내가 때리는 힘
+    public float m_Damage;  // 내가 쳐맞는 힘
     public float m_Heal;
     public int m_Mineral;
 
@@ -63,10 +64,10 @@ public class PlayerMove : MonoBehaviour
 
     public NavMeshAgent m_Nav;
 
-    //public Text m_CurActionText;
-
     GameObject HitOb;
+    GameObject AttackOb;
     public PlayerMove HitPM;
+    public PlayerMove AttackPM;
     public BuildingStatus HitBS;
     ResourceStatus HitRS;
 
@@ -89,7 +90,6 @@ public class PlayerMove : MonoBehaviour
     void Awake()
     {
         m_Path = new NavMeshPath();
-        //m_CurActionText = m_CurActionText.GetComponent<Text>();
         //if(transform.tag != "UnitAirBalloon")
         //{
         //    m_AttackImage.SetActive(false);
@@ -106,6 +106,12 @@ public class PlayerMove : MonoBehaviour
         m_Power = 10f;
         m_Heal = 10f;
         m_Mineral = 1;
+
+        if(Bullet != null)
+        {
+            Bullet.GetComponent<BulletRigidbody>().m_Power = m_Power;
+        }
+
     }
 
     //private void TargetPointFalse()
@@ -277,9 +283,6 @@ public class PlayerMove : MonoBehaviour
                         break;
                     }
 
-
-                    
-
                     Ray ray = Camera.main.ScreenPointToRay(InputSpot());
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity))
@@ -296,6 +299,7 @@ public class PlayerMove : MonoBehaviour
                             HitPM = HitOb.GetComponent<PlayerMove>();
                             HitPM.m_IsSelect = false;
                             HitPM.imgSelectbar.enabled = false;
+                            HitPM.m_Damage = m_Power;
                             SelectUnitScript.m_Instance.SelectedUnit.Remove(HitPM);
                             SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
                             
@@ -345,13 +349,13 @@ public class PlayerMove : MonoBehaviour
                         else if (hit.transform.gameObject.layer == 27 
                             && !SelectUnitScript.m_Instance.IsBuildingMyTeam(hit.transform.GetComponent<BuildingStatus>()))  // Building
                         {
-                            NoticeScript.m_Instance.Notice("빌딩 타겟 완료\n");
+                            //NoticeScript.m_Instance.Notice("빌딩 타겟 완료\n");
                             m_IsPM = false;
                             m_IsBS = true;
                             HitBS = HitOb.GetComponent<BuildingStatus>();
                             HitBS.m_IsSelect = false;
                             HitBS.imgSelectbar.enabled = false;
-                  
+                            HitBS.m_Damage = m_Power;
                             unitState = UnitState.attack;
                             yield return StartCoroutine("Picking", hit.point);
                             transform.rotation = Quaternion.LookRotation(hit.transform.position - transform.position);
@@ -625,14 +629,14 @@ public class PlayerMove : MonoBehaviour
             {
                 if (m_IsPM)
                 {
-                    HitPM.m_Hp -= m_Power;
+                    HitPM.m_Hp -= m_Damage;
                     HitPM.imgHpbar.enabled = true;
                     HitPM.imgHpbar.fillAmount = (float)HitPM.m_Hp / (float)HitPM.m_InitHp;
                 }
 
                 else if (m_IsBS)
                 {
-                    HitBS.m_Hp -= m_Power;
+                    HitBS.m_Hp -= m_Damage;
                     HitBS.imgHpbar.enabled = true;
                     HitBS.imgHpbar.fillAmount = (float)HitBS.m_Hp / (float)HitBS.m_InitHp;
                 }
@@ -754,10 +758,21 @@ public class PlayerMove : MonoBehaviour
 
     private void OnCollisionEnter(Collision damage)
     {
-        if (damage.transform.tag == "Bullet")
+        if (m_Team.gameObject.layer == 23  
+            && damage.transform.tag == "Bullet_blue")
         {
-            //Debug.Log("총에 맞음");
-            m_Hp -= m_Power;
+
+            m_Hp -= m_Damage;
+            if (m_Hp <= 0f)
+                m_IsAlive = false;
+            imgHpbar.enabled = true;
+            imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
+        }
+
+        else if (m_Team.gameObject.layer == 22 
+            && damage.transform.tag == "Bullet_red")
+        {
+            m_Hp -= m_Damage;
             if (m_Hp <= 0f)
                 m_IsAlive = false;
             imgHpbar.enabled = true;
@@ -766,15 +781,15 @@ public class PlayerMove : MonoBehaviour
 
         if (damage.transform.tag == "AttackArea")
         {
-            m_Hp -= (m_Power + 5f);
+            m_Hp -= (m_Damage + 5f);
             if (m_Hp <= 0f)
                 m_IsAlive = false;
             imgHpbar.enabled = true;
             imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
         }
-
-
     }
+
+
 
     IEnumerator InTheArea()
     {

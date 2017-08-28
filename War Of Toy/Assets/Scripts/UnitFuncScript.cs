@@ -277,8 +277,10 @@ public class UnitFuncScript : MonoBehaviour {
         ButtonLeft = false;
         if(CurUnit == 12 || CurUnit == 10)
             SetInitUnitSlot();//SetUnitFunc(CurUnit);
-        if(CurUnit == 2)
+        else if(CurUnit == 2)
             SetBuildSlot();
+        else
+            SetUnitFunc(CurUnit);
     }
 
     public void ButtonLeftIsPressed(bool Left)
@@ -287,8 +289,10 @@ public class UnitFuncScript : MonoBehaviour {
         ButtonRight = false;
         if (CurUnit == 12 || CurUnit == 10)
             SetInitUnitSlot();//SetUnitFunc(CurUnit);
-        if (CurUnit == 2)
+        else if (CurUnit == 2)
             SetBuildSlot();
+        else
+            SetUnitFunc(CurUnit);
     }
 
     public void CallBuildSlot()
