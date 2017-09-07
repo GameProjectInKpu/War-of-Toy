@@ -6,12 +6,15 @@ public class BulletRigidbody : Photon.PunBehaviour {
 
 	private Rigidbody	m_Rigidbody;
 	public  GameObject	m_Particle;
-    public  float m_Power; 
+    public PlayerMove m_Owner;
+    public  float m_Power;
+    
 
     void Awake(){
 	
 		m_Rigidbody = GetComponent<Rigidbody> ();
         m_Rigidbody.AddForce(transform.forward * 800f);
+        
     }
 
 
@@ -22,7 +25,7 @@ public class BulletRigidbody : Photon.PunBehaviour {
 													//transform.position,	// 현재총알의 위치
 												   Quaternion.Euler(Vector3.zero));
         
-		Destroy (Obj, 1f);
+		Destroy (Obj, 1.5f);
 		//Destroy (gameObject);   // 총알자신을 삭제
 
         if (photonView.isMine)

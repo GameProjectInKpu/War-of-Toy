@@ -56,7 +56,7 @@ public class SelectUnitScript : MonoBehaviour
             if(Input.GetMouseButton(0))
             //if (Input.touchCount == 1 )
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position); 
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position); //
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMUnit) && TouchScript.m_Instance.IsOver)
                         SelectUnit(hit.transform);
@@ -234,7 +234,11 @@ public class SelectUnitScript : MonoBehaviour
             unit.HitPM = null;
             unit.HitBS = null;
             if (unit.gameObject.tag == "UnitCupid")
+            {
                 unit.HealArea.gameObject.SetActive(false);
+                unit.HealEffect.SetActive(false);
+            }
+                
             unit.m_IsMineral = false;
             unit.m_IsPick = true;
 

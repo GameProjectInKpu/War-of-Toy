@@ -1,4 +1,4 @@
-#if UNITY_5 && !UNITY_5_0 && !UNITY_5_1 && !UNITY_5_2
+#if UNITY_5 && !UNITY_5_0 && !UNITY_5_1 && !UNITY_5_2 
 #define UNITY_MIN_5_3
 #endif
 
@@ -10,6 +10,8 @@ using UnityEngine;
 using System.Collections;
 using Debug = UnityEngine.Debug;
 using UnityEditor.SceneManagement;
+
+
 
 [InitializeOnLoad]
 public class PhotonViewHandler : EditorWindow
@@ -183,9 +185,9 @@ public class PhotonViewHandler : EditorWindow
 
         foreach (string scene in scenes)
         {
-            EditorSceneManager.OpenScene(scene);
+            //EditorSceneManager.OpenScene(scene);
             PhotonViewHandler.HierarchyChange();//NOTE: most likely on load also triggers a hierarchy change
-            EditorSceneManager.SaveOpenScenes();
+            //EditorSceneManager.SaveOpenScenes();
         }
 
         Debug.Log("Corrected scene views where needed.");

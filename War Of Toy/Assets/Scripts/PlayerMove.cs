@@ -50,9 +50,12 @@ public class PlayerMove : MonoBehaviour
     public bool m_IsBS; // 공격대상이 건물인지
     public bool m_IsUpgraded;
     public bool m_IsInHealArea;
+    public bool m_IsOffensive;
 
+    public GameObject HealEffect;
     public GameObject Building;
     public GameObject Bullet;
+    //public BulletRigidbody Brb;
     public GameObject UpgParticle;
     public Transform FireHole;
     public Transform BalloonHeight;
@@ -65,11 +68,14 @@ public class PlayerMove : MonoBehaviour
     public NavMeshAgent m_Nav;
 
     GameObject HitOb;
-    GameObject AttackOb;
+    //GameObject AttackOb;
+
     public PlayerMove HitPM;
-    public PlayerMove AttackPM;
+    //public PlayerMove AttackPM;
     public BuildingStatus HitBS;
     ResourceStatus HitRS;
+
+    GameObject Obj;
 
     void OnEnable()
     {
@@ -109,7 +115,11 @@ public class PlayerMove : MonoBehaviour
 
         if(Bullet != null)
         {
-            Bullet.GetComponent<BulletRigidbody>().m_Power = m_Power;
+            Bullet.GetComponent<BulletRigidbody>().m_Owner = GetComponent<PlayerMove>();
+            //BulletRigidbody Brb = Bullet.GetComponent<BulletRigidbody>();
+            //Brb .GetComponent<BulletRigidbody>();
+            //Brb.m_Owner = GetComponent<PlayerMove>(); 
+            //Brb.m_Power = m_Power;
         }
 
     }
@@ -188,7 +198,6 @@ public class PlayerMove : MonoBehaviour
                     }
                 }
             }
-
 
             else if (m_IsMineral)
             {
@@ -271,38 +280,45 @@ public class PlayerMove : MonoBehaviour
 
             else if (m_IsAttack)
             {
-                if (IsInputRight())
+                if (IsInputRight() || m_IsOffensive)
                 {
                     //TargetPointFalse();                 
 
                     //m_IsStartToMove = true;
                     //SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
-                    if (transform.tag == "UnitLego" || transform.tag == "UnitClockMouse")
-                    {
-                        m_IsSelect = false;
-                        break;
-                    }
+                    //if (transform.tag == "UnitLego" || transform.tag == "UnitClockMouse")
+                    //{
+                    //    m_IsSelect = false;
+                    //    break;
+                    //}
 
                     Ray ray = Camera.main.ScreenPointToRay(InputSpot());
                     RaycastHit hit;
-                    if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+                   
+                    if (Physics.Raycast(ray, out hit, Mathf.Infinity) || m_IsOffensive)
                     {
+                        
                         Debug.DrawRay(Camera.main.transform.position, hit.point - Camera.main.transform.position, Color.red);
                         //SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
                         HitOb = hit.collider.gameObject;
                         UnitFuncScript.m_Instance.ClearFunc();
-                        if (HitOb.layer == 28 
-                            && !SelectUnitScript.m_Instance.IsUnitMyTeam(HitOb.GetComponent<PlayerMove>()))   // Unit
+                        if ((HitOb.layer == 28 
+                            && !SelectUnitScript.m_Instance.IsUnitMyTeam(HitOb.GetComponent<PlayerMove>())) || m_IsOffensive)   // Unit
                         {
                             m_IsPM = true;
                             m_IsBS = false;
+                            if (m_IsOffensive)
+                            {
+                                hit.point = HitPM.gameObject.transform.position;
+                                goto offensive;
+                            }
                             HitPM = HitOb.GetComponent<PlayerMove>();
+                            offensive:;
                             HitPM.m_IsSelect = false;
                             HitPM.imgSelectbar.enabled = false;
                             HitPM.m_Damage = m_Power;
                             SelectUnitScript.m_Instance.SelectedUnit.Remove(HitPM);
                             SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
-                            
 
                             unitState = UnitState.attack;
                             yield return StartCoroutine("Picking", hit.point);
@@ -311,6 +327,7 @@ public class PlayerMove : MonoBehaviour
                             {
                                 case "UnitSoldier":
                                     {
+                                        
                                         StartCoroutine("AttackByBullet");
                                         yield return StartCoroutine("ConditionForAttack", "no");
                                         StopCoroutine("AttackByBullet");
@@ -345,7 +362,7 @@ public class PlayerMove : MonoBehaviour
                                     break;
                             }
                         }
-
+                        
                         else if (hit.transform.gameObject.layer == 27 
                             && !SelectUnitScript.m_Instance.IsBuildingMyTeam(hit.transform.GetComponent<BuildingStatus>()))  // Building
                         {
@@ -403,7 +420,9 @@ public class PlayerMove : MonoBehaviour
                 imgHpbar.enabled = false;
                 //SelectUnitScript.m_Instance.SelectedUnit.Remove(transform.GetComponent<PlayerMove>());
                 m_IsSelect = false;
+                HealEffect.SetActive(true);
                 yield return StartCoroutine("HealRoutine");
+                HealEffect.SetActive(false);
                 HealArea.gameObject.SetActive(false);
                 m_IsSelect = false;
             }
@@ -568,9 +587,12 @@ public class PlayerMove : MonoBehaviour
             //Debug.Log("공격루틴 실행중");
 
             if (m_Attackstop == false)
-            {
-                //Debug.Log("총알 발사되고 있음");
+            {              
                 GameObject Obj = (GameObject)PhotonNetwork.Instantiate(Bullet.name, FireHole.position, FireHole.rotation, 0);
+                
+                
+                //Obj.GetComponent<BulletRigidbody>().m_Power = m_Power;
+                //Obj.GetComponent<BulletRigidbody>().m_Owner = GetComponent<PlayerMove>();
             }
 
             yield return new WaitForSeconds(2.5f);
@@ -761,6 +783,14 @@ public class PlayerMove : MonoBehaviour
         if (m_Team.gameObject.layer == 23  
             && damage.transform.tag == "Bullet_blue")
         {
+            //if (!m_IsOffensive)
+            //{
+            //    HitPM = damage.gameObject.GetComponent<BulletRigidbody>().m_Owner;
+            //    m_IsAttack = true;
+
+            //    m_IsOffensive = true;
+            //}
+
 
             m_Hp -= m_Damage;
             if (m_Hp <= 0f)
@@ -772,6 +802,14 @@ public class PlayerMove : MonoBehaviour
         else if (m_Team.gameObject.layer == 22 
             && damage.transform.tag == "Bullet_red")
         {
+            //if (!m_IsOffensive)
+            //{
+            //    HitPM = damage.gameObject.GetComponent<BulletRigidbody>().m_Owner;
+            //    m_IsAttack = true;
+
+            //    m_IsOffensive = true;
+            //}
+
             m_Hp -= m_Damage;
             if (m_Hp <= 0f)
                 m_IsAlive = false;

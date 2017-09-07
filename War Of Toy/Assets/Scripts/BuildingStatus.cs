@@ -14,6 +14,7 @@ public class BuildingStatus : Photon.PunBehaviour
     public bool m_IsSelect;
 
     public GameObject m_Particle;
+    public GameObject m_ExpParticle;
     public bool m_IsParticle;
 
     public Image imgHpbar;
@@ -21,6 +22,7 @@ public class BuildingStatus : Photon.PunBehaviour
 
 
     GameObject Obj;
+    GameObject Expl;
 
     //public Material 
 
@@ -73,11 +75,13 @@ public class BuildingStatus : Photon.PunBehaviour
         if (m_Hp < 0f)
         {
             m_IsAlive = false;
+            
         }
 
         if (m_IsAlive == false)
         {
-            Invoke("Death", 3f);
+            Expl = (GameObject)Instantiate(m_ExpParticle, transform.position, Quaternion.Euler(Vector3.zero));
+            Invoke("Death", 1.5f);
         }
 
     }
@@ -159,6 +163,7 @@ public class BuildingStatus : Photon.PunBehaviour
             }
         }
         Destroy(Obj);
+        Destroy(Expl);
         Destroy(gameObject);
         //Destroy(SelectButton);
     }
