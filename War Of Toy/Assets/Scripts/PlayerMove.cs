@@ -139,14 +139,14 @@ public class PlayerMove : MonoBehaviour
 
     public bool IsInputRight()
     {
-        return (Input.GetMouseButton(0) && m_IsSelect);
-        //return ((Input.touchCount == 1) && m_IsSelect);
+        //return (Input.GetMouseButton(0) && m_IsSelect);
+        return ((Input.touchCount == 1) && m_IsSelect);
     }
 
     public Vector3 InputSpot()
     {
-        return (Input.mousePosition);
-        //return (Input.GetTouch(0).position);
+        //return (Input.mousePosition);
+        return (Input.GetTouch(0).position);
     }
 
     IEnumerator OrderRoutine()
@@ -376,6 +376,7 @@ public class PlayerMove : MonoBehaviour
                             unitState = UnitState.attack;
                             yield return StartCoroutine("Picking", hit.point);
                             transform.rotation = Quaternion.LookRotation(hit.transform.position - transform.position);
+                            m_Animator.SetBool("IsAttack", true);
                             switch (transform.tag)
                             {
                                 case "UnitSoldier":
@@ -433,7 +434,7 @@ public class PlayerMove : MonoBehaviour
 
     IEnumerator ConditionForAttack(string type)
     {
-        m_Animator.SetBool("IsAttack", true);
+        
         if (m_IsPM && !m_IsBS)
         {
             imgHpbar.enabled = true;
@@ -441,15 +442,16 @@ public class PlayerMove : MonoBehaviour
             HitPM.imgHpbar.enabled = true;
             HitPM.imgSelectbar.enabled = false;
             yield return StartCoroutine("TraceRoutine");
-            imgHpbar.enabled = false;
-            HitPM.imgHpbar.enabled = false;
-            HitPM.unitState = UnitState.die;
-            HitPM.m_Animator.SetBool("IsDie", true);
-            HitPM.m_IsAlive = false;
-            m_Animator.SetBool("IsAttack", false);
-            unitState = UnitState.idle;
-            m_Animator.SetBool("IsPick", false);
-            m_IsPM = false;
+            //Debug.Log("추적루틴 끝나고 컨디션 어택으로 돌아옴");
+            //imgHpbar.enabled = false;
+            //HitPM.imgHpbar.enabled = false;
+            //HitPM.unitState = UnitState.die;
+            //HitPM.m_Animator.SetBool("IsDie", true);
+            //HitPM.m_IsAlive = false;
+            //m_Animator.SetBool("IsAttack", false);
+            //unitState = UnitState.idle;
+            //m_Animator.SetBool("IsPick", false);
+            //m_IsPM = false;
         }
 
         else if (!m_IsPM && m_IsBS)
@@ -472,6 +474,9 @@ public class PlayerMove : MonoBehaviour
                 m_IsBS = false;
             }
         }
+
+        else
+            StopCoroutine("ConditionForAttack");
         yield return null;
     }
 
@@ -517,8 +522,22 @@ public class PlayerMove : MonoBehaviour
     {
         while (HitPM != null)//(HitPM.m_IsAlive)
         {
-            if (!HitPM.m_IsAlive)
-                StopCoroutine("TraceRoutine");
+            if (HitPM.m_Hp <= 0) //(!HitPM.m_IsAlive)
+            {
+                imgHpbar.enabled = false;
+                HitPM.imgHpbar.enabled = false;
+                HitPM.unitState = UnitState.die;
+                HitPM.m_Animator.SetBool("IsDie", true);
+                HitPM.Invoke("Death",3f);
+                HitPM.m_IsAlive = false;
+                m_IsPM = false;
+                m_IsAttack = false;
+                unitState = UnitState.idle;
+                m_Animator.SetBool("IsPick", false);
+                m_Animator.SetBool("IsAttack", false);
+                StopAllCoroutines();
+            }
+                
             Debug.Log("추적 루틴 실행중");
             if (Vector3.Distance(transform.position, HitPM.transform.position) >= 10f)
             {
@@ -793,8 +812,8 @@ public class PlayerMove : MonoBehaviour
 
 
             m_Hp -= m_Damage;
-            if (m_Hp <= 0f)
-                m_IsAlive = false;
+            //if (m_Hp <= 0f)
+            //    m_IsAlive = false;
             imgHpbar.enabled = true;
             imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
         }
@@ -812,7 +831,11 @@ public class PlayerMove : MonoBehaviour
 
             m_Hp -= m_Damage;
             if (m_Hp <= 0f)
+            {
                 m_IsAlive = false;
+                m_Animator.SetBool("IsDie", true);
+                Invoke("Death", 3f);
+            }
             imgHpbar.enabled = true;
             imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
         }

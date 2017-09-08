@@ -5,10 +5,13 @@ using UnityEngine.UI;
 
 public class NoticeScript : MonoBehaviour {
 
+    //public AudioClip soundNotice;
+    AudioSource myAudio;
 
     public Text m_Message0;
     public Text m_Message1;
     public Text m_Message2;
+    
 
     public float timer;
     public float timecheck;
@@ -30,6 +33,7 @@ public class NoticeScript : MonoBehaviour {
         m_Message0.text += " ";
         m_Message1.text += " ";
         m_Message2.text += " ";
+        myAudio = GetComponent<AudioSource>();
 
     }
 
@@ -46,6 +50,11 @@ public class NoticeScript : MonoBehaviour {
 
 
 
+    }
+
+    public void PlaySound(AudioClip soundNotice)
+    {
+        myAudio.PlayOneShot(soundNotice);
     }
 
     

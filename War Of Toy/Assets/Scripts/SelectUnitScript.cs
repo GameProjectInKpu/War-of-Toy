@@ -53,10 +53,10 @@ public class SelectUnitScript : MonoBehaviour
         while (true)
         {
             Debug.Log("선택루틴 실행중");
-            if(Input.GetMouseButton(0))
-            //if (Input.touchCount == 1 )
+            //if(Input.GetMouseButton(0))
+            if (Input.touchCount == 1 )
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position); //
+                Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position); //(Input.mousePosition); //
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMUnit) && TouchScript.m_Instance.IsOver)
                         SelectUnit(hit.transform);
@@ -127,20 +127,23 @@ public class SelectUnitScript : MonoBehaviour
                 {
                     //Vector3 Pos = unit.transform.position;
                     //Pos.y -= 100f; 
-                    unit.StopAllCoroutines();
-                    unit.m_IsAlive = false;
-                    unit.m_Animator.SetBool("IsDie", true);
+
+                    //unit.m_Animator.SetBool("IsDie", true);
+                    //unit.StopAllCoroutines();
+                    //unit.m_IsAlive = false;
+                    
                     //yield return new WaitForSeconds(2.5f);
                     //unit.transform.position = Pos;
-                    unit.Invoke("Death", 3f);
                     LivingUnit.Remove(unit);
                     SelectedUnit.Remove(unit);
+                    //unit.Invoke("Death", 3f);
+                    
                 }
 
-                if (unit.m_IsPM && unit.HitPM == null)    // 타겟 유닛이 죽었을때
-                    unit.m_IsPM = false;
-                if (unit.m_IsBS && unit.HitBS == null)    // 타겟 건물이 죽었을때
-                    unit.m_IsBS = false;
+                //if (unit.m_IsPM && unit.HitPM == null)    // 타겟 유닛이 죽었을때
+                //    unit.m_IsPM = false;
+                //if (unit.m_IsBS && unit.HitBS == null)    // 타겟 건물이 죽었을때
+                //    unit.m_IsBS = false;
 
             }
 

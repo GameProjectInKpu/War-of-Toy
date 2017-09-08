@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class InitUnitScript : MonoBehaviour {
 
+    public AudioClip soundAddHouse;
+
     GameObject Obj;
     public GameObject InitUnitBlue;
     public GameObject InitUnitRed;
@@ -29,8 +31,8 @@ public class InitUnitScript : MonoBehaviour {
     {
         if(CurUnitNum.m_Instance.m_UnitNum + 1 > SelectUnitScript.m_Instance.AcceptableUnit)
         {
-            NoticeScript.m_Instance.Notice("숙소를 늘려주세요\n");
-          
+            NoticeScript.m_Instance.Notice("숙소를 늘려주십시오\n");
+            NoticeScript.m_Instance.PlaySound(soundAddHouse);
             return;
         }
         switch (unit)

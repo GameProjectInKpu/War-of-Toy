@@ -6,6 +6,9 @@ using UnityEngine.AI;
 
 public class BuildScript : Photon.PunBehaviour
 {
+    public AudioClip soundCantBuild;
+    public AudioClip soundEmptyRsc;
+
     public GameObject m_Building_red;
     public GameObject m_Building_blue;
     public GameObject m_Plane;
@@ -305,12 +308,14 @@ public class BuildScript : Photon.PunBehaviour
             if (!m_CanBuild)
             {
                 NoticeScript.m_Instance.Notice("건물을 지을수 없는 구역입니다\n");
+                NoticeScript.m_Instance.PlaySound(soundCantBuild);
                 IsButtonPressed = false;
                 return;
             }
             if (StarScript.m_Instance.m_StarNum - 50 < 0)
             {
                 NoticeScript.m_Instance.Notice("자원이 부족합니다\n");
+                NoticeScript.m_Instance.PlaySound(soundEmptyRsc);
                 IsButtonPressed = false;
                 return;
             }
