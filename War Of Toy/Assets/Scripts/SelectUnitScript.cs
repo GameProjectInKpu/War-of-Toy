@@ -14,8 +14,15 @@ public class SelectUnitScript : MonoBehaviour
     public GameObject m_Defeat;
 
     // public bool m_IsSelect;
-    public List<PlayerMove> LivingUnit; // 현재 살아있는 유닛들
-    public List<PlayerMove> LivingEnemyUnit; // 현재 살아있는 유닛들
+    //public List<PlayerMove> LivingUnit; // 현재 살아있는 유닛들
+    //public List<PlayerMove> LivingEnemyUnit; // 현재 살아있는 유닛들
+
+    public List<PlayerMove> LivingRedUnit; // 현재 살아있는 red유닛들
+    public List<PlayerMove> LivingBlueUnit; // 현재 살아있는 blue유닛들
+
+    public List<BuildingStatus> LivingRedBuilding; // 현재 살아있는 red유닛들
+    public List<BuildingStatus> LivingBlueBuilding; // 현재 살아있는 blue유닛들
+
     BuildingStatus Bs;  // 현재 선택하는 빌딩
     public List<PlayerMove> SelectedUnit;  // 현재 선택한 유닛들
 
@@ -38,7 +45,12 @@ public class SelectUnitScript : MonoBehaviour
     void Awake()
     {
         m_Instance = this;
-        LivingUnit = new List<PlayerMove>();
+        LivingRedUnit = new List<PlayerMove>();
+        LivingBlueUnit = new List<PlayerMove>();
+
+        LivingRedBuilding = new List<BuildingStatus>();
+        LivingBlueBuilding = new List<BuildingStatus>();
+
         AcceptableUnit = 10;
         StartCoroutine("SelectRoutine");
         //InvokeRepeating("SelectRoutine", 0f,0.01f);
@@ -53,10 +65,10 @@ public class SelectUnitScript : MonoBehaviour
         while (true)
         {
             Debug.Log("선택루틴 실행중");
-            //if(Input.GetMouseButton(0))
-            if (Input.touchCount == 1 )
+            if(Input.GetMouseButton(0))
+            //if (Input.touchCount == 1 )
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position); //(Input.mousePosition); //
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position);
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMUnit) && TouchScript.m_Instance.IsOver)
                         SelectUnit(hit.transform);
@@ -112,40 +124,109 @@ public class SelectUnitScript : MonoBehaviour
     {
         while (true)
         {
-            //if(LivingEnemyUnit !=  null)
-            //{
-            //    foreach (PlayerMove unit in LivingEnemyUnit)
-            //    {
-            //        Debug.Log(unit.tag);
-            //    }
-            //}
-            
-
-            foreach (PlayerMove unit in LivingUnit)
+            if (LivingRedUnit != null)
             {
-                if(unit.m_Hp <= 0f)
+                foreach (PlayerMove unit in LivingRedUnit)
                 {
-                    //Vector3 Pos = unit.transform.position;
-                    //Pos.y -= 100f; 
-
-                    //unit.m_Animator.SetBool("IsDie", true);
-                    //unit.StopAllCoroutines();
-                    //unit.m_IsAlive = false;
-                    
-                    //yield return new WaitForSeconds(2.5f);
-                    //unit.transform.position = Pos;
-                    LivingUnit.Remove(unit);
-                    SelectedUnit.Remove(unit);
-                    //unit.Invoke("Death", 3f);
-                    
+                    Debug.Log("빨간 유닛 :" + unit.name);
                 }
-
-                //if (unit.m_IsPM && unit.HitPM == null)    // 타겟 유닛이 죽었을때
-                //    unit.m_IsPM = false;
-                //if (unit.m_IsBS && unit.HitBS == null)    // 타겟 건물이 죽었을때
-                //    unit.m_IsBS = false;
-
             }
+
+            if (LivingBlueUnit != null)
+            {
+                foreach (PlayerMove unit in LivingBlueUnit)
+                {
+                    Debug.Log("파란 유닛 :" + unit.name);
+                }
+            }
+
+            for (int i = 0; i < LivingRedUnit.Count; ++i)
+            {
+                if (LivingRedUnit[i].m_Hp <= 0f)
+                {
+                    LivingRedUnit[i].m_IsSelect = false;
+                    LivingRedUnit[i].imgSelectbar.enabled = false;
+                    LivingRedUnit[i].m_Animator.SetBool("IsDie", true);
+                    LivingRedUnit[i].Invoke("Death", 3f);
+                    LivingRedUnit[i].m_IsAlive = false;
+                    LivingRedUnit.Remove(LivingRedUnit[i]);
+                }
+            }
+
+            for (int i = 0; i < LivingBlueUnit.Count; ++i)
+            {
+                if (LivingBlueUnit[i].m_Hp <= 0f)
+                {
+                    LivingBlueUnit[i].m_IsSelect = false;
+                    LivingBlueUnit[i].imgSelectbar.enabled = false;
+                    LivingBlueUnit[i].m_Animator.SetBool("IsDie", true);
+                    LivingBlueUnit[i].Invoke("Death", 3f);
+                    LivingBlueUnit[i].m_IsAlive = false;
+                    LivingBlueUnit.Remove(LivingBlueUnit[i]);
+                }
+            }
+
+            //foreach (PlayerMove unit in LivingRedUnit)
+            //{
+            //    if (unit.m_Hp <= 0f)
+            //    {
+            //        //Vector3 Pos = unit.transform.position;
+            //        //Pos.y -= 100f; 
+
+            //        //unit.m_Animator.SetBool("IsDie", true);
+            //        //unit.StopAllCoroutines();
+            //        //unit.m_IsAlive = false;
+
+            //        //yield return new WaitForSeconds(2.5f);
+            //        //unit.transform.position = Pos;
+            //        unit.m_IsSelect = false;
+            //        unit.imgSelectbar.enabled = false;
+            //        unit.m_Animator.SetBool("IsDie", true);
+            //        unit.Invoke("Death", 3f);
+            //        unit.m_IsAlive = false;
+            //        LivingRedUnit.Remove(unit);
+            //        //SelectedUnit.Remove(unit);
+                    
+                    
+            //    }
+
+            //    //if (unit.m_IsPM && unit.HitPM == null)    // 타겟 유닛이 죽었을때
+            //    //    unit.m_IsPM = false;
+            //    //if (unit.m_IsBS && unit.HitBS == null)    // 타겟 건물이 죽었을때
+            //    //    unit.m_IsBS = false;
+
+            //}
+
+            //foreach (PlayerMove unit in LivingBlueUnit)
+            //{
+            //    if (unit.m_Hp <= 0f)
+            //    {
+            //        //Vector3 Pos = unit.transform.position;
+            //        //Pos.y -= 100f; 
+
+            //        //unit.m_Animator.SetBool("IsDie", true);
+            //        //unit.StopAllCoroutines();
+            //        //unit.m_IsAlive = false;
+
+            //        //yield return new WaitForSeconds(2.5f);
+            //        //unit.transform.position = Pos;
+            //        unit.m_IsSelect = false;
+            //        unit.imgSelectbar.enabled = false;
+            //        unit.m_Animator.SetBool("IsDie", true);
+            //        unit.Invoke("Death", 3f);
+            //        unit.m_IsAlive = false;
+            //        LivingBlueUnit.Remove(unit);
+            //        //SelectedUnit.Remove(unit);
+                    
+
+            //    }
+
+            //    //if (unit.m_IsPM && unit.HitPM == null)    // 타겟 유닛이 죽었을때
+            //    //    unit.m_IsPM = false;
+            //    //if (unit.m_IsBS && unit.HitBS == null)    // 타겟 건물이 죽었을때
+            //    //    unit.m_IsBS = false;
+
+            //}
 
             //if (IsSRrunning == false)
             //    StartCoroutine("SelectedRoutine");
@@ -206,10 +287,16 @@ public class SelectUnitScript : MonoBehaviour
 
     private void AllSelectOff()
     {
-        Debug.Log("체크해제 호출됨");
+        //Debug.Log("체크해제 호출됨");
 
         UnitFuncScript.m_Instance.ClearFunc();
-        foreach (PlayerMove unit in LivingUnit)
+        foreach (PlayerMove unit in LivingRedUnit)
+        {
+            unit.m_IsSelect = false;
+            unit.imgSelectbar.enabled = false;
+        }
+
+        foreach (PlayerMove unit in LivingBlueUnit)
         {
             unit.m_IsSelect = false;
             unit.imgSelectbar.enabled = false;
@@ -285,6 +372,23 @@ public class SelectUnitScript : MonoBehaviour
                 unit.m_IsAttack = true;
                 unit.imgSelectbar.enabled = false;
                 unit.imgHpbar.enabled = false;
+
+                if (PhotonNetwork.isMasterClient)
+                {
+                    foreach (PlayerMove Unit in LivingBlueUnit)
+                    {
+                        Unit.m_AttackImage.SetActive(true);
+                    }
+                }
+
+                else
+                {
+                    foreach (PlayerMove Unit in LivingRedUnit)
+                    {
+                        Unit.m_AttackImage.SetActive(true);
+                    }
+                }
+                    
             }
         }
 

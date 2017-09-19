@@ -18,7 +18,14 @@ namespace Com.MyCompany.MyGame
         GameObject PlayerRed;
         GameObject PlayerBlue;
 
-        
+
+        //private void Awake()
+        //{
+        //    PlayerRed = Instantiate(this.playerPrefabRed, new Vector3(75, 5, 15), Quaternion.identity);
+        //    PlayerBlue = Instantiate(this.playerPrefabBlue, new Vector3(25, 5, 85), Quaternion.identity);
+        //    SelectUnitScript.m_Instance.LivingRedUnit.Add(PlayerRed.GetComponent<PlayerMove>());
+        //    SelectUnitScript.m_Instance.LivingBlueUnit.Add(PlayerBlue.GetComponent<PlayerMove>());
+        //}
 
         // Use this for initialization
         void Start()
@@ -38,22 +45,27 @@ namespace Com.MyCompany.MyGame
 
                 if (PhotonNetwork.isMasterClient)
                 {
+                    //Destroy(PlayerRed);
                     PlayerRed =  PhotonNetwork.Instantiate(this.playerPrefabRed.name, new Vector3(75, 5, 15), Quaternion.identity, 0);
                     PlayerMove unitRed = PlayerRed.GetComponent<PlayerMove>();
-                    SelectUnitScript.m_Instance.LivingUnit.Add(unitRed);
+                    SelectUnitScript.m_Instance.LivingRedUnit.Add(unitRed);
                     ++CurUnitNum.m_Instance.m_UnitNum;
-                    //SelectUnitScript.m_Instance.LivingEnemyUnit.Add(unitBlue);
+                    //SelectUnitScript.m_Instance.LivingEnemyUnit.Add(PlayerBlue.GetComponent<PlayerMove>());
                 }
 
                 else
                 {
+                    //Destroy(PlayerBlue);
                     PlayerBlue =  PhotonNetwork.Instantiate(this.playerPrefabBlue.name, new Vector3(25, 5, 85), Quaternion.identity, 0);
                     PlayerMove unitBlue = PlayerBlue.GetComponent<PlayerMove>();
-                    SelectUnitScript.m_Instance.LivingUnit.Add(unitBlue);
+                    SelectUnitScript.m_Instance.LivingBlueUnit.Add(unitBlue);
                     ++CurUnitNum.m_Instance.m_UnitNum;
-                    //SelectUnitScript.m_Instance.LivingEnemyUnit.Add(unitRed);
+                    //SelectUnitScript.m_Instance.LivingEnemyUnit.Add(PlayerRed.GetComponent<PlayerMove>());
                 }
-                
+
+
+                //SelectUnitScript.m_Instance.LivingRedUnit.Add(PlayerRed.GetComponent<PlayerMove>());
+                //SelectUnitScript.m_Instance.LivingBlueUnit.Add(PlayerBlue.GetComponent<PlayerMove>());
 
                 // }
                 //  else
@@ -63,6 +75,29 @@ namespace Com.MyCompany.MyGame
             }
 
         }
+
+        //public void AddUnit()
+        //{
+        //    if (PhotonNetwork.isMasterClient)
+        //    {
+        //        //Destroy(PlayerRed);
+        //        PlayerRed = PhotonNetwork.Instantiate(this.playerPrefabRed.name, new Vector3(75, 5, 15), Quaternion.identity, 0);
+        //        PlayerMove unitRed = PlayerRed.GetComponent<PlayerMove>();
+        //        //SelectUnitScript.m_Instance.LivingRedUnit.Add(unitRed);
+        //        ++CurUnitNum.m_Instance.m_UnitNum;
+        //        //SelectUnitScript.m_Instance.LivingEnemyUnit.Add(PlayerBlue.GetComponent<PlayerMove>());
+        //    }
+
+        //    else
+        //    {
+        //        //Destroy(PlayerBlue);
+        //        PlayerBlue = PhotonNetwork.Instantiate(this.playerPrefabBlue.name, new Vector3(25, 5, 85), Quaternion.identity, 0);
+        //        PlayerMove unitBlue = PlayerBlue.GetComponent<PlayerMove>();
+        //        //SelectUnitScript.m_Instance.LivingBlueUnit.Add(unitBlue);
+        //        ++CurUnitNum.m_Instance.m_UnitNum;
+        //        //SelectUnitScript.m_Instance.LivingEnemyUnit.Add(PlayerRed.GetComponent<PlayerMove>());
+        //    }
+        //}
 
         void OnLevelWasLoaded(int level)
         {

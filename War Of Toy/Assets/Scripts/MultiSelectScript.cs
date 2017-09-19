@@ -24,8 +24,8 @@ public class MultiSelectScript : MonoBehaviour {
 
     public Vector2 InputSpot()
     {
-        //return (Input.mousePosition);
-        return (Input.GetTouch(0).position);
+        return (Input.mousePosition);
+        //return (Input.GetTouch(0).position);
     }
 
     private void MultiSelect()
@@ -66,19 +66,38 @@ public class MultiSelectScript : MonoBehaviour {
             m_Size.y = -m_Size.y;
 
         rect = new Rect(m_StartPoint, m_Size);
-        m_SelectImage.GetComponent<RectTransform>().sizeDelta = m_Size;// * 2.5f;
+        m_SelectImage.GetComponent<RectTransform>().sizeDelta = m_Size * 2.5f;
 
-        foreach (PlayerMove unit in SelectUnitScript.m_Instance.LivingUnit)
+        if (PhotonNetwork.isMasterClient)
         {
-            Vector2 screenPos = Camera.main.WorldToScreenPoint(unit.transform.position);
-            Debug.DrawRay(Camera.main.transform.position, unit.transform.position - Camera.main.transform.position, Color.red);
-            Debug.Log(screenPos);
-            if (rect.Contains(screenPos))
+            foreach (PlayerMove unit in SelectUnitScript.m_Instance.LivingRedUnit)
             {
-                Debug.Log(unit.name);
-                SelectUnitScript.m_Instance.SelectUnit(unit.transform);
+                Vector2 screenPos = Camera.main.WorldToScreenPoint(unit.transform.position);
+                //Debug.DrawRay(Camera.main.transform.position, unit.transform.position - Camera.main.transform.position, Color.red);
+                //Debug.Log(screenPos);
+                if (rect.Contains(screenPos))
+                {
+                    //Debug.Log(unit.name);
+                    SelectUnitScript.m_Instance.SelectUnit(unit.transform);
+                }
             }
         }
+
+        else
+        {
+            foreach (PlayerMove unit in SelectUnitScript.m_Instance.LivingBlueUnit)
+            {
+                Vector2 screenPos = Camera.main.WorldToScreenPoint(unit.transform.position);
+                //Debug.DrawRay(Camera.main.transform.position, unit.transform.position - Camera.main.transform.position, Color.red);
+                //Debug.Log(screenPos);
+                if (rect.Contains(screenPos))
+                {
+                    //Debug.Log(unit.name);
+                    SelectUnitScript.m_Instance.SelectUnit(unit.transform);
+                }
+            }
+        }
+        
 
         Pivot = Vector2.zero;
         m_Size = Vector2.zero;
@@ -146,7 +165,7 @@ public class MultiSelectScript : MonoBehaviour {
             m_Size.y = -m_Size.y;
 
 
-        m_SelectImage.GetComponent<RectTransform>().sizeDelta = m_Size;// * 2.5f;
+        m_SelectImage.GetComponent<RectTransform>().sizeDelta = m_Size * 2.5f;
     }
 
     public void EndPointToSelect()

@@ -46,7 +46,7 @@ public class InitUnitScript : MonoBehaviour {
                 if(UnitPos.z < 6f)
                     UnitPos.z += 5f;
                 else
-                    UnitPos.z -= 5f;
+                    UnitPos.z -= 8f;
                 break;
 
             case 1: // 공장에서 생성
@@ -75,7 +75,8 @@ public class InitUnitScript : MonoBehaviour {
             if (Obj.transform.tag == "UnitAirballoon")
                 UnitFuncScript.m_Instance.IsInitAirUnit = true;
             PlayerMove unitRed = Obj.GetComponent<PlayerMove>();
-            SelectUnitScript.m_Instance.LivingUnit.Add(unitRed);
+            SelectUnitScript.m_Instance.LivingRedUnit.Add(unitRed);
+
             //SelectUnitScript.m_Instance.LivingEnemyUnit.Add(unitBlue);
             ++CurUnitNum.m_Instance.m_UnitNum;
         }
@@ -87,10 +88,16 @@ public class InitUnitScript : MonoBehaviour {
             if (Obj.transform.tag == "UnitAirballoon")
                 UnitFuncScript.m_Instance.IsInitAirUnit = true;
             PlayerMove unitBlue = Obj.GetComponent<PlayerMove>();
-            SelectUnitScript.m_Instance.LivingUnit.Add(unitBlue);
+            SelectUnitScript.m_Instance.LivingBlueUnit.Add(unitBlue);
+
             //SelectUnitScript.m_Instance.LivingEnemyUnit.Add(unitRed);
             ++CurUnitNum.m_Instance.m_UnitNum;
         }
+
+        //if(Obj.GetComponent<PlayerMove>().m_Team.gameObject.layer == 22)    // blue
+        //    SelectUnitScript.m_Instance.LivingBlueUnit.Add(Obj.GetComponent<PlayerMove>());
+        //else
+        //    SelectUnitScript.m_Instance.LivingRedUnit.Add(Obj.GetComponent<PlayerMove>());
 
         //GameObject Obj = (GameObject)Instantiate(InitUnit, UnitPos, Quaternion.Euler(Vector3.zero));
         //Obj.GetComponent<PlayerMove>().enabled = true;

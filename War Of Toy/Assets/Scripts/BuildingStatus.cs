@@ -7,7 +7,7 @@ public class BuildingStatus : Photon.PunBehaviour
 {
 
     public Transform m_Team;
-    public float m_Hp = 100f;
+    public float m_Hp = 300f;
     public float m_InitHp;
     public float m_Damage;
     public bool m_IsAlive;
@@ -19,6 +19,8 @@ public class BuildingStatus : Photon.PunBehaviour
 
     public Image imgHpbar;
     public Image imgSelectbar;
+
+    public bool m_IsStartDamage;
 
 
     GameObject Obj;
@@ -36,7 +38,7 @@ public class BuildingStatus : Photon.PunBehaviour
 
     void Awake()
     {
-        m_Hp = 100f;
+        m_Hp = 300f;
         m_InitHp = m_Hp;
     }
 
@@ -60,7 +62,7 @@ public class BuildingStatus : Photon.PunBehaviour
             }
         }
 
-        if (m_Hp < 50f && !m_IsParticle)
+        if (m_Hp < 100f && !m_IsParticle)
         {
             Vector3 Pos = transform.position;
             Vector3 Rot = Vector3.zero;
@@ -80,34 +82,52 @@ public class BuildingStatus : Photon.PunBehaviour
 
         if (m_IsAlive == false)
         {
+            PhotonNetwork.Destroy(Obj);
             Expl = (GameObject)Instantiate(m_ExpParticle, transform.position, Quaternion.Euler(Vector3.zero));
             Invoke("Death", 1.5f);
         }
 
     }
 
+    IEnumerator DamageRoutine()
+    {
+        while (true)
+        {
+            m_Hp -= 10f;
+            imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
+            if (m_Hp <= 0f)
+            {
+                m_IsAlive = false;
+                StopCoroutine("DamageRoutine");
+
+            }
+            yield return new WaitForSeconds(2.0f);
+        }
+    }
+
+
     private void OnCollisionEnter(Collision damage)
     {
-        if (m_Team.gameObject.layer == 23 && damage.transform.tag == "Bullet_blue")
-        {
-            //Debug.Log("총에 맞음");
-            m_Hp -= m_Damage;
-            if (m_Hp <= 0f)
-                m_IsAlive = false;
-            imgHpbar.enabled = true;
-            imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
-        }
+        //if (m_Team.gameObject.layer == 23 && damage.transform.tag == "Bullet_blue")
+        //{
+        //    //Debug.Log("총에 맞음");
+        //    m_Hp -= m_Damage;
+        //    if (m_Hp <= 0f)
+        //        m_IsAlive = false;
+        //    imgHpbar.enabled = true;
+        //    imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
+        //}
 
-        else if (m_Team.gameObject.layer == 22 && damage.transform.tag == "Bullet_red")
-        {
-            m_Hp -= m_Damage;
-            if (m_Hp <= 0f)
-                m_IsAlive = false;
-            imgHpbar.enabled = true;
-            imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
-        }
+        //else if (m_Team.gameObject.layer == 22 && damage.transform.tag == "Bullet_red")
+        //{
+        //    m_Hp -= m_Damage;
+        //    if (m_Hp <= 0f)
+        //        m_IsAlive = false;
+        //    imgHpbar.enabled = true;
+        //    imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
+        //}
 
-        else if (damage.transform.tag == "AttackArea")
+        if (damage.transform.tag == "AttackArea")
         {
             m_Hp -= m_Damage;
             if (m_Hp < 0f)
@@ -162,9 +182,8 @@ public class BuildingStatus : Photon.PunBehaviour
                 }
             }
         }
-        Destroy(Obj);
         Destroy(Expl);
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
         //Destroy(SelectButton);
     }
 

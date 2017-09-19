@@ -19,10 +19,10 @@ public class ResourceStatus : MonoBehaviour {
     {
         while(true)
         {
-            if (m_gage == 10)  // full->little
+            if (m_gage == 250)  // full->little
                 Star_full.gameObject.SetActive(false);
 
-            else if (m_gage == 20) // little->empty
+            else if (m_gage == 500) // little->empty
             {
                 m_Empty = true;
                 Star_little.gameObject.SetActive(false);

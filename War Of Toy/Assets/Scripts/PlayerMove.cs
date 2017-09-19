@@ -19,7 +19,7 @@ public class PlayerMove : MonoBehaviour
     public float m_Heal;
     public int m_Mineral;
 
-    //public GameObject m_AttackImage;
+    public GameObject m_AttackImage;
     public Transform m_Team;
     public Image imgHpbar;
     public Image imgSelectbar;
@@ -35,6 +35,7 @@ public class PlayerMove : MonoBehaviour
     //GameObject SelectButton;
     public bool m_IsSelect;
     public bool m_IsAlive;
+    //public static GameObject bullet;
 
     //public bool m_IsStartToMove;
     public bool m_Attackstop;
@@ -61,6 +62,8 @@ public class PlayerMove : MonoBehaviour
     public Transform BalloonHeight;
     public Transform CarAttakArea;
     public Transform HealArea;
+
+    public bool m_IsStartDamage;
 
     public float m_Count;
     public float m_InitCount;
@@ -124,29 +127,44 @@ public class PlayerMove : MonoBehaviour
 
     }
 
-    //private void TargetPointFalse()
-    //{
-    //    for (int i = 0; i < SelectUnitScript.m_Instance.LivingUnit.Count; ++i)
-    //    {
-    //        if (SelectUnitScript.m_Instance.LivingUnit[i].m_AttackImage.activeSelf == true)
-    //        {
-    //            SelectUnitScript.m_Instance.LivingUnit[i].m_AttackImage.SetActive(false);
-    //        }
-    //    }
-    //}
+    private void TargetPointFalse()
+    {
+        if (PhotonNetwork.isMasterClient)
+        {
+            for (int i = 0; i < SelectUnitScript.m_Instance.LivingBlueUnit.Count; ++i)
+            {
+                if (SelectUnitScript.m_Instance.LivingBlueUnit[i].m_AttackImage.activeSelf == true)
+                {
+                    SelectUnitScript.m_Instance.LivingBlueUnit[i].m_AttackImage.SetActive(false);
+                }
+            }
+        }
+
+        else
+        {
+            for (int i = 0; i < SelectUnitScript.m_Instance.LivingRedUnit.Count; ++i)
+            {
+                if (SelectUnitScript.m_Instance.LivingRedUnit[i].m_AttackImage.activeSelf == true)
+                {
+                    SelectUnitScript.m_Instance.LivingRedUnit[i].m_AttackImage.SetActive(false);
+                }
+            }
+        }
+        
+    }
 
 
 
     public bool IsInputRight()
     {
-        //return (Input.GetMouseButton(0) && m_IsSelect);
-        return ((Input.touchCount == 1) && m_IsSelect);
+        return (Input.GetMouseButton(0) && m_IsSelect);
+        //return ((Input.touchCount == 1) && m_IsSelect);
     }
 
     public Vector3 InputSpot()
     {
-        //return (Input.mousePosition);
-        return (Input.GetTouch(0).position);
+        return (Input.mousePosition);
+        //return (Input.GetTouch(0).position);
     }
 
     IEnumerator OrderRoutine()
@@ -282,7 +300,7 @@ public class PlayerMove : MonoBehaviour
             {
                 if (IsInputRight() || m_IsOffensive)
                 {
-                    //TargetPointFalse();                 
+                    TargetPointFalse();                 
 
                     //m_IsStartToMove = true;
                     //SelectUnitScript.m_Instance.StartCoroutine("SelectRoutine");
@@ -327,10 +345,12 @@ public class PlayerMove : MonoBehaviour
                             {
                                 case "UnitSoldier":
                                     {
-                                        
-                                        StartCoroutine("AttackByBullet");
+                                        InvokeRepeating("AttackByBullet", 0f, 1.0f);
+                                        //HitPM.StartCoroutine("DamageRoutine");
+                                        //StartCoroutine("AttackByBullet");
                                         yield return StartCoroutine("ConditionForAttack", "no");
-                                        StopCoroutine("AttackByBullet");
+                                        CancelInvoke("AttackByBullet");
+                                        //StopCoroutine("AttackByBullet");
                                         m_IsAttack = false;
                                         break;
                                     }
@@ -432,6 +452,21 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    IEnumerator DamageRoutine()
+    {
+        while(true)
+        {
+            m_Hp -= 10f;
+            imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
+            if (m_Hp <= 0f)
+            {
+                StopCoroutine("DamageRoutine");
+                
+            }
+            yield return new WaitForSeconds(2.0f);
+        }
+    }
+
     IEnumerator ConditionForAttack(string type)
     {
         
@@ -442,7 +477,6 @@ public class PlayerMove : MonoBehaviour
             HitPM.imgHpbar.enabled = true;
             HitPM.imgSelectbar.enabled = false;
             yield return StartCoroutine("TraceRoutine");
-            //Debug.Log("추적루틴 끝나고 컨디션 어택으로 돌아옴");
             //imgHpbar.enabled = false;
             //HitPM.imgHpbar.enabled = false;
             //HitPM.unitState = UnitState.die;
@@ -462,6 +496,8 @@ public class PlayerMove : MonoBehaviour
             HitBS.imgHpbar.enabled = true;
             if (type == "AttackByFlare")
                 InvokeRepeating("AttackByFlare", 1.8f, 1.5f);
+            else if(type == "AttackByBullet")
+                InvokeRepeating("AttackByBullet", 0f, 1.0f);
             else
             {
                 yield return StartCoroutine(type);
@@ -520,16 +556,38 @@ public class PlayerMove : MonoBehaviour
 
     IEnumerator TraceRoutine()
     {
+        float tracedis = 0.0f;
+        switch (transform.tag)
+        {
+            case "UnitSoldier":
+                tracedis = 5f;
+                break;
+            case "UnitDinosaur":
+                tracedis = 8f;
+                break;
+            case "UnitBear":
+                tracedis = 2f;
+                break;
+            case "UnitRCcar":
+                tracedis = 2f;
+                break;
+            default: tracedis = 2f;
+                break;
+
+        }
+
         while (HitPM != null)//(HitPM.m_IsAlive)
         {
             if (HitPM.m_Hp <= 0) //(!HitPM.m_IsAlive)
             {
+                HitPM.m_Hp = 0f;
                 imgHpbar.enabled = false;
                 HitPM.imgHpbar.enabled = false;
+                HitPM.imgSelectbar.enabled = false;
                 HitPM.unitState = UnitState.die;
-                HitPM.m_Animator.SetBool("IsDie", true);
-                HitPM.Invoke("Death",3f);
-                HitPM.m_IsAlive = false;
+               // HitPM.m_Animator.SetBool("IsDie", true);
+               // HitPM.Invoke("Death",3f);
+               // HitPM.m_IsAlive = false;
                 m_IsPM = false;
                 m_IsAttack = false;
                 unitState = UnitState.idle;
@@ -539,27 +597,12 @@ public class PlayerMove : MonoBehaviour
             }
                 
             Debug.Log("추적 루틴 실행중");
-            if (Vector3.Distance(transform.position, HitPM.transform.position) >= 10f)
-            {
-                float tracedis = 0.0f;
-                switch (transform.tag)
-                {
-                    case "UnitSoldier":
-                        tracedis = 5f;
-                        break;
-                    case "UnitDinosaur":
-                        tracedis = 8f;
-                        break;
-                    case "UnitBear":
-                        tracedis = 2f;
-                        break;
-                    case "UnitRCcar":
-                        tracedis = 2f;
-                        CarAttakArea.gameObject.SetActive(false);
-                        break;
-                    default: tracedis = 2f; break;
+            
 
-                }
+            if (Vector3.Distance(transform.position, HitPM.transform.position) >= (tracedis + 3f))//8.5f)
+            {
+                if(transform.tag == "UnitRCcar")
+                    CarAttakArea.gameObject.SetActive(false);
                 m_Animator.SetBool("IsPick", true);
                 m_Animator.SetBool("IsAttack", false);
                 m_Attackstop = true;
@@ -595,29 +638,23 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    IEnumerator AttackByBullet()
+    public void AttackByBullet()
     {
-        bool condition = true;
-        while (condition)
+        if((HitPM != null && HitPM.m_Hp <= 0f) || (HitBS != null && HitBS.m_Hp <= 0f))
         {
-            if (m_IsBS && !m_IsPM) condition = HitBS.m_IsAlive;
-            if (m_IsPM && !m_IsBS) condition = HitPM.m_IsAlive;
-
-            //Debug.Log("공격루틴 실행중");
-
-            if (m_Attackstop == false)
-            {              
-                GameObject Obj = (GameObject)PhotonNetwork.Instantiate(Bullet.name, FireHole.position, FireHole.rotation, 0);
-                
-                
-                //Obj.GetComponent<BulletRigidbody>().m_Power = m_Power;
-                //Obj.GetComponent<BulletRigidbody>().m_Owner = GetComponent<PlayerMove>();
-            }
-
-            yield return new WaitForSeconds(2.5f);
+            m_Animator.SetBool("IsAttack", false);
+            m_IsPM = false;
+            m_IsBS = false;
+            CancelInvoke("AttackByBullet");
         }
 
+        if (m_Attackstop == false)
+        {
+            Obj = (GameObject)PhotonNetwork.Instantiate(Bullet.name, FireHole.position, FireHole.rotation, 0);
+        }
     }
+
+ 
 
     IEnumerator AttackByCar()
     {
@@ -799,55 +836,55 @@ public class PlayerMove : MonoBehaviour
 
     private void OnCollisionEnter(Collision damage)
     {
-        if (m_Team.gameObject.layer == 23  
-            && damage.transform.tag == "Bullet_blue")
-        {
-            //if (!m_IsOffensive)
-            //{
-            //    HitPM = damage.gameObject.GetComponent<BulletRigidbody>().m_Owner;
-            //    m_IsAttack = true;
+        //if (m_Team.gameObject.layer == 23  
+        //    && damage.transform.tag == "Bullet_blue")
+        //{
+        //    //if (!m_IsOffensive)
+        //    //{
+        //    //    HitPM = damage.gameObject.GetComponent<BulletRigidbody>().m_Owner;
+        //    //    m_IsAttack = true;
 
-            //    m_IsOffensive = true;
-            //}
+        //    //    m_IsOffensive = true;
+        //    //}
 
 
-            m_Hp -= m_Damage;
-            //if (m_Hp <= 0f)
-            //    m_IsAlive = false;
-            imgHpbar.enabled = true;
-            imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
-        }
+        //    m_Hp -= m_Damage;
+        //    //if (m_Hp <= 0f)
+        //    //    m_IsAlive = false;
+        //    imgHpbar.enabled = true;
+        //    imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
+        //}
 
-        else if (m_Team.gameObject.layer == 22 
-            && damage.transform.tag == "Bullet_red")
-        {
-            //if (!m_IsOffensive)
-            //{
-            //    HitPM = damage.gameObject.GetComponent<BulletRigidbody>().m_Owner;
-            //    m_IsAttack = true;
+        //else if (m_Team.gameObject.layer == 22 
+        //    && damage.transform.tag == "Bullet_red")
+        //{
+        //    //if (!m_IsOffensive)
+        //    //{
+        //    //    HitPM = damage.gameObject.GetComponent<BulletRigidbody>().m_Owner;
+        //    //    m_IsAttack = true;
 
-            //    m_IsOffensive = true;
-            //}
+        //    //    m_IsOffensive = true;
+        //    //}
 
-            m_Hp -= m_Damage;
-            if (m_Hp <= 0f)
-            {
-                m_IsAlive = false;
-                m_Animator.SetBool("IsDie", true);
-                Invoke("Death", 3f);
-            }
-            imgHpbar.enabled = true;
-            imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
-        }
+        //    m_Hp -= m_Damage;
+        //    if (m_Hp <= 0f)
+        //    {
+        //        m_IsAlive = false;
+        //        m_Animator.SetBool("IsDie", true);
+        //        Invoke("Death", 3f);
+        //    }
+        //    imgHpbar.enabled = true;
+        //    imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
+        //}
 
-        if (damage.transform.tag == "AttackArea")
-        {
-            m_Hp -= (m_Damage + 5f);
-            if (m_Hp <= 0f)
-                m_IsAlive = false;
-            imgHpbar.enabled = true;
-            imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
-        }
+        //if (damage.transform.tag == "AttackArea")
+        //{
+        //    m_Hp -= (m_Damage + 5f);
+        //    if (m_Hp <= 0f)
+        //        m_IsAlive = false;
+        //    imgHpbar.enabled = true;
+        //    imgHpbar.fillAmount = (float)m_Hp / (float)m_InitHp;
+        //}
     }
 
 
@@ -978,7 +1015,7 @@ public class PlayerMove : MonoBehaviour
     public void Death()
     {
         --CurUnitNum.m_Instance.m_UnitNum;
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
         //Destroy(SelectButton);
     }
 
