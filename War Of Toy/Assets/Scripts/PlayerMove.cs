@@ -23,10 +23,11 @@ public class PlayerMove : MonoBehaviour
     public Transform m_Team;
     public Image imgHpbar;
     public Image imgSelectbar;
-    public Image Orderbar;
+    //public Image Orderbar;
 
     public LayerMask m_LMUnit;
     public LayerMask m_LMGround;
+    //public LayerMask m_LMFog;
     public NavMeshPath m_Path;
     //public GameObject m_Canvas;
     public Animator m_Animator;
@@ -80,6 +81,17 @@ public class PlayerMove : MonoBehaviour
 
     GameObject Obj;
 
+    public void HideInFog()
+    {
+        this.gameObject.layer = 9;  // HideUnit
+    }
+
+    public void ShowInFog()
+    {
+        this.gameObject.layer = 28; // Unit
+    }
+
+
     void OnEnable()
     {
         m_IsAlive = true;
@@ -126,6 +138,23 @@ public class PlayerMove : MonoBehaviour
         }
 
     }
+
+    //private void Update()
+    //{
+    //    RaycastHit hit;
+    //    Debug.Log(m_Team.position);
+    //    if (Physics.Raycast(m_Team.position, Vector3.up, Mathf.Infinity, m_LMFog))//if (Physics.Raycast(m_Team.position, Vector3.up, out hit, Mathf.Infinity))
+    //    {
+    //        Debug.DrawRay(m_Team.position, Vector3.up, Color.red);
+    //       // Debug.Log(hit.transform.tag);
+    //        //Debug.Log(hit.transform.gameObject.GetComponent<Renderer>().material.color.a);
+
+    //    }
+
+      
+
+
+    //}
 
     private void TargetPointFalse()
     {

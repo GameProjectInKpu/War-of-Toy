@@ -9,8 +9,8 @@ public class MoveCamera : MonoBehaviour
     public Transform m_PlayerPos;
     //public bool IsMove;
 
-     
-
+    //public GameObject AlphaMid;
+    //public RenderTexture RT_Mid;
 
     static public MoveCamera m_Instance;
     static public MoveCamera Instance
@@ -52,9 +52,15 @@ public class MoveCamera : MonoBehaviour
        
     }
 
+    //private void Start()
+    //{
+    //    RT_Mid = AlphaMid.GetComponent<Camera>().targetTexture;
+
+    //}
+
     private void Update()
     {
-        
+       
     }
 
     IEnumerator MoveRoutine()

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class SelectUnitScript : MonoBehaviour
 {
+    //public LayerMask m_LMFog;
     public LayerMask m_LMUnit;
     public LayerMask m_LMBuilding;
     public GameObject m_BuildOK;
@@ -72,8 +73,12 @@ public class SelectUnitScript : MonoBehaviour
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMUnit) && TouchScript.m_Instance.IsOver)
                         SelectUnit(hit.transform);
-                     
-                    
+
+                //else if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMFog))
+                //{
+                //    Debug.Log(hit.transform.tag);
+                //    Debug.Log(hit.transform.gameObject.GetComponent<Renderer>().material.color.b);
+                //}
 
                 else if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMBuilding)
                     && TouchScript.m_Instance.IsOver && m_BuildOK.activeSelf == false)
@@ -142,6 +147,11 @@ public class SelectUnitScript : MonoBehaviour
 
             for (int i = 0; i < LivingRedUnit.Count; ++i)
             {
+                // 만약 유닛의 위치가 fog가 걷힌 위치에 있다면
+
+                // 해당 유닛의 ShowInFog함수 호출
+                // 아니면 HideInFog함수 호출
+
                 if (LivingRedUnit[i].m_Hp <= 0f)
                 {
                     LivingRedUnit[i].m_IsSelect = false;

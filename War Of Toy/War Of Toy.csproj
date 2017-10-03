@@ -199,10 +199,12 @@
     <Compile Include="Assets\Scripts\UnitStatusScript.cs" />
     <Compile Include="Assets\Scripts\UpgradeScript.cs" />
     <Compile Include="Assets\Scripts\ZengaScript.cs" />
+    <Compile Include="Assets\VisionReceiver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\GLSL shader for toon shading.shader" />
     <None Include="Assets\Materials\FOWShader.shader" />
+    <None Include="Assets\Materials\TestureMask.shader" />
     <None Include="Assets\Photon Unity Networking\changelog.txt" />
     <None Include="Assets\Photon Unity Networking\link.xml" />
     <None Include="Assets\Photon Unity Networking\readme.txt" />

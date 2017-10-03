@@ -11,7 +11,21 @@ namespace Com.MyCompany.MyGame
     public class GameManager : Photon.PunBehaviour
     {
         static public GameManager Instance;
-        
+
+        public GameObject AlphaMid;
+        public GameObject AlphaZero;
+        public GameObject AlphaZeroBuilding;
+
+        public RenderTexture RT_MidRed;
+        public RenderTexture RT_ZeroRed;
+        public RenderTexture RT_ZeroBuildingRed;
+
+        public RenderTexture RT_MidBlue;
+        public RenderTexture RT_ZeroBlue;
+        public RenderTexture RT_ZeroBuildingBlue;
+
+        public GameObject Fog;
+
         public GameObject playerPrefabRed;
         public GameObject playerPrefabBlue;
 
@@ -19,13 +33,46 @@ namespace Com.MyCompany.MyGame
         GameObject PlayerBlue;
 
 
-        //private void Awake()
-        //{
-        //    PlayerRed = Instantiate(this.playerPrefabRed, new Vector3(75, 5, 15), Quaternion.identity);
-        //    PlayerBlue = Instantiate(this.playerPrefabBlue, new Vector3(25, 5, 85), Quaternion.identity);
-        //    SelectUnitScript.m_Instance.LivingRedUnit.Add(PlayerRed.GetComponent<PlayerMove>());
-        //    SelectUnitScript.m_Instance.LivingBlueUnit.Add(PlayerBlue.GetComponent<PlayerMove>());
-        //}
+    
+
+        private void Awake()
+        {
+            if(PhotonNetwork.isMasterClient)
+            {
+                Fog.GetComponent<Renderer>().material.SetTexture("_MainTex", RT_ZeroRed);
+                Fog.GetComponent<Renderer>().material.SetTexture("_MainTex2", RT_MidRed);
+                Fog.GetComponent<Renderer>().material.SetTexture("_MainTex3", RT_ZeroBuildingRed);
+
+                AlphaMid.GetComponent<Camera>().cullingMask = LayerMask.GetMask("FOWUnit");//29;   // FOWUnit
+                AlphaMid.GetComponent<Camera>().targetTexture = RT_MidRed;
+
+                AlphaZero.GetComponent<Camera>().cullingMask = LayerMask.GetMask("FOWUnit");//29;   // FOWUnit
+                AlphaZero.GetComponent<Camera>().targetTexture = RT_ZeroRed;
+
+                AlphaZeroBuilding.GetComponent<Camera>().cullingMask = LayerMask.GetMask("FOWBuilding");//17;   // FOWBuilding
+                AlphaZeroBuilding.GetComponent<Camera>().targetTexture = RT_ZeroBuildingRed;
+               
+            }
+
+            else
+            {
+                Fog.GetComponent<Renderer>().material.SetTexture("_MainTex", RT_ZeroBlue);
+                Fog.GetComponent<Renderer>().material.SetTexture("_MainTex2", RT_MidBlue);
+                Fog.GetComponent<Renderer>().material.SetTexture("_MainTex3", RT_ZeroBuildingBlue);
+
+                AlphaMid.GetComponent<Camera>().cullingMask = LayerMask.GetMask("FOWUnitBlue");//16;   // FOWUnitBlue
+                AlphaMid.GetComponent<Camera>().targetTexture = RT_MidBlue;
+
+                AlphaZero.GetComponent<Camera>().cullingMask = LayerMask.GetMask("FOWUnitBlue");//16;   // FOWUnitBlue
+                AlphaZero.GetComponent<Camera>().targetTexture = RT_ZeroBlue;
+
+                AlphaZeroBuilding.GetComponent<Camera>().cullingMask = LayerMask.GetMask("FOWBuildingBlue");//15;   // FOWBuildingBlue
+                AlphaZeroBuilding.GetComponent<Camera>().targetTexture = RT_ZeroBuildingBlue;
+               
+            }
+        }
+
+
 
         // Use this for initialization
         void Start()
