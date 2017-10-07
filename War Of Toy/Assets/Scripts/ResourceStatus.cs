@@ -9,6 +9,8 @@ public class ResourceStatus : MonoBehaviour {
     public int m_gage;
     public bool m_Empty;
 
+    public GameObject m_ArrowImage;
+
     void Awake () {
         m_gage = 0;
         StartCoroutine("StateOfStar");

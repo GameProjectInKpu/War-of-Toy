@@ -200,4 +200,4 @@ d1755adc44fcb9e44c42a5889d35f7a0 Assembly-CSharp.dll:.MoveByKeys
 604f5f55c1cc414f64da1990b36ff015 Assembly-CSharp.dll:.PhotonView
 b2dc25029b6f083ffbbdf9df269f825a Assembly-CSharp.dll:.InRoomChat
 2124af75d6b3afb90d3c8471b98e9f78 Assembly-CSharp.dll:.CamDontClear
-67a87bd6b1bf2d317ae2da9777cfcdab Assembly-CSharp.dll:.ResourceStatus
+be31aa8ee04cc0fdb47b9ea353dbde30 Assembly-CSharp.dll:.ResourceStatus
