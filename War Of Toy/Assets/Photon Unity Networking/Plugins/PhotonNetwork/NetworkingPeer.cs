@@ -239,7 +239,11 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
     public bool IsUsingNameServer { get; protected internal set; }
 
     /// <summary>Name Server Host Name for Photon Cloud. Without port and without any prefix.</summary>
+    #if !UNITY_EDITOR && UNITY_SWITCH
+    public const string NameServerHost = "nameserver-eu.cloudapp.net";//set to "ns.exitgames.com" after Nintendo has fixed the traffic manager bug in their dns-resolver for which this is a workaround
+    #else
     public const string NameServerHost = "ns.exitgames.com";
+    #endif
 
     /// <summary>Name Server for HTTP connections to the Photon Cloud. Includes prefix and port.</summary>
     public const string NameServerHttp = "http://ns.exitgamescloud.com:80/photon/n";
@@ -656,30 +660,30 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
         ConnectionProtocol protocolOverride = this.TransportProtocol;
 
         #if UNITY_XBOXONE
-        if (this.AuthMode != AuthModeOption.AuthOnceWss)
+        this.AuthMode = AuthModeOption.Auth;
+        if (this.AuthValues == null)
         {
-            UnityEngine.Debug.LogWarning("UNITY_XBOXONE builds must use AuthMode \"AuthOnceWss\". The default setting was changed. Resetting it now.");
+            this.AuthValues = new AuthenticationValues();
+            UnityEngine.Debug.LogError("UNITY_XBOXONE builds must set AuthValues. Set this before calling any Connect method. Refer to the online docs for guidance.");
+            Debug.Break();
+            return;
         }
-        if (this.EncryptionMode != EncryptionMode.DatagramEncryption)
+        if (this.AuthValues.AuthPostData == null)
         {
-            UnityEngine.Debug.LogWarning("UNITY_XBOXONE builds must use EncryptionMode \"DatagramEncryption\". The default setting was changed. Resetting it now.");
+            UnityEngine.Debug.LogError("UNITY_XBOXONE builds must use Photon's XBox Authentication and set the XSTS token by calling: PhotonNetwork.AuthValues.SetAuthPostData(xstsToken). Refer to the online docs for guidance.");
+            Debug.Break();
+            return;
         }
-        if (this.AuthValues == null || this.AuthValues.AuthType != CustomAuthenticationType.Xbox)
+        if (this.AuthValues.AuthType != CustomAuthenticationType.Xbox)
         {
-            UnityEngine.Debug.LogError("UNITY_XBOXONE builds must use AuthValues.AuthType \"CustomAuthenticationType.XboxCheck\". Set this before calling any Connect method.");
-            if (this.AuthValues == null)
-            {
-                this.AuthValues = new AuthenticationValues();
-            }
+            UnityEngine.Debug.LogWarning("UNITY_XBOXONE builds must use AuthValues.AuthType \"CustomAuthenticationType.Xbox\". PUN sets this value now. Refer to the online docs to avoid this warning.");
             this.AuthValues.AuthType = CustomAuthenticationType.Xbox;
         }
-        if (!PhotonPeer.NativeDatagramEncrypt)
+        if (this.TransportProtocol != ConnectionProtocol.WebSocketSecure)
         {
-            throw new NotSupportedException("UNITY_XBOXONE builds have to use a special Photon library with Native Datagram Encryption. This is missing. Check your build setup!");
+            UnityEngine.Debug.LogWarning("UNITY_XBOXONE builds must use WSS (Secure WebSockets) as Transport Protocol. Changing to WSS from your selection: " + this.TransportProtocol);
+            this.TransportProtocol = ConnectionProtocol.WebSocketSecure;
         }
-
-        this.AuthMode = AuthModeOption.AuthOnceWss;
-        this.EncryptionMode = EncryptionMode.DatagramEncryption;
         #endif
 
         if (this.AuthMode == AuthModeOption.AuthOnceWss)
@@ -702,13 +706,22 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
             }
         }
 
+        Type socketTcp = null;
+        #if UNITY_XBOXONE
+        socketTcp = Type.GetType("ExitGames.Client.Photon.SocketWebTcpNativeDynamic, Assembly-CSharp", false);
+        if (socketTcp == null)
+        {
+            socketTcp = Type.GetType("ExitGames.Client.Photon.SocketWebTcpNativeDynamic, Assembly-CSharp-firstpass", false);
+        }
+        #else
         // to support WebGL export in Unity, we find and assign the SocketWebTcp class (if it's in the project).
         // alternatively class SocketWebTcp might be in the Photon3Unity3D.dll
-        Type socketTcp = Type.GetType("ExitGames.Client.Photon.SocketWebTcp, Assembly-CSharp", false);
+        socketTcp = Type.GetType("ExitGames.Client.Photon.SocketWebTcp, Assembly-CSharp", false);
         if (socketTcp == null)
         {
             socketTcp = Type.GetType("ExitGames.Client.Photon.SocketWebTcp, Assembly-CSharp-firstpass", false);
         }
+        #endif
         if (socketTcp != null)
         {
             this.SocketImplementationConfig[ConnectionProtocol.WebSocket] = socketTcp;
@@ -736,19 +749,10 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
         #pragma warning disable 0162    // the library variant defines if we should use PUN's SocketUdp variant (at all)
         if (PhotonPeer.NoSocket)
         {
-            if (this.AuthMode != AuthModeOption.AuthOnceWss || serverType != ServerConnection.NameServer)
-            {
-                if (this.TransportProtocol != ConnectionProtocol.Udp)
-                {
-                    Debug.Log("This Photon3Unity3d.dll only allows UDP. TransportProtocol was: " + this.TransportProtocol + ". SocketImplementation: " + this.SocketImplementation);
-                }
-                protocolOverride = ConnectionProtocol.Udp;
-            }
-
             #if !UNITY_EDITOR && (UNITY_PS3 || UNITY_ANDROID)
             this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdpNativeDynamic);
             PhotonHandler.PingImplementation = typeof(PingNativeDynamic);
-            #elif !UNITY_EDITOR && UNITY_IPHONE
+            #elif !UNITY_EDITOR && (UNITY_IPHONE || UNITY_SWITCH)
             this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdpNativeStatic);
             PhotonHandler.PingImplementation = typeof(PingNativeStatic);
             #elif !UNITY_EDITOR && UNITY_WINRT
@@ -1659,7 +1663,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                         }
                         if (operationResponse.Parameters.ContainsKey(ParameterCode.NickName))
                         {
-                            this.playername = (string)operationResponse.Parameters[ParameterCode.NickName];
+                            this.PlayerName = (string)operationResponse.Parameters[ParameterCode.NickName];
                             if (PhotonNetwork.logLevel >= PhotonLogLevel.Informational)
                             {
                                 this.DebugReturn(DebugLevel.INFO, string.Format("Received your NickName from server. Updating local value to: {0}", this.playername));
@@ -2097,16 +2101,19 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 {
                     if (this.AuthValues != null)
                     {
-                        this.AuthValues.Token = null;  // invalidate any custom auth secrets
+                        this.AuthValues.Token = null;       // invalidate any custom auth secrets
                     }
 
-                    this.State = ClientState.PeerCreated; // if we set another state here, we could keep clients from connecting in OnDisconnectedFromPhoton right here.
+                    this.IsInitialConnect = false;          // not "connecting" anymore
+                    this.State = ClientState.PeerCreated;   // if we set another state here, we could keep clients from connecting in OnDisconnectedFromPhoton right here.
                     SendMonoMessage(PhotonNetworkingMessage.OnDisconnectedFromPhoton);
                 }
                 break;
 
             case StatusCode.ExceptionOnConnect:
             case StatusCode.SecurityExceptionOnConnect:
+				this.IsInitialConnect = false;
+
                 this.State = ClientState.PeerCreated;
                 if (this.AuthValues != null)
                 {
@@ -2132,6 +2139,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
 
                     this.State = ClientState.PeerCreated;
                     cause = (DisconnectCause)statusCode;
+					this.IsInitialConnect = false;
                     SendMonoMessage(PhotonNetworkingMessage.OnFailedToConnectToPhoton, cause);
                 }
                 else
@@ -2150,6 +2158,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 {
                     Debug.LogWarning(statusCode + " while connecting to: " + this.ServerAddress + ". Check if the server is available.");
 
+					this.IsInitialConnect = false;
                     cause = (DisconnectCause)statusCode;
                     SendMonoMessage(PhotonNetworkingMessage.OnFailedToConnectToPhoton, cause);
                 }
@@ -2185,6 +2194,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 {
                     Debug.LogWarning(statusCode + " while connecting to: " + this.ServerAddress + ". Check if the server is available.");
 
+					this.IsInitialConnect = false;
                     cause = (DisconnectCause)statusCode;
                     SendMonoMessage(PhotonNetworkingMessage.OnFailedToConnectToPhoton, cause);
                 }
@@ -2205,17 +2215,17 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 // this.mListener.clientErrorReturn(statusCode);
                 break;
 
-            case StatusCode.QueueOutgoingReliableWarning:
-            case StatusCode.QueueOutgoingUnreliableWarning:
-            case StatusCode.QueueOutgoingAcksWarning:
-            case StatusCode.QueueSentWarning:
-                // this.mListener.warningReturn(statusCode);
-                break;
+            //case StatusCode.QueueOutgoingReliableWarning:
+            //case StatusCode.QueueOutgoingUnreliableWarning:
+            //case StatusCode.QueueOutgoingAcksWarning:
+            //case StatusCode.QueueSentWarning:
+            //    // this.mListener.warningReturn(statusCode);
+            //    break;
 
-            case StatusCode.QueueIncomingReliableWarning:
-            case StatusCode.QueueIncomingUnreliableWarning:
-                Debug.Log(statusCode + ". This client buffers many incoming messages. This is OK temporarily. With lots of these warnings, check if you send too much or execute messages too slow. " + (PhotonNetwork.isMessageQueueRunning? "":"Your isMessageQueueRunning is false. This can cause the issue temporarily.") );
-                break;
+            //case StatusCode.QueueIncomingReliableWarning:
+            //case StatusCode.QueueIncomingUnreliableWarning:
+            //    Debug.Log(statusCode + ". This client buffers many incoming messages. This is OK temporarily. With lots of these warnings, check if you send too much or execute messages too slow. " + (PhotonNetwork.isMessageQueueRunning? "":"Your isMessageQueueRunning is false. This can cause the issue temporarily.") );
+            //    break;
 
                 // // TCP "routing" is an option of Photon that's not currently needed (or supported) by PUN
                 //case StatusCode.TcpRouterResponseOk:
@@ -2985,7 +2995,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
         return true;
     }
 
-    internal Hashtable SendInstantiate(string prefabName, Vector3 position, Quaternion rotation, int group, int[] viewIDs, object[] data, bool isGlobalObject)
+    internal Hashtable SendInstantiate(string prefabName, Vector3 position, Quaternion rotation, byte group, int[] viewIDs, object[] data, bool isGlobalObject)
     {
         // first viewID is now also the gameobject's instantiateId
         int instantiateId = viewIDs[0];   // LIMITS PHOTONVIEWS&PLAYERS
@@ -3889,6 +3899,9 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
     /// </remarks>
     public static int ObjectsInOneUpdate = 10;
 
+	// cache the RaiseEventOptions to prevent redundant Memory Allocation
+	RaiseEventOptions options = new RaiseEventOptions();
+
     // this is called by Update() and in Unity that means it's single threaded.
     public void RunViewUpdate()
     {
@@ -3921,12 +3934,13 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
 
 
         // we got updates to send. every group is send it's own message and unreliable and reliable are split as well
-        RaiseEventOptions options = new RaiseEventOptions();
+		options.InterestGroup = 0;
+
         #if PHOTON_DEVELOP
         options.Receivers = ReceiverGroup.All;
         #endif
 
-        var enumerator = this.photonViewList.GetEnumerator();   // replacing foreach foreach (PhotonView view in this.photonViewList.Values)
+		var enumerator = this.photonViewList.GetEnumerator();   // replacing foreach (PhotonView view in this.photonViewList.Values) for memory allocation improvement
         while (enumerator.MoveNext())
         {
             PhotonView view = enumerator.Current.Value;

@@ -133,6 +133,7 @@ public class UnitStatusScript : MonoBehaviour {
                 if (m_IsMyTeam)
                     UnitFuncScript.m_Instance.SetUnitFunc(28);
                 break;
+           
             default:
                 break;
         }
