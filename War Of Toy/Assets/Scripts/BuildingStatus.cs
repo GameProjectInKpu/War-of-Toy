@@ -7,7 +7,7 @@ public class BuildingStatus : Photon.PunBehaviour
 {
 
     public Transform m_Team;
-    public float m_Hp = 300f;
+    public float m_Hp = 100f;//300f;
     public float m_InitHp;
     public float m_Damage;
     public bool m_IsAlive;
@@ -38,7 +38,7 @@ public class BuildingStatus : Photon.PunBehaviour
 
     void Awake()
     {
-        m_Hp = 300f;
+        m_Hp = 100f;//300f;
         m_InitHp = m_Hp;
     }
 
@@ -62,7 +62,7 @@ public class BuildingStatus : Photon.PunBehaviour
             }
         }
 
-        if (m_Hp < 100f && !m_IsParticle)
+        if (m_Hp < 50f && !m_IsParticle)
         {
             Vector3 Pos = transform.position;
             Vector3 Rot = Vector3.zero;

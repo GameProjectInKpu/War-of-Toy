@@ -24,8 +24,8 @@ public class MultiSelectScript : MonoBehaviour {
 
     public Vector2 InputSpot()
     {
-        return (Input.mousePosition);
-        //return (Input.GetTouch(0).position);
+        //return (Input.mousePosition);
+        return (Input.GetTouch(0).position);
     }
 
     private void MultiSelect()
@@ -66,7 +66,7 @@ public class MultiSelectScript : MonoBehaviour {
             m_Size.y = -m_Size.y;
 
         rect = new Rect(m_StartPoint, m_Size);
-        m_SelectImage.GetComponent<RectTransform>().sizeDelta = m_Size * 2.5f;
+        m_SelectImage.GetComponent<RectTransform>().sizeDelta = m_Size;// * 2.5f;
 
         if (PhotonNetwork.isMasterClient)
         {
@@ -165,7 +165,7 @@ public class MultiSelectScript : MonoBehaviour {
             m_Size.y = -m_Size.y;
 
 
-        m_SelectImage.GetComponent<RectTransform>().sizeDelta = m_Size * 2.5f;
+        m_SelectImage.GetComponent<RectTransform>().sizeDelta = m_Size;// * 2.5f;
     }
 
     public void EndPointToSelect()

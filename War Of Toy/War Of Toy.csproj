@@ -269,11 +269,11 @@
     <Compile Include="Assets\Scripts\SignUp.cs" />
     <Compile Include="Assets\Scripts\StarScript.cs" />
     <Compile Include="Assets\Scripts\TouchScript.cs" />
-    <Compile Include="Assets\Scripts\TutorialScript.cs" />
     <Compile Include="Assets\Scripts\UnitFuncScript.cs" />
     <Compile Include="Assets\Scripts\UnitStatusScript.cs" />
     <Compile Include="Assets\Scripts\UpgradeScript.cs" />
     <Compile Include="Assets\Scripts\ZengaScript.cs" />
+    <Compile Include="Assets\TutorialScript.cs" />
     <Compile Include="Assets\VisionReceiver.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -128,14 +128,14 @@ public class PlayerMove : MonoBehaviour
         m_Heal = 10f;
         m_Mineral = 1;
 
-        if(Bullet != null)
-        {
-            Bullet.GetComponent<BulletRigidbody>().m_Owner = GetComponent<PlayerMove>();
-            //BulletRigidbody Brb = Bullet.GetComponent<BulletRigidbody>();
-            //Brb .GetComponent<BulletRigidbody>();
-            //Brb.m_Owner = GetComponent<PlayerMove>(); 
-            //Brb.m_Power = m_Power;
-        }
+        //if(Bullet != null)
+        //{
+        //    Bullet.GetComponent<BulletRigidbody>().m_Owner = GetComponent<PlayerMove>();
+        //    //BulletRigidbody Brb = Bullet.GetComponent<BulletRigidbody>();
+        //    //Brb .GetComponent<BulletRigidbody>();
+        //    //Brb.m_Owner = GetComponent<PlayerMove>(); 
+        //    //Brb.m_Power = m_Power;
+        //}
 
     }
 
@@ -186,14 +186,14 @@ public class PlayerMove : MonoBehaviour
 
     public bool IsInputRight()
     {
-        return (Input.GetMouseButton(0) && m_IsSelect);
-        //return ((Input.touchCount == 1) && m_IsSelect);
+        //return (Input.GetMouseButton(0) && m_IsSelect);
+        return ((Input.touchCount == 1) && m_IsSelect);
     }
 
     public Vector3 InputSpot()
     {
-        return (Input.mousePosition);
-        //return (Input.GetTouch(0).position);
+        //return (Input.mousePosition);
+        return (Input.GetTouch(0).position);
     }
 
     IEnumerator OrderRoutine()

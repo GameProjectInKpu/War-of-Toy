@@ -35,7 +35,7 @@ public class BombRigidbody : MonoBehaviour {
         gameObject.GetComponent<MeshRenderer>().enabled = false;
         
 
-        if (Col.collider.gameObject.layer == 28)
+        if (Col.collider.gameObject.layer == 28 && Col.collider.gameObject.tag != "UnitAirballoon")
         {
             Debug.Log("공격받음!");
             TargetOb = Col.collider.gameObject;
@@ -48,7 +48,7 @@ public class BombRigidbody : MonoBehaviour {
            
         }
 
-        Destroy(Obj, 1f);
+        Destroy(Obj, 2f);
         
         Destroy(gameObject, 3f);
     }

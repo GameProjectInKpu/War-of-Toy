@@ -66,10 +66,10 @@ public class SelectUnitScript : MonoBehaviour
         while (true)
         {
             Debug.Log("선택루틴 실행중");
-            if(Input.GetMouseButton(0))
-            //if (Input.touchCount == 1 )
+            //if(Input.GetMouseButton(0))
+            if (Input.touchCount == 1 )
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //(Input.GetTouch(0).position);
+                Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position); //(Input.mousePosition);
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_LMUnit) && TouchScript.m_Instance.IsOver)
                         SelectUnit(hit.transform);
@@ -363,14 +363,14 @@ public class SelectUnitScript : MonoBehaviour
     {
         foreach (PlayerMove unit in SelectedUnit)
         {
-            //if (unit.tag == "UnitAirBalloon")
-            //{
-            //    Debug.Log("폭탄공격");
-            //    GameObject Obj = Instantiate(unit.Bullet, unit.FireHole.position, unit.FireHole.rotation);
-            //    unit.m_IsSelect = false;
-            //    return;
-            //}
-            if (unit.tag != "UnitLego"
+            if (unit.tag == "UnitAirballoon")
+            {
+                Debug.Log("폭탄공격");
+                GameObject Obj = Instantiate(unit.Bullet, unit.FireHole.position, unit.FireHole.rotation);
+                unit.m_IsSelect = false;
+                return;
+            }
+            else if (unit.tag != "UnitLego"
                 && unit.tag != "UnitCupid" && unit.tag != "UnitClockMouse")
             {
                 //StopCoroutine("SelectRoutine");

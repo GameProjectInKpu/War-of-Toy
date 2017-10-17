@@ -1,0 +1,103 @@
+<linker>
+	<assembly fullname="Assembly-CSharp">
+		<type fullname="SignUp">
+			<method name="CloseSignUpFinish"/>
+			<method name="CloseSignUpWindow"/>
+			<method name="ClickSignUp"/>
+			<method name="CloseUsingIDWindow"/>
+			<method name="ShowSignUpWindow"/>
+		</type>
+		<type fullname="Login">
+			<method name="PasswordToStar"/>
+			<method name="ClickLogin"/>
+			<method name="AdminLogin"/>
+		</type>
+		<type fullname="BuildScript">
+			<method name="Build"/>
+			<method name="Build"/>
+			<method name="Build"/>
+			<method name="Build"/>
+			<method name="SelectbyButton"/>
+			<method name="SelectbyButton"/>
+			<method name="SelectbyButton"/>
+			<method name="SelectbyButton"/>
+			<method name="SelectbyButton"/>
+			<method name="SelectbyButton"/>
+			<method name="Build"/>
+			<method name="SelectbyButton"/>
+			<method name="SelectbyButton"/>
+			<method name="SelectbyButton"/>
+			<method name="SelectbyButton"/>
+			<method name="SelectbyButton"/>
+			<method name="SelectbyButton"/>
+			<method name="Build"/>
+		</type>
+		<type fullname="InitUnitScript">
+			<method name="InitUnitByButton"/>
+			<method name="InitUnitByButton"/>
+			<method name="InitUnitByButton"/>
+			<method name="InitUnitByButton"/>
+			<method name="InitUnitByButton"/>
+			<method name="InitUnitByButton"/>
+			<method name="InitUnitByButton"/>
+			<method name="InitUnitByButton"/>
+			<method name="InitUnitByButton"/>
+		</type>
+		<type fullname="TutorialScript">
+			<method name="BackByButton"/>
+			<method name="TutorialByButton"/>
+			<method name="SkipByButton"/>
+		</type>
+		<type fullname="SelectUnitScript">
+			<method name="OrderToHeal"/>
+			<method name="OrderToMineral"/>
+			<method name="OrderToBoard"/>
+			<method name="OrderToAttack"/>
+			<method name="OrderToPick"/>
+		</type>
+		<type fullname="TouchScript">
+			<method name="OnTouch"/>
+			<method name="EndTouch"/>
+			<method name="PointerEnter"/>
+			<method name="PointerExit"/>
+		</type>
+		<type fullname="MultiSelectScript">
+			<method name="DrawRect"/>
+			<method name="StartPointToSelect"/>
+			<method name="EndPointToSelect"/>
+			<method name="OnMultiSelectMode"/>
+		</type>
+		<type fullname="UnitFuncScript">
+			<method name="CallInitUnitSlot"/>
+			<method name="CallBuildSlot"/>
+			<method name="ButtonLeftIsPressed"/>
+			<method name="ButtonRightIsPressed"/>
+		</type>
+		<type fullname="UpgradeScript">
+			<method name="UpgradeByButton"/>
+			<method name="UpgradeByButton"/>
+			<method name="UpgradeByButton"/>
+			<method name="UpgradeByButton"/>
+			<method name="UpgradeByButton"/>
+			<method name="UpgradeByButton"/>
+			<method name="UpgradeByButton"/>
+			<method name="UpgradeByButton"/>
+		</type>
+		<type fullname="StarScript">
+			<method name="AddStarByButton"/>
+		</type>
+		<type fullname="CamRotByScroll">
+			<method name="OnScrollDrag"/>
+		</type>
+		<type fullname="PosBoxScript">
+			<method name="PointerDown"/>
+			<method name="PointerUp"/>
+			<method name="PointerUp"/>
+			<method name="PointerDown"/>
+		</type>
+		<type fullname="HelloToUser">
+			<method name="StartLauncher"/>
+			<method name="CloseWindowHello"/>
+		</type>
+	</assembly>
+</linker>
